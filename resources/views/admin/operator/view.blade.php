@@ -209,7 +209,7 @@
     <!-- Start Button Hapus -->
     <script>
     $('.hapus').click(function(){
-        var id_agency = $(this).attr('data-id');
+        var id_operator = $(this).attr('data-id');
     Swal.fire({
       title: "Apakah Anda Yakin Data Ini Ingin Di Hapus ?",
       text: "Jika Ya Maka Data Akan Terhapus Permanen",
@@ -220,7 +220,7 @@
       confirmButtonText: "Ya, Hapus Saja!"
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location = "/admin/operator/"+id_agency+"/hapus"
+        window.location = "/admin/operator/"+id_operator+"/hapus"
         Swal.fire({
           title: "Data Berhasil Dihapus !",
           icon: "success"
@@ -230,5 +230,27 @@
     });
     </script>
     <!-- End Button Hapus -->
+
+    <!-- Start Button Reset PW -->
+    <script>
+    $('.reset').click(function(){
+        var id_operator = $(this).attr('data-id');
+    Swal.fire({
+      title: "Apakah Anda Yakin untuk Melakukan Reset Password pada Akun Ini?",
+      text: "Jika Ya, Maka Password Akun Ini Akan Direset",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, Reset Saja!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location = "/admin/operator/"+id_operator+"/reset"
+      }
+    });
+    });
+    </script>
+    <!-- End Button Reset PW -->
+
 
 @endpush

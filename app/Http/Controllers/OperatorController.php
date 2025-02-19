@@ -26,16 +26,16 @@ class OperatorController extends Controller
 
     public function store(Request $request){
 
-        $id_agency=DB::table('tb_operator')
+        $id_operator=DB::table('tb_operator')
         ->latest('id_operator', 'DESC')
         ->first();
 
         $kodeobjek ="OP-";
 
-        if($id_agency == null){
+        if($id_operator == null){
             $nomorurut = "0001";
         }else{
-            $nomorurut = substr($id_agency->id_agency, 3, 4) + 1;
+            $nomorurut = substr($id_operator->id_operator, 3, 4) + 1;
             $nomorurut = str_pad($nomorurut, 4, "0", STR_PAD_LEFT);
         }
         $id=$kodeobjek.$nomorurut;
@@ -94,6 +94,37 @@ class OperatorController extends Controller
         }
      }
 
+     //Reset Password
+     public function reset($id_operator){
+
+        $id_operator    = Crypt::decrypt($id_operator);
+        $tb_operator    = DB::table('tb_operator')->where('id_operator', $id_operator)->first();
+        $username       = $tb_operator->username;
+
+        $data = [
+            'password'      => Hash::make($username)
+        ];
+
+        $update = DB::table('tb_operator')->where('id_operator', $id_operator)->update($data);
+        if ($update) {
+            return Redirect('/admin/operator')->with(['success' => 'Password Akun Berhasil Direset']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Password Akun Gagal Direset']);
+        }
+     }
+
+     //Hapus Akun
+     public function delate($id_operator){
+
+        $id_operator    = Crypt::decrypt($id_operator);
+
+        $delete = DB::table('tb_operator')->where('id_operator', $id_operator)->delete();
+        if ($delete) {
+            return Redirect('/admin/operator')->with(['success' => 'Data Berhasil Dihapus']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Data Gagal Dihapus']);
+        }
+     }
 
 
 }

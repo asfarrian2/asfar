@@ -1,13 +1,14 @@
 <?php
 
 use App\Http\Controllers\AgencyController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OperatorController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
+//Crud Login
+Route::get('/', [LoginController::class, 'operator']);
 
 //Crud Data SKPD/UPTD
 Route::get('/admin/agency', [AgencyController::class, 'view']);
@@ -21,3 +22,5 @@ Route::get('/admin/operator', [OperatorController::class, 'view']);
 Route::post('/admin/operator/store', [OperatorController::class, 'store']);
 Route::post('/admin/operator/edit', [OperatorController::class, 'edit']);
 Route::post('/admin/operator/{id_operator}/update', [OperatorController::class, 'update']);
+Route::get('/admin/operator/{id_operator}/reset', [OperatorController::class, 'reset']);
+Route::get('/admin/operator/{id_operator}/hapus', [OperatorController::class, 'delate']);
