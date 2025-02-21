@@ -3,12 +3,21 @@
 use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OperatorController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
+
+
+//Halaman Utama
+Route::get('/admin/dashboardAll', [DashboardController::class, 'all']);
 
 
 //Crud Login
-Route::get('/', [LoginController::class, 'operator']);
+Route::get('/', [LoginController::class, 'admin'])->name('login');;
+Route::post('/admin_login', [LoginController::class, 'admin_proses']);
 
 //Crud Data SKPD/UPTD
 Route::get('/admin/agency', [AgencyController::class, 'view']);

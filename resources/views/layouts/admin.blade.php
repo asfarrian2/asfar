@@ -116,7 +116,7 @@
 							<span class="nav-text">Dashboard</span>
 						</a>
                         <ul aria-expanded="false">
-							<li><a href="/">Semua</a></li>
+							<li><a href="/admin/dashboardAll">All</a></li>
 							<li><a href="index-2.html">Target</a></li>
 							<li><a href="my-wallet.html">Pendapatan</a></li>
 							<li><a href="#">SKPD/UPTD</a></li>

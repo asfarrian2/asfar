@@ -33,20 +33,44 @@
                             <div class="col-xl-12">
                                 <div class="auth-form">
 									<div class="text-center mb-3">
-										<a href="index.html"><img src="images/logo-full.png" alt=""></a>
+										<a href="index.html"><img src="{{asset ('images/logo-login-2.png') }}" alt=""></a>
 									</div>
-                                    <h4 class="text-center mb-4">Silahkan Masuk</h4>
-                                    <form action="index.html">
+                                    <h4 class="text-center mb-4">Halaman Administrator</h4>
+                                    <!-- Begin Alret -->
+                                    @csrf
+                                    @php
+                                    $messagewarning = Session::get('warning');
+                                    @endphp
+                                    @if (Session::get('warning'))
+                                    <div class="col-xl-12">
+                                        <div class="alert alert-danger left-icon-big alert-dismissible fade show">
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close"><span><i class="mdi mdi-btn-close"></i></span>
+                                            </button>
+                                            <div class="media">
+                                                <div class="alert-left-icon-big">
+                                                    <span><i class="mdi mdi-alert"></i></span>
+                                                </div>
+                                                <div class="media-body">
+                                                    <h5 class="mt-1 mb-2">Login Gagal !</h5>
+                                                    <p class="mb-0">{{ $messagewarning }}.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- End Alret -->
+                                    @endif
+                                    <form action="/admin_login"  method="post">
+                                    @csrf
                                         <div class="mb-3">
                                             <label class="mb-1"><strong>Username</strong></label>
-                                            <input type="username" class="form-control" name="username">
+                                            <input type="username" class="form-control" name="email">
                                         </div>
                                         <div class="mb-3">
                                             <label class="mb-1"><strong>Password</strong></label>
                                             <input type="password" class="form-control" name="password">
                                         </div>
                                         <div class="text-center">
-                                            <button type="submit" class="btn btn-primary btn-block">Masuk</button>
+                                            <button type="submit" class="btn btn-info btn-block">LOGIN</button>
                                         </div>
                                     </form>
                                 </div>
