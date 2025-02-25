@@ -11,7 +11,7 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
 							<div class="dashboard_bar">
-                                Tahun Anggaran
+                                Jenis Retribusi
                             </div>
                         </div>
                     </div>
@@ -54,8 +54,8 @@
                 <!-- End Pemberitahuan -->
 				<div class="row page-titles">
 					<ol class="breadcrumb">
-						<li class="breadcrumb-item active"><a href="javascript:void(0)">SI-PREDRA</a></li>
-						<li class="breadcrumb-item"><a href="javascript:void(0)">Tahun Anggaran</a></li>
+						<li class="breadcrumb-item active"><a href="/admin/dashboardAll">SI-PREDRA</a></li>
+						<li class="breadcrumb-item"><a href="#">Jenis Retribusi</a></li>
 					</ol>
                 </div>
                 <!-- row -->
@@ -78,19 +78,15 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="basic-form">
-                                            <form action="/admin/ta/store" method="POST">
+                                            <form action="/admin/jenisretribusi/store" method="POST">
                                             @csrf
                                                 <div class="mb-3">
-                                                    <label class="form-label">Tahun :</label>
-                                                    <input type="number" name="tahun" class="form-control input-default" required>
+                                                    <label class="form-label">Kode Akun :</label>
+                                                    <input type="text" pattern="[0-9\.]+" name="kode_jr" class="form-control input-default" required>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Keterangan</label>
-                                                    <select class="default-select  form-control wide mt-3" name="id_tahun" >
-                                                    <option value="">Pilih Keterangan</option>
-                                                    <option value="Murni">Murni</option>
-                                                    <option value="Murni">Perubahan</option>
-                                                    </select>
+                                                    <label class="form-label">Nama Akun :</label>
+                                                    <input type="text" name="nama_jr" class="form-control input-default" required>
                                                 </div>
                                            </div>
                                         </div>
@@ -103,14 +99,16 @@
                                 </div>
                             </div>
                             <!-- End Modal -->
+
+                            <!-- Tabel -->
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table id="example" class="display" style="min-width: 845px">
                                         <thead>
                                             <tr>
                                                 <th >NO.</th>
-                                                <th >TAHUN</th>
-                                                <th >KETERANGAN</th>
+                                                <th >KODE AKUN</th>
+                                                <th >NAMA AKUN</th>
                                                 <th >STATUS</th>
                                                 <th >AKSI</th>
                                             </tr>
@@ -119,12 +117,12 @@
                                         @foreach ($view as $d)
                                             <tr>
                                                 <td style="color: black; text-align:center;">{{ $loop->iteration }}</td>
-                                                <td style="color: black;">{{$d->tahun_ta}}</td>
-                                                <td style="color: black;">{{$d->keterangan_ta}}</td>
-                                                @if ($d->status_ta == 'Nonaktif')
-                                                <td><span class="badge light badge-warning">{{$d->status_ta}}</span></td>
+                                                <td style="color: black;">{{$d->kode_jr}}</td>
+                                                <td style="color: black;">{{$d->nama_jr}}</td>
+                                                @if ($d->status_jr == '0')
+                                                <td><span class="badge light badge-warning">Nonaktif</span></td>
                                                 @else
-                                                <td><span class="badge light badge-success">{{$d->status_ta}}</span></td>
+                                                <td><span class="badge light badge-success">Aktif</span></td>
                                                 @endif
                                                 <td>
                                                     <div class="dropdown">
@@ -133,9 +131,9 @@
 														</button>
                                                         @csrf
 														<div class="dropdown-menu">
-                                                            <a class="dropdown-item aktiv" href="#" id_tahun="{{$d->id_tahun}}"> <i class="fa fa-check color-muted"></i> Aktifkan</a>
-															<a class="dropdown-item edit" href="#" id_tahun="{{$d->id_tahun}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
-															<a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_tahun)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
+                                                            <a class="dropdown-item aktiv" href="#" id_jr="{{$d->id_jr}}"> <i class="fa fa-check color-muted"></i> Aktifkan</a>
+															<a class="dropdown-item edit" href="#" id_jr="{{$d->id_jr}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
+															<a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_jr)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
 														</div>
 													</div>
                                                 </td>
@@ -145,8 +143,8 @@
                                         <tfoot>
                                             <tr>
                                                 <th >NO.</th>
-                                                <th >TAHUN</th>
-                                                <th >KETERANGAN</th>
+                                                <th >KODE AKUN</th>
+                                                <th >NAMA AKUN</th>
                                                 <th >STATUS</th>
                                                 <th >AKSI</th>
                                             </tr>
@@ -154,6 +152,8 @@
                                     </table>
                                 </div>
                             </div>
+                            <!-- End Tabel -->
+
                             <!-- Start EditModal -->
                             <div class="modal fade" id="modal-editobjek">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
@@ -172,7 +172,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- End Modal -->
+                            <!-- End Edit Modal -->
                         </div>
                     </div>
                 </div>
@@ -192,14 +192,14 @@
     <!-- Button Edit SPJ -->
     <script>
     $('.edit').click(function(){
-        var id_tahun = $(this).attr('id_tahun');
+        var id_jr = $(this).attr('id_jr');
         $.ajax({
                         type: 'POST',
                         url: '/admin/agency/edit',
                         cache: false,
                         data: {
                             _token: "{{ csrf_token() }}",
-                            id_tahun: id_tahun
+                            id_jr: id_jr
                         },
                         success: function(respond) {
                             $("#loadeditform").html(respond);
@@ -215,7 +215,7 @@
     <!-- Start Button Hapus -->
     <script>
     $('.hapus').click(function(){
-        var id_tahun = $(this).attr('data-id');
+        var id_jr = $(this).attr('data-id');
     Swal.fire({
       title: "Apakah Anda Yakin Data Ini Ingin Di Hapus ?",
       text: "Jika Ya Maka Data Akan Terhapus Permanen",
@@ -226,7 +226,7 @@
       confirmButtonText: "Ya, Hapus Saja!"
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location = "/admin/agency/"+id_tahun+"/hapus"
+        window.location = "/admin/jenisretribusi/"+id_jr+"/hapus"
         Swal.fire({
           title: "Data Berhasil Dihapus !",
           icon: "success"

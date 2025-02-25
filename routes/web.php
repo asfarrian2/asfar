@@ -4,6 +4,7 @@ use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\JenisretribusiController;
 use App\Http\Controllers\TahunController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -36,8 +37,8 @@ Route::get('/admin/operator/{id_operator}/reset', [OperatorController::class, 'r
 Route::get('/admin/operator/{id_operator}/hapus', [OperatorController::class, 'delate']);
 
 //Crud Data Tahun Anggaran
-Route::get('/admin/ta', [TahunController::class, 'view']);
-Route::post('/admin/ta/store', [TahunController::class, 'store']);
+Route::get('/admin/jenisretribusi', [JenisretribusiController::class, 'view']);
+Route::post('/admin/jenisretribusi/store', [JenisretribusiController::class, 'store']);
 Route::post('/admin/ta/edit', [TahunController::class, 'edit']);
 Route::post('/admin/ta/{id_tahun}/update', [TahunController::class, 'update']);
-Route::get('/admin/ta/{id_tahun}/hapus', [TahunController::class, 'delate']);
+Route::get('/admin/jenisretribusi/{id_jr}/hapus', [JenisretribusiController::class, 'delate']);
