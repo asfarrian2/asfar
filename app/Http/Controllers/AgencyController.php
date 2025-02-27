@@ -62,6 +62,7 @@ class AgencyController extends Controller
      public function edit(Request $request){
 
         $id_agency    = $request->id_agency;
+        $id_agency      = Crypt::decrypt($id_agency);
         $tb_agency    = DB::table('tb_agency')
                         ->where('id_agency', $id_agency)
                         ->first();

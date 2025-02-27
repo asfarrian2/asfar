@@ -11,7 +11,7 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
 							<div class="dashboard_bar">
-                                SKPD / UPTD Penghasil
+                                Sub Retribusi
                             </div>
                         </div>
                     </div>
@@ -55,7 +55,7 @@
 				<div class="row page-titles">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item active"><a href="/admin/dashboardAll">SI-PREDRA</a></li>
-						<li class="breadcrumb-item"><a href="#">SKPD</a></li>
+						<li class="breadcrumb-item"><a href="#">Sub Retribusi</a></li>
 					</ol>
                 </div>
                 <!-- row -->
@@ -78,19 +78,24 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="basic-form">
-                                            <form action="/admin/agency/store" method="POST">
+                                            <form action="/admin/subretribusi/store" method="POST">
                                             @csrf
                                                 <div class="mb-3">
-                                                    <label class="form-label">Nama SKPD/UPTD :</label>
-                                                    <input type="text" name="nama_agency" class="form-control input-default" required>
+                                                    <label class="form-label">Kode Akun :</label>
+                                                    <input type="text" pattern="[0-9\.]+" name="kode" class="form-control input-default" required>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Nama Pejabat/Kepala SKPD/UPTD :</label>
-                                                    <input type="text" name="nama_pejabat" class="form-control input-default" required>
+                                                    <label class="form-label">Nama Akun :</label>
+                                                    <input type="text" name="nama" class="form-control input-default" required>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">NIP Pejabat/Kepala SKPD/UPTD :</label>
-                                                    <input type="text" name="nip" class="form-control input-default" required>
+                                                    <label class="form-label">Jenis Retribusi :</label>
+                                                    <select class="default-select  form-control wide mt-3" name="jenis" >
+                                                    <option value="">Pilih Jenis Retribusi</option>
+                                                    @foreach ($jenis as $d)
+                                                    <option value="{{ $d->id_jr }}"> {{$d->nama_jr }} </option>
+                                                    @endforeach
+                                                    </select>
                                                 </div>
                                            </div>
                                         </div>
@@ -103,27 +108,33 @@
                                 </div>
                             </div>
                             <!-- End Modal -->
+
+                            <!-- Tabel -->
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table id="example" class="display" style="min-width: 845px">
                                         <thead>
                                             <tr>
-                                                <th style="text-align:center;">NO.</th>
-                                                <th style="text-align:center;">SKPD/UPTD</th>
-                                                <th style="text-align:center;">NAMA</th>
-                                                <th style="text-align:center;">NIP</th>
-                                                <th style="text-align:center;">JUMLAH AKUN</th>
-                                                <th style="text-align:center;">AKSI</th>
+                                                <th>NO.</th>
+                                                <th>KODE AKUN</th>
+                                                <th>NAMA AKUN</th>
+                                                <th>JENIS</th>
+                                                <th>STATUS</th>
+                                                <th>AKSI</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         @foreach ($view as $d)
                                             <tr>
                                                 <td style="color: black; text-align:center;">{{ $loop->iteration }}</td>
-                                                <td style="color: black;">{{$d->nama_agency}}</td>
-                                                <td style="color: black;">{{$d->kepala_agency}}</td>
-                                                <td style="color: black;">{{$d->nip_agency}}</td>
-                                                <td style="color: black;">{{$d->jumlah}}</td>
+                                                <td style="color: black;">{{$d->kode_sr}}</td>
+                                                <td style="color: black;">{{$d->nama_sr}}</td>
+                                                <td style="color: black;">{{$d->kode_jr}} {{$d->nama_jr}}</td>
+                                                @if ($d->status_sr == '0')
+                                                <td><span class="badge light badge-warning">Nonaktif</span></td>
+                                                @else
+                                                <td><span class="badge light badge-success">Aktif</span></td>
+                                                @endif
                                                 <td>
                                                     <div class="dropdown">
 														<button type="button" class="btn btn-primary light sharp" data-bs-toggle="dropdown">
@@ -131,8 +142,9 @@
 														</button>
                                                         @csrf
 														<div class="dropdown-menu">
-															<a class="dropdown-item edit" href="#" id_agency="{{Crypt::encrypt($d->id_agency)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
-															<a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_agency)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
+                                                            <a class="dropdown-item aktiv" href="#" data-id="{{Crypt::encrypt($d->id_jr)}}"> <i class="fa fa-check color-muted"></i> Aktifkan</a>
+															<a class="dropdown-item edit" href="#" data-id="{{Crypt::encrypt($d->id_jr)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
+															<a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_jr)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
 														</div>
 													</div>
                                                 </td>
@@ -141,17 +153,19 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <th style="text-align:center;">NO.</th>
-                                                <th style="text-align:center;">SKPD/UPTD</th>
-                                                <th style="text-align:center;">NAMA</th>
-                                                <th style="text-align:center;">NIP</th>
-                                                <th style="text-align:center;">JUMLAH AKUN</th>
-                                                <th style="text-align:center;">AKSI</th>
+                                                <th>NO.</th>
+                                                <th>KODE AKUN</th>
+                                                <th>NAMA AKUN</th>
+                                                <th>JENIS</th>
+                                                <th>STATUS</th>
+                                                <th>AKSI</th>
                                             </tr>
                                         </tfoot>
                                     </table>
                                 </div>
                             </div>
+                            <!-- End Tabel -->
+
                             <!-- Start EditModal -->
                             <div class="modal fade" id="modal-editobjek">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
@@ -170,7 +184,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- End Modal -->
+                            <!-- End Edit Modal -->
                         </div>
                     </div>
                 </div>
@@ -190,14 +204,14 @@
     <!-- Button Edit SPJ -->
     <script>
     $('.edit').click(function(){
-        var id_agency = $(this).attr('id_agency');
+        var id_jr = $(this).attr('data-id');
         $.ajax({
                         type: 'POST',
-                        url: '/admin/agency/edit',
+                        url: '/admin/jenisretribusi/edit',
                         cache: false,
                         data: {
                             _token: "{{ csrf_token() }}",
-                            id_agency: id_agency
+                            id_jr: id_jr
                         },
                         success: function(respond) {
                             $("#loadeditform").html(respond);
@@ -213,7 +227,7 @@
     <!-- Start Button Hapus -->
     <script>
     $('.hapus').click(function(){
-        var id_agency = $(this).attr('data-id');
+        var id_jr = $(this).attr('data-id');
     Swal.fire({
       title: "Apakah Anda Yakin Data Ini Ingin Di Hapus ?",
       text: "Jika Ya Maka Data Akan Terhapus Permanen",
@@ -224,7 +238,7 @@
       confirmButtonText: "Ya, Hapus Saja!"
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location = "/admin/agency/"+id_agency+"/hapus"
+        window.location = "/admin/jenisretribusi/"+id_jr+"/hapus"
         Swal.fire({
           title: "Data Berhasil Dihapus !",
           icon: "success"

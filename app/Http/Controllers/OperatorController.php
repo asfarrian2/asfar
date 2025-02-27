@@ -63,6 +63,7 @@ class OperatorController extends Controller
     public function edit(Request $request){
 
         $id_operator    = $request->id_operator;
+        $id_operator    = Crypt::decrypt($id_operator);
 
         $tb_operator    = DB::table('tb_operator')
                         ->where('id_operator', $id_operator)

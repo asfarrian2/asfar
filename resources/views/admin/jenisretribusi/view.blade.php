@@ -106,11 +106,11 @@
                                     <table id="example" class="display" style="min-width: 845px">
                                         <thead>
                                             <tr>
-                                                <th >NO.</th>
-                                                <th >KODE AKUN</th>
-                                                <th >NAMA AKUN</th>
-                                                <th >STATUS</th>
-                                                <th >AKSI</th>
+                                                <th>NO.</th>
+                                                <th>KODE AKUN</th>
+                                                <th>NAMA AKUN</th>
+                                                <th>STATUS</th>
+                                                <th>AKSI</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -131,8 +131,8 @@
 														</button>
                                                         @csrf
 														<div class="dropdown-menu">
-                                                            <a class="dropdown-item aktiv" href="#" id_jr="{{$d->id_jr}}"> <i class="fa fa-check color-muted"></i> Aktifkan</a>
-															<a class="dropdown-item edit" href="#" id_jr="{{$d->id_jr}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
+                                                            <a class="dropdown-item aktiv" href="#" data-id="{{Crypt::encrypt($d->id_jr)}}"> <i class="fa fa-check color-muted"></i> Aktifkan</a>
+															<a class="dropdown-item edit" href="#" data-id="{{Crypt::encrypt($d->id_jr)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
 															<a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_jr)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
 														</div>
 													</div>
@@ -142,11 +142,11 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <th >NO.</th>
-                                                <th >KODE AKUN</th>
-                                                <th >NAMA AKUN</th>
-                                                <th >STATUS</th>
-                                                <th >AKSI</th>
+                                                <th>NO.</th>
+                                                <th>KODE AKUN</th>
+                                                <th>NAMA AKUN</th>
+                                                <th>STATUS</th>
+                                                <th>AKSI</th>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -192,10 +192,10 @@
     <!-- Button Edit SPJ -->
     <script>
     $('.edit').click(function(){
-        var id_jr = $(this).attr('id_jr');
+        var id_jr = $(this).attr('data-id');
         $.ajax({
                         type: 'POST',
-                        url: '/admin/agency/edit',
+                        url: '/admin/jenisretribusi/edit',
                         cache: false,
                         data: {
                             _token: "{{ csrf_token() }}",

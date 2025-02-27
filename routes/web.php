@@ -5,6 +5,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JenisretribusiController;
+use App\Http\Controllers\SubretribusiController;
 use App\Http\Controllers\TahunController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -36,9 +37,13 @@ Route::post('/admin/operator/{id_operator}/update', [OperatorController::class, 
 Route::get('/admin/operator/{id_operator}/reset', [OperatorController::class, 'reset']);
 Route::get('/admin/operator/{id_operator}/hapus', [OperatorController::class, 'delate']);
 
-//Crud Data Tahun Anggaran
+//Crud Data Jenis Retribusi
 Route::get('/admin/jenisretribusi', [JenisretribusiController::class, 'view']);
 Route::post('/admin/jenisretribusi/store', [JenisretribusiController::class, 'store']);
-Route::post('/admin/ta/edit', [TahunController::class, 'edit']);
-Route::post('/admin/ta/{id_tahun}/update', [TahunController::class, 'update']);
+Route::post('/admin/jenisretribusi/edit', [JenisretribusiController::class, 'edit']);
+Route::post('/admin/jenisretribusi/{id_jr}/update', [JenisretribusiController::class, 'update']);
 Route::get('/admin/jenisretribusi/{id_jr}/hapus', [JenisretribusiController::class, 'delate']);
+
+//Crud Data Sub Retribusi
+Route::get('/admin/subretribusi', [SubretribusiController::class, 'view']);
+Route::post('/admin/subretribusi/store', [SubretribusiController::class, 'store']);

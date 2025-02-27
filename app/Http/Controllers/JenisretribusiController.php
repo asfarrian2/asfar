@@ -40,20 +40,70 @@ class JenisretribusiController extends Controller
         $kode_jr = $request->kode_jr;
         $nama_jr = $request->nama_jr;
 
-        $data = [
-            'id_jr'     => $id,
-            'kode_jr'   => $kode_jr,
-            'nama_jr'   => $nama_jr,
-            'status_jr' =>'0'
-        ];
+        //Validasi Kode Rekening
+        $cekkode = DB::table('tb_jenretribusi')
+        ->where('kode_jr', '=', $kode_jr)
+        ->count();
+         if ($cekkode > 0) {
+        return Redirect::back()->with(['warning' => 'Kode Jenis Retribusi Sudah Digunakan']);
+         }else{
 
-        $simpan = DB::table('tb_jenretribusi')->insert($data);
-        if ($simpan) {
-            return Redirect('/admin/jenisretribusi')->with(['success' => 'Data Berhasil Disimpan']);
-        } else {
-            return Redirect::back()->with(['warning' => 'Data Gagal Disimpan']);
+            $data = [
+                'id_jr'     => $id,
+                'kode_jr'   => $kode_jr,
+                'nama_jr'   => $nama_jr,
+                'status_jr' =>'0'
+            ];
+
+            $simpan = DB::table('tb_jenretribusi')->insert($data);
+            if ($simpan) {
+                return Redirect('/admin/jenisretribusi')->with(['success' => 'Data Berhasil Disimpan']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Data Gagal Disimpan']);
+            }
         }
      }
+
+     //Tampilkan Halaman Edit Data
+     public function edit(Request $request){
+
+        $id_jr    = $request->id_jr;
+        $id_jr    = Crypt::decrypt($id_jr);
+
+        $tb_jr    = DB::table('tb_jenretribusi')
+                    ->where('id_jr', $id_jr)
+                    ->first();
+
+        return view('admin.jenisretribusi.edit', compact('id_jr', 'tb_jr'));
+    }
+
+     //Update Data
+     public function update($id_jr, Request $request){
+
+        $id_jr      = Crypt::decrypt($id_jr);
+        $kode_lama  = $request->kode_lama;
+        $kode       = $request->kode;
+        $nama       = $request->nama;
+
+        $cek = DB::table('tb_jenretribusi')
+        ->where('kode_jr', $kode)
+        ->where('kode_jr', '!=', $kode_lama)
+        ->count();
+        if ($cek > 0) {
+            return Redirect::back()->with(['warning' => 'Kode Akun Jenis Retribusi Sudah Digunakan']);
+        }else{
+        $data = [
+            'kode_jr'   => $kode,
+            'nama_jr'   => $nama
+        ];
+          $update = DB::table('tb_jenretribusi')->where('id_jr', $id_jr)->update($data);
+        if ($update) {
+            return Redirect('/admin/jenisretribusi')->with(['success' => 'Data Berhasil Dirubah']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Data Gagal Dirubah']);
+        }
+        }
+      }
 
      //Hapus Data
      public function delate($id_jr)

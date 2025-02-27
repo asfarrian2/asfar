@@ -128,7 +128,7 @@
 														</button>
                                                         @csrf
 														<div class="dropdown-menu">
-															<a class="dropdown-item edit" href="#" id_operator="{{$d->id_operator}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
+															<a class="dropdown-item edit" href="#" data-id="{{Crypt::encrypt($d->id_operator)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
                                                             <a class="dropdown-item reset" href="#" data-id="{{Crypt::encrypt($d->id_operator)}}" ><i class="fa fa-key color-muted"></i> Reset Password</a>
 															<a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_operator)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
 														</div>
@@ -186,7 +186,7 @@
     <!-- Button Edit SPJ -->
     <script>
     $('.edit').click(function(){
-        var id_operator = $(this).attr('id_operator');
+        var id_operator = $(this).attr('data-id');
         $.ajax({
                         type: 'POST',
                         url: '/admin/operator/edit',

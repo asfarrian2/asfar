@@ -126,7 +126,7 @@
 						</a>
                         <ul aria-expanded="false">
                             <li><a href="/admin/jenisretribusi">Jenis Retribusi</a></li>
-                            <li><a href="table-bootstrap-basic.html">Jenis Pendapatan</a></li>
+                            <li><a href="/admin/subretribusi">Sub Retribusi</a></li>
                             <li><a href="table-datatable-basic.html">Kode Rekening</a></li>
                             <li><a href="table-datatable-basic.html">Konfigurasi</a></li>
                         </ul>
