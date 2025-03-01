@@ -29,16 +29,16 @@ class SubretribusiController extends Controller
     //Tambah Data
     public function store(Request $request){
 
-        $id_jr=DB::table('tb_subretribusi')
+        $id_sr=DB::table('tb_subretribusi')
         ->latest('id_sr',   'DESC')
         ->first();
 
         $kodeobjek ="SR-";
 
-        if($id_jr == null){
+        if($id_sr == null){
             $nomorurut = "00001";
         }else{
-            $nomorurut = substr($id_jr->id_jr, 3 , 5) + 1;
+            $nomorurut = substr($id_sr->id_sr, 3 , 5) + 1;
             $nomorurut = str_pad($nomorurut, 5, "0", STR_PAD_LEFT);
         }
         $id=$kodeobjek.$nomorurut;
@@ -52,7 +52,7 @@ class SubretribusiController extends Controller
         ->where('kode_sr', '=', $kode)
         ->count();
          if ($cekkode > 0) {
-        return Redirect::back()->with(['warning' => 'Kode Jenis Retribusi Sudah Digunakan']);
+        return Redirect::back()->with(['warning' => 'Kode Sub Retribusi Sudah Digunakan']);
          }else{
 
             $data = [
@@ -78,12 +78,86 @@ class SubretribusiController extends Controller
         $id_sr    = $request->id_sr;
         $id_sr    = Crypt::decrypt($id_sr);
 
-        $tb_jr    = DB::table('tb_jenretribusi')
+        $data     = DB::table('tb_subretribusi')
                     ->where('id_sr', $id_sr)
                     ->first();
 
-        return view('admin.jenisretribusi.edit', compact('id_sr', 'tb_jr'));
+        $jenis    = DB::table('tb_jenretribusi')
+                    ->where('status_jr', '1')
+                    ->get();
+
+        return view('admin.subretribusi.edit', compact('data', 'jenis', 'id_sr'));
     }
+
+    //Update Data
+    public function update($id_sr, Request $request){
+
+        $id_sr      = Crypt::decrypt($id_sr);
+        $kode_lama  = $request->kode_lama;
+        $kode       = $request->kode;
+        $nama       = $request->nama;
+        $jenis      = $request->jenis;
+
+        $cek = DB::table('tb_subretribusi')
+        ->where('kode_sr', $kode)
+        ->where('kode_sr', '!=', $kode_lama)
+        ->count();
+        if ($cek > 0) {
+            return Redirect::back()->with(['warning' => 'Kode Akun Sub Retribusi Sudah Digunakan']);
+        }else{
+        $data = [
+            'kode_sr' => $kode,
+            'nama_sr' => $nama,
+            'id_jr'   => $jenis
+        ];
+
+        $update = DB::table('tb_subretribusi')->where('id_sr', $id_sr)->update($data);
+        if ($update) {
+            return Redirect('/admin/subretribusi')->with(['success' => 'Data Berhasil Dirubah']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Data Gagal Dirubah']);
+        }
+        }
+     }
+
+    //Status Data
+    public function status($id_sr)
+    {
+        $id_sr   = Crypt::decrypt($id_sr);
+
+        $data = DB::table('tb_subretribusi')
+        ->where('id_sr', $id_sr)
+        ->first();
+
+        $status_sr = $data->status_sr;
+
+        $aktif = [
+            'status_sr' => '1',
+        ];
+
+        $nonaktif = [
+            'status_sr' => '0',
+        ];
+
+        if($status_sr == '0'){
+            $update = DB::table('tb_subretribusi')->where('id_sr', $id_sr)->update($aktif);
+            if ($update) {
+                return Redirect::back()->with(['success' => 'Data Berhasil Diaktifkan.']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Data Gagal Diaktifkan.']);
+            }
+
+        }else{
+            $update = DB::table('tb_subretribusi')->where('id_sr', $id_sr)->update($nonaktif);
+            if ($update) {
+                return Redirect::back()->with(['success' => 'Data Berhasil Dinonaktifkan.']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Data Gagal Dinonaktifkan.']);
+            }
+        }
+
+    }
+
 
 
 }

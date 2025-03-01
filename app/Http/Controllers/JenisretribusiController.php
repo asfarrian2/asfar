@@ -110,13 +110,60 @@ class JenisretribusiController extends Controller
      {
         $id = Crypt::decrypt($id_jr);
 
-        $delete = DB::table('tb_jenretribusi')->where('id_jr', $id)->delete();
-        if ($delete) {
-            return redirect('/admin/jenisretribusi')->with(['success' => 'Data Berhasil Dihapus']);
-        } else {
-            return Redirect::back()->with(['warning' => 'Data Gagal Dihapus']);
+        $cek = DB::table('tb_subretribusi')
+        ->where('id_jr', $id)
+        ->count();
+
+        if ($cek > 0) {
+            return Redirect::back()->with(['warning' => 'Kode Akun Telah Digunakan, Data Tidak Dapat Dihapus']);
+        }else{
+            $delete = DB::table('tb_jenretribusi')->where('id_jr', $id)->delete();
+            if ($delete) {
+                return redirect('/admin/jenisretribusi')->with(['success' => 'Data Berhasil Dihapus']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Data Gagal Dihapus']);
+            }
         }
      }
+
+    //Status Data
+    public function status($id_jr)
+    {
+        $id   = Crypt::decrypt($id_jr);
+
+        $data = DB::table('tb_jenretribusi')
+        ->where('id_jr', $id)
+        ->first();
+
+        $status_jr = $data->status_jr;
+
+        $aktif = [
+            'status_jr' => '1',
+        ];
+
+        $nonaktif = [
+            'status_jr' => '0',
+        ];
+
+        if($status_jr == '0'){
+            $update = DB::table('tb_jenretribusi')->where('id_jr', $id)->update($aktif);
+            if ($update) {
+                return Redirect::back()->with(['success' => 'Data Berhasil Diaktifkan.']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Data Gagal Diaktifkan.']);
+            }
+
+        }else{
+            $update = DB::table('tb_jenretribusi')->where('id_jr', $id)->update($nonaktif);
+            if ($update) {
+                return Redirect::back()->with(['success' => 'Data Berhasil Dinonaktifkan.']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Data Gagal Dinonaktifkan.']);
+            }
+        }
+    }
+
+
 
 
 

@@ -5,6 +5,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JenisretribusiController;
+use App\Http\Controllers\ObjekretribusiController;
 use App\Http\Controllers\SubretribusiController;
 use App\Http\Controllers\TahunController;
 use Illuminate\Support\Facades\Route;
@@ -43,7 +44,14 @@ Route::post('/admin/jenisretribusi/store', [JenisretribusiController::class, 'st
 Route::post('/admin/jenisretribusi/edit', [JenisretribusiController::class, 'edit']);
 Route::post('/admin/jenisretribusi/{id_jr}/update', [JenisretribusiController::class, 'update']);
 Route::get('/admin/jenisretribusi/{id_jr}/hapus', [JenisretribusiController::class, 'delate']);
+Route::get('/admin/jenisretribusi/{id_jr}/status', [JenisretribusiController::class, 'status']);
 
 //Crud Data Sub Retribusi
 Route::get('/admin/subretribusi', [SubretribusiController::class, 'view']);
 Route::post('/admin/subretribusi/store', [SubretribusiController::class, 'store']);
+Route::post('/admin/subretribusi/edit', [SubretribusiController::class, 'edit']);
+Route::post('/admin/subretribusi/{id_sr}/update', [SubretribusiController::class, 'update']);
+Route::get('/admin/subretribusi/{id_sr}/status', [SubretribusiController::class, 'status']);
+
+//Crud Data Objek Retribusi
+Route::get('/admin/objekretribusi', [ObjekretribusiController::class, 'view']);

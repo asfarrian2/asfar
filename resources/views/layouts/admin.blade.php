@@ -127,7 +127,7 @@
                         <ul aria-expanded="false">
                             <li><a href="/admin/jenisretribusi">Jenis Retribusi</a></li>
                             <li><a href="/admin/subretribusi">Sub Retribusi</a></li>
-                            <li><a href="table-datatable-basic.html">Kode Rekening</a></li>
+                            <li><a href="/admin/objekretribusi">Objek Retribusi</a></li>
                             <li><a href="table-datatable-basic.html">Konfigurasi</a></li>
                         </ul>
                     </li>

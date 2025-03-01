@@ -11,7 +11,7 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
 							<div class="dashboard_bar">
-                                Sub Retribusi
+                                Objek Retribusi
                             </div>
                         </div>
                     </div>
@@ -55,7 +55,7 @@
 				<div class="row page-titles">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item active"><a href="/admin/dashboardAll">SI-PREDRA</a></li>
-						<li class="breadcrumb-item"><a href="#">Sub Retribusi</a></li>
+						<li class="breadcrumb-item"><a href="#">Objek Retribusi</a></li>
 					</ol>
                 </div>
                 <!-- row -->
@@ -116,9 +116,8 @@
                                         <thead>
                                             <tr>
                                                 <th>NO.</th>
-                                                <th>KODE AKUN</th>
+                                                <th>JENIS / SUB</th>
                                                 <th>NAMA AKUN</th>
-                                                <th>JENIS</th>
                                                 <th>STATUS</th>
                                                 <th>AKSI</th>
                                             </tr>
@@ -127,9 +126,9 @@
                                         @foreach ($view as $d)
                                             <tr>
                                                 <td style="color: black; text-align:center;">{{ $loop->iteration }}</td>
-                                                <td style="color: black;">{{$d->kode_sr}}</td>
-                                                <td style="color: black;">{{$d->nama_sr}}</td>
-                                                <td style="color: black;">{{$d->kode_jr}} {{$d->nama_jr}}</td>
+                                                <td style="color: black;">{{$d->kode_jS}} ({{$d->nama_jr}}) {{$d->nama_js}}</td>
+                                                <td style="color: black;">{{$d->kode_ojk}}</td>
+                                                <td style="color: black;">{{$d->nama_ojk}}</td>
                                                 @if ($d->status_sr == '0')
                                                 <td><span class="badge light badge-warning">Nonaktif</span></td>
                                                 @else

@@ -131,7 +131,11 @@
 														</button>
                                                         @csrf
 														<div class="dropdown-menu">
-                                                            <a class="dropdown-item aktiv" href="#" data-id="{{Crypt::encrypt($d->id_jr)}}"> <i class="fa fa-check color-muted"></i> Aktifkan</a>
+                                                            @if ($d->status_jr == '0')
+                                                            <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_jr)}}"> <i class="fa fa-check color-muted"></i> Aktifkan</a>
+                                                            @else
+                                                            <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_jr)}}"> <i class="fa fa-ban color-muted"></i> Nonaktifkan</a>
+                                                            @endif
 															<a class="dropdown-item edit" href="#" data-id="{{Crypt::encrypt($d->id_jr)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
 															<a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_jr)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
 														</div>
@@ -227,14 +231,31 @@
     }).then((result) => {
       if (result.isConfirmed) {
         window.location = "/admin/jenisretribusi/"+id_jr+"/hapus"
-        Swal.fire({
-          title: "Data Berhasil Dihapus !",
-          icon: "success"
-        });
       }
     });
     });
     </script>
     <!-- End Button Hapus -->
+
+    <!-- Start Button Status -->
+    <script>
+    $('.status').click(function(){
+        var id_jr = $(this).attr('data-id');
+    Swal.fire({
+      title: "Apakah Anda Yakin Mengubah Status Data Ini ?",
+      text: "Jika Ya Maka Status Data Akan Berubah",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, Ubah Status!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location = "/admin/jenisretribusi/"+id_jr+"/status"
+      }
+    });
+    });
+    </script>
+    <!-- End Button Status -->
 
 @endpush
