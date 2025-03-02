@@ -90,11 +90,17 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Jenis Retribusi :</label>
-                                                    <select class="default-select  form-control wide mt-3" name="jenis" >
+                                                    <select class="input-select  form-control" name="jenis" id="selectJen" required>
                                                     <option value="">Pilih Jenis Retribusi</option>
                                                     @foreach ($jenis as $d)
                                                     <option value="{{ $d->id_jr }}"> {{$d->nama_jr }} </option>
                                                     @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Sub Retribusi :</label>
+                                                    <select class="input-select  form-control" name="sub" id="sub" required>
+                                                    <option value="">Pilih Sub Retribusi</option>
                                                     </select>
                                                 </div>
                                            </div>
@@ -117,7 +123,7 @@
                                             <tr>
                                                 <th>NO.</th>
                                                 <th>JENIS / SUB</th>
-                                                <th>NAMA AKUN</th>
+                                                <th>NAMA / KODE AKUN</th>
                                                 <th>STATUS</th>
                                                 <th>AKSI</th>
                                             </tr>
@@ -129,7 +135,7 @@
                                                 <td style="color: black;">{{$d->kode_jS}} ({{$d->nama_jr}}) {{$d->nama_js}}</td>
                                                 <td style="color: black;">{{$d->kode_ojk}}</td>
                                                 <td style="color: black;">{{$d->nama_ojk}}</td>
-                                                @if ($d->status_sr == '0')
+                                                @if ($d->status_ojk == '0')
                                                 <td><span class="badge light badge-warning">Nonaktif</span></td>
                                                 @else
                                                 <td><span class="badge light badge-success">Aktif</span></td>
@@ -141,7 +147,7 @@
 														</button>
                                                         @csrf
 														<div class="dropdown-menu">
-                                                            @if ($d->status_sr == '0')
+                                                            @if ($d->status_ojk == '0')
                                                             <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_sr)}}"> <i class="fa fa-check color-muted"></i> Aktifkan</a>
                                                             @else
                                                             <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_sr)}}"> <i class="fa fa-ban color-muted"></i> Nonaktifkan</a>
@@ -157,9 +163,8 @@
                                         <tfoot>
                                             <tr>
                                                 <th>NO.</th>
-                                                <th>KODE AKUN</th>
-                                                <th>NAMA AKUN</th>
-                                                <th>JENIS</th>
+                                                <th>JENIS / SUB</th>
+                                                <th>NAMA / KODE AKUN</th>
                                                 <th>STATUS</th>
                                                 <th>AKSI</th>
                                             </tr>
@@ -272,5 +277,42 @@
     });
     </script>
     <!-- End Button Status -->
+
+    <script>
+    $(document).ready(function(){
+        $("#selectJen").on('change', function(){
+            var id_jr = $(this).val();
+           //console.log(id_wajibpajak);
+           if (id_jr) {
+            $.ajax({
+                url: '/filtersub/'+id_jr,
+                type: 'GET',
+                data: {
+                    '_token': '{{ csrf_token() }}'
+                },
+                dataType: 'json',
+                success: function (data){
+                    //console.log(data);
+                     if (data) {
+                        $("#sub").empty();
+                        $('#sub').append('<option value=""> Pilih Sub Retribusi </option>');
+                        $.each(data, function(key, sub){
+                            $('select[name="sub"]').append(
+                                '<Option value="'+sub.id_sr+'">'+sub.kode_sr+' '+sub.nama_sr+'</Option>'
+                            )
+                        });
+                     }else{
+                        $("#sub").empty();
+                     }
+                }
+            });
+           } else {
+            $("#sub").empty();
+            $('#sub').append('<option value=""> Pilih Sub Retribusi </option>');
+           }
+        });
+    });
+
+    </script>
 
 @endpush

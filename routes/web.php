@@ -55,3 +55,4 @@ Route::get('/admin/subretribusi/{id_sr}/status', [SubretribusiController::class,
 
 //Crud Data Objek Retribusi
 Route::get('/admin/objekretribusi', [ObjekretribusiController::class, 'view']);
+Route::get('/filtersub/{id_jr}', [ObjekretribusiController::class, 'getobjek']);

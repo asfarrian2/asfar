@@ -30,6 +30,8 @@
     <link href="{{ asset ('./vendor/jquery-nice-select/css/nice-select.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 </head>
 <body>
 
@@ -194,6 +196,7 @@
     <!-- Required vendors -->
     <script src="{{ asset('./vendor/global/global.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @stack('myscript')
 	<script src="{{ asset('./vendor/chart.js/Chart.bundle.min.js') }}"></script>
 	<script src="{{ asset('./vendor/jquery-nice-select/js/jquery.nice-select.min.js') }}"></script>
