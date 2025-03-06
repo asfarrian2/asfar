@@ -15,7 +15,7 @@
 	<meta name="format-detection" content="telephone=no">
 
 	<!-- PAGE TITLE HERE -->
-	<title>SI-PREDRA 2025</title>
+	<title>SI-PREDRA {{ Auth::guard('operator')->user()->id_tahun }}</title>
 
 	<!-- FAVICONS ICON -->
 	<link rel="shortcut icon" type="image/png" href="{{ asset('images/profile/Default Picture Profile.png') }}" />
@@ -89,10 +89,11 @@
 				<ul class="metismenu" id="menu">
 					<li class="dropdown header-profile">
 						<a class="nav-link" href="javascript:void(0);" role="button" data-bs-toggle="dropdown">
-							<img src="{{ asset('images/profile/avatar.png') }}" width="20" alt=""/>
+							<img src="{{ asset('images/profile/opt.png') }}" width="20" alt=""/>
 							<div class="header-info ms-3">
-								<span class="font-w600 ">ADMIN BAPENDA</span>
+								<span class="font-w600 ">Operator {{ Auth::guard('operator')->user()->nama_opt }}</span>
 								<small class="text-start font-w400">Prov. Kalimantan Selatan</small>
+                                <small class="text-start font-w400">T.A. {{ Auth::guard('operator')->user()->id_tahun }}</small>
 							</div>
 						</a>
 						<div class="dropdown-menu dropdown-menu-end">
@@ -100,51 +101,25 @@
 								<svg id="icon-keys" xmlns="http://www.w3.org/2000/svg" class="text-success" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
 								<span class="ms-2">Ganti Password </span>
 							</a>
-							<a href="/adminlogout" class="dropdown-item ai-icon">
+							<a href="/optlogout" class="dropdown-item ai-icon">
 								<svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-danger" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
 								<span class="ms-2">Logout </span>
 							</a>
 						</div>
 					</li>
-                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+                    <li><a href="/opt/dashboard" class="ai-icon" aria-expanded="false">
 							<i class="flaticon-025-dashboard"></i>
 							<span class="nav-text">Dashboard</span>
 						</a>
-                        <ul aria-expanded="false">
-							<li><a href="/admin/dashboardAll">All</a></li>
-							<li><a href="index-2.html">Target</a></li>
-							<li><a href="my-wallet.html">Pendapatan</a></li>
-							<li><a href="/admin/skpd">SKPD/UPTD</a></li>
-						</ul>
-                    </li>
-                    <li><a href="widget-basic.html" class="ai-icon" aria-expanded="false">
+					</li>
+                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
 							<i class="flaticon-381-calculator"></i>
-							<span class="nav-text">Monitoring</span>
-						</a>
-					</li>
-                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-							<i class="flaticon-043-menu"></i>
-							<span class="nav-text">Master Data</span>
+							<span class="nav-text">Target</span>
 						</a>
                         <ul aria-expanded="false">
-                            <li><a href="/admin/jenisretribusi">Jenis Retribusi</a></li>
-                            <li><a href="/admin/subretribusi">Sub Retribusi</a></li>
-                            <li><a href="/admin/objekretribusi">Objek Retribusi</a></li>
-                            <li><a href="table-datatable-basic.html">Konfigurasi</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="/admin/agency" class="ai-icon" aria-expanded="false">
-							<i class="flaticon-093-waving"></i>
-							<span class="nav-text">SKPD/UPTD</span>
-						</a>
-					</li>
-                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-						<i class="flaticon-381-user-8"></i>
-							<span class="nav-text">Akun</span>
-						</a>
-                        <ul aria-expanded="false">
-                            <li><a href="/admin/operator">Operator</a></li>
-							<li><a href="./post-details.html">User</a></li>
+                            <li><a href="/opt/targetapbd">APBD</a></li>
+                            <li><a href="./form-wizard.html">APBD Perubahan</a></li>
+                            <li><a href="./form-wizard.html">RPJMD</a></li>
                         </ul>
                     </li>
                     <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">

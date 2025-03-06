@@ -8,6 +8,7 @@ use App\Http\Controllers\JenisretribusiController;
 use App\Http\Controllers\ObjekretribusiController;
 use App\Http\Controllers\SubretribusiController;
 use App\Http\Controllers\TahunController;
+use App\Http\Controllers\TargetController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
@@ -15,13 +16,15 @@ use Spatie\Permission\Models\Role;
 
 
 
-//Halaman Utama
+//Crud Login Admin
+Route::get('/ctrl_admin', [LoginController::class, 'admin']);
+Route::post('/admin_login', [LoginController::class, 'admin_proses']);
+Route::get('/adminlogout', [LoginController::class, 'logout_admin']);
+
+
+//Halaman Utama Admin
 Route::get('/admin/dashboardAll', [DashboardController::class, 'all']);
 
-
-//Crud Login
-Route::get('/', [LoginController::class, 'admin'])->name('login');;
-Route::post('/admin_login', [LoginController::class, 'admin_proses']);
 
 //Crud Data SKPD/UPTD
 Route::get('/admin/agency', [AgencyController::class, 'view']);
@@ -59,3 +62,16 @@ Route::get('/admin/objekretribusi', [ObjekretribusiController::class, 'view']);
 Route::get('/admin/filtersub/{id_jr}', [ObjekretribusiController::class, 'getobjek']);
 Route::post('/admin/objekretribusi/store', [ObjekretribusiController::class, 'store']);
 Route::post('/admin/objekretribusi/edit', [ObjekretribusiController::class, 'edit']);
+
+
+
+//Crud Login Operator
+Route::get('/', [LoginController::class, 'operator'])->name('login');;
+Route::post('/opt_login', [LoginController::class, 'operator_proses']);
+Route::get('/adminlogout', [LoginController::class, 'logout_admin']);
+
+// Dashboard Operator
+Route::get('/opt/dashboard', [DashboardController::class, 'operator']);
+
+// Target Operator
+Route::get('/opt/targetapbd', [TargetController::class, 'apbd']);

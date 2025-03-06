@@ -10,17 +10,14 @@ use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 
-class DashboardController extends Controller
+class TargetController extends Controller
 {
-    // Admin
-    public function all(){
-        return view('admin.dashboard.semua');
-    }
+    // View Data
+    public function apbd(){
+        $view = DB::table('tb_target')
+        ->get();
 
-
-    // Operator
-    public function operator(){
-        return view('operator.dashboard.view');
+        return view('operator.target.murni.view', compact('view'));
     }
 
 }
