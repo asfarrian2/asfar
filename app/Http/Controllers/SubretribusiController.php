@@ -159,5 +159,27 @@ class SubretribusiController extends Controller
     }
 
 
+    //Hapus Data
+     public function delate($id_sr)
+     {
+        $id = Crypt::decrypt($id_sr);
+
+        $cek = DB::table('tb_ojkretribusi')
+        ->where('id_sr', $id)
+        ->count();
+
+        if ($cek > 0) {
+            return Redirect::back()->with(['warning' => 'Kode Akun Telah Digunakan, Data Tidak Dapat Dihapus']);
+        }else{
+            $delete = DB::table('tb_subretribusi')->where('id_sr', $id)->delete();
+            if ($delete) {
+                return redirect('/admin/subretribusi')->with(['success' => 'Data Berhasil Dihapus']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Data Gagal Dihapus']);
+            }
+        }
+     }
+
+
 
 }

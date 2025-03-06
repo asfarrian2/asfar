@@ -78,7 +78,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="basic-form">
-                                            <form action="/admin/subretribusi/store" method="POST">
+                                            <form action="/admin/objekretribusi/store" method="POST">
                                             @csrf
                                                 <div class="mb-3">
                                                     <label class="form-label">Kode Akun :</label>
@@ -93,7 +93,7 @@
                                                     <select class="input-select  form-control" name="jenis" id="selectJen" required>
                                                     <option value="">Pilih Jenis Retribusi</option>
                                                     @foreach ($jenis as $d)
-                                                    <option value="{{ $d->id_jr }}"> {{$d->nama_jr }} </option>
+                                                    <option value="{{ $d->id_jr }}">{{$d->kode_jr }} {{$d->nama_jr }} </option>
                                                     @endforeach
                                                     </select>
                                                 </div>
@@ -123,7 +123,7 @@
                                             <tr>
                                                 <th>NO.</th>
                                                 <th>JENIS / SUB</th>
-                                                <th>NAMA / KODE AKUN</th>
+                                                <th>KODE / NAMA AKUN</th>
                                                 <th>STATUS</th>
                                                 <th>AKSI</th>
                                             </tr>
@@ -132,9 +132,9 @@
                                         @foreach ($view as $d)
                                             <tr>
                                                 <td style="color: black; text-align:center;">{{ $loop->iteration }}</td>
-                                                <td style="color: black;">{{$d->kode_jS}} ({{$d->nama_jr}}) {{$d->nama_js}}</td>
-                                                <td style="color: black;">{{$d->kode_ojk}}</td>
-                                                <td style="color: black;">{{$d->nama_ojk}}</td>
+                                                <td style="color: black;">{{$d->kode_sr}} ({{$d->nama_jr}}) {{$d->nama_sr}}</td>
+                                                <td style="color: black;">{{$d->kode_ojk}} - {{$d->nama_ojk}}</td>
+
                                                 @if ($d->status_ojk == '0')
                                                 <td><span class="badge light badge-warning">Nonaktif</span></td>
                                                 @else
@@ -148,12 +148,12 @@
                                                         @csrf
 														<div class="dropdown-menu">
                                                             @if ($d->status_ojk == '0')
-                                                            <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_sr)}}"> <i class="fa fa-check color-muted"></i> Aktifkan</a>
+                                                            <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_ojk)}}"> <i class="fa fa-check color-muted"></i> Aktifkan</a>
                                                             @else
-                                                            <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_sr)}}"> <i class="fa fa-ban color-muted"></i> Nonaktifkan</a>
+                                                            <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_ojk)}}"> <i class="fa fa-ban color-muted"></i> Nonaktifkan</a>
                                                             @endif
-															<a class="dropdown-item edit" href="#" data-id="{{Crypt::encrypt($d->id_sr)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
-															<a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_sr)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
+															<a class="dropdown-item edit" href="#" data-id="{{Crypt::encrypt($d->id_ojk)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
+															<a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_ojk)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
 														</div>
 													</div>
                                                 </td>
@@ -209,20 +209,52 @@
     <script src="{{asset ('./vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{asset ('./js/plugins-init/datatables.init.js') }}"></script>
 
-    <!-- Button Edit SPJ -->
+    <!-- Button Edit -->
     <script>
     $('.edit').click(function(){
-        var id_sr = $(this).attr('data-id');
+        var id_ojk = $(this).attr('data-id');
         $.ajax({
                         type: 'POST',
-                        url: '/admin/subretribusi/edit',
+                        url: '/admin/objekretribusi/edit',
                         cache: false,
                         data: {
                             _token: "{{ csrf_token() }}",
-                            id_sr: id_sr
+                            id_ojk: id_ojk
                         },
                         success: function(respond) {
                             $("#loadeditform").html(respond);
+                            $("#select2").on('change', function(){
+            var id_jr = $(this).val();
+           //console.log(id_wajibpajak);
+           if (id_jr) {
+            $.ajax({
+                url: '/admin/filtersub/'+id_jr,
+                type: 'GET',
+                data: {
+                    '_token': '{{ csrf_token() }}'
+                },
+                dataType: 'json',
+                success: function (data){
+                    //console.log(data);
+                     if (data) {
+                        $("#sub2").empty();
+                        $('#sub2').append('<option value=""> Pilih Sub Retribusi </option>');
+                        $.each(data, function(key, sub){
+                            $('select[name="sub2"]').append(
+                                '<Option value="'+sub.id_sr+'">'+sub.kode_sr+' '+sub.nama_sr+'</Option>'
+                            )
+                        });
+                     }else{
+                        $("#sub2").empty();
+                     }
+                }
+            });
+           } else {
+            $("#sub2").empty();
+            $('#sub2').append('<option value=""> Pilih Sub Retribusi </option>');
+           }
+        });
+
                         }
                     });
          $("#modal-editobjek").modal("show");
@@ -230,7 +262,7 @@
     });
     var span = document.getElementsByClassName("close")[0];
     </script>
-    <!-- END Button Edit SPJ -->
+    <!-- END Button Edit -->
 
     <!-- Start Button Hapus -->
     <script>
@@ -278,6 +310,7 @@
     </script>
     <!-- End Button Status -->
 
+    <!-- Select1 -->
     <script>
     $(document).ready(function(){
         $("#selectJen").on('change', function(){
@@ -285,7 +318,7 @@
            //console.log(id_wajibpajak);
            if (id_jr) {
             $.ajax({
-                url: '/filtersub/'+id_jr,
+                url: '/admin/filtersub/'+id_jr,
                 type: 'GET',
                 data: {
                     '_token': '{{ csrf_token() }}'
@@ -314,5 +347,15 @@
     });
 
     </script>
+    <!-- End Select1 -->
+
+        <!-- Select2 -->
+    <script>
+    $(document).ready(function(){
+
+    });
+
+    </script>
+    <!-- End Select2 -->
 
 @endpush

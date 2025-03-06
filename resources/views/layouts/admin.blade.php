@@ -114,7 +114,7 @@
 							<li><a href="/admin/dashboardAll">All</a></li>
 							<li><a href="index-2.html">Target</a></li>
 							<li><a href="my-wallet.html">Pendapatan</a></li>
-							<li><a href="#">SKPD/UPTD</a></li>
+							<li><a href="/admin/skpd">SKPD/UPTD</a></li>
 						</ul>
                     </li>
                     <li><a href="widget-basic.html" class="ai-icon" aria-expanded="false">

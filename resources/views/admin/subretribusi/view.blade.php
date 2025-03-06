@@ -231,7 +231,7 @@
     <!-- Start Button Hapus -->
     <script>
     $('.hapus').click(function(){
-        var id_jr = $(this).attr('data-id');
+        var id_sr = $(this).attr('data-id');
     Swal.fire({
       title: "Apakah Anda Yakin Data Ini Ingin Di Hapus ?",
       text: "Jika Ya Maka Data Akan Terhapus Permanen",
@@ -242,11 +242,7 @@
       confirmButtonText: "Ya, Hapus Saja!"
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location = "/admin/jenisretribusi/"+id_jr+"/hapus"
-        Swal.fire({
-          title: "Data Berhasil Dihapus !",
-          icon: "success"
-        });
+        window.location = "/admin/subretribusi/"+id_sr+"/hapus"
       }
     });
     });

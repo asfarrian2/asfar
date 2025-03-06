@@ -43,8 +43,8 @@ Route::get('/admin/jenisretribusi', [JenisretribusiController::class, 'view']);
 Route::post('/admin/jenisretribusi/store', [JenisretribusiController::class, 'store']);
 Route::post('/admin/jenisretribusi/edit', [JenisretribusiController::class, 'edit']);
 Route::post('/admin/jenisretribusi/{id_jr}/update', [JenisretribusiController::class, 'update']);
-Route::get('/admin/jenisretribusi/{id_jr}/hapus', [JenisretribusiController::class, 'delate']);
 Route::get('/admin/jenisretribusi/{id_jr}/status', [JenisretribusiController::class, 'status']);
+Route::get('/admin/jenisretribusi/{id_jr}/hapus', [JenisretribusiController::class, 'delate']);
 
 //Crud Data Sub Retribusi
 Route::get('/admin/subretribusi', [SubretribusiController::class, 'view']);
@@ -52,7 +52,10 @@ Route::post('/admin/subretribusi/store', [SubretribusiController::class, 'store'
 Route::post('/admin/subretribusi/edit', [SubretribusiController::class, 'edit']);
 Route::post('/admin/subretribusi/{id_sr}/update', [SubretribusiController::class, 'update']);
 Route::get('/admin/subretribusi/{id_sr}/status', [SubretribusiController::class, 'status']);
+Route::get('/admin/subretribusi/{id_sr}/hapus', [SubretribusiController::class, 'delate']);
 
 //Crud Data Objek Retribusi
 Route::get('/admin/objekretribusi', [ObjekretribusiController::class, 'view']);
-Route::get('/filtersub/{id_jr}', [ObjekretribusiController::class, 'getobjek']);
+Route::get('/admin/filtersub/{id_jr}', [ObjekretribusiController::class, 'getobjek']);
+Route::post('/admin/objekretribusi/store', [ObjekretribusiController::class, 'store']);
+Route::post('/admin/objekretribusi/edit', [ObjekretribusiController::class, 'edit']);
