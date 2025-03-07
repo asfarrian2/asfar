@@ -8,16 +8,133 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class TargetController extends Controller
 {
+    // (--------- Operator ----------)
+
     // View Data
     public function apbd(){
-        $view = DB::table('tb_target')
-        ->get();
 
-        return view('operator.target.murni.view', compact('view'));
+        //Menampilkan Data Utama Target
+        $id_agency  = Auth::guard('operator')->user()->id_agency;
+        $id_tahun   = Auth::guard('operator')->user()->id_tahun;
+
+        $view = DB::table('tb_target')
+        ->where('id_agency',$id_agency)
+        ->where('id_tahun',$id_tahun)
+        ->first();
+        //
+        if (empty($view)){
+            return view('operator.target.murni.view', compact('view'));
+        }else{
+        //Menampilkan Data Rincian Target
+        $id_target = $view->id_target;
+        $rincian = DB::table('tb_rtarget')
+        ->leftJoin('tb_ojkretribusi', 'tb_rtarget.id_ojk', '=', 'tb_ojkretribusi.id_ojk')
+        ->leftJoin('tb_subretribusi', 'tb_ojkretribusi.id_sr', '=', 'tb_subretribusi.id_sr')
+        ->leftJoin('tb_jenretribusi', 'tb_subretribusi.id_jr', '=', 'tb_jenretribusi.id_jr')
+        ->select('tb_rtarget.*','tb_ojkretribusi.nama_ojk', 'tb_ojkretribusi.kode_ojk', 'tb_subretribusi.nama_sr', 'tb_subretribusi.kode_sr', 'tb_jenretribusi.nama_jr', 'tb_jenretribusi.kode_jr')
+        ->where('id_target',$id_target)
+        ->get()
+        ->groupBy('kode_jr')
+        ->map(function($item, $key) {
+            return $item->groupBy('kode_sr')
+                ->map(function($item, $key) {
+                    return $item->groupBy('kode_ojk');
+                });
+        });
+        //
+
+        $jumlah = DB::table('tb_rtarget')
+        ->where('id_target',$id_target)
+        ->sum('pagu_rtarget');
+
+        return view('operator.target.murni.view', compact('view', 'rincian', 'jumlah'));
+        }
     }
+
+     //Simpan Data
+     public function store(Request $request){
+
+        $id_agency      = Auth::guard('operator')->user()->id_agency;
+        $id_tahun       = Auth::guard('operator')->user()->id_tahun;
+        $pagu_target    = $request->pagutarget;
+        $pagu           = str_replace('.','', $pagu_target);
+
+        // Buat Kode Auto Target
+        $id_target=DB::table('tb_target')
+        ->where('id_tahun',$id_tahun)
+        ->latest('id_target', 'DESC')
+        ->first();
+
+        $kodeobjek ="T".$id_tahun."-";
+
+        if($id_target == null){
+            $nomorurut = "0001";
+        }else{
+            $nomorurut = substr($id_target->id_target, 6, 4) + 1;
+            $nomorurut = str_pad($nomorurut, 4, "0", STR_PAD_LEFT);
+        }
+        $id=$kodeobjek.$nomorurut;
+        // End Kode Auto Target
+
+        $data = [
+            'id_target'     => $id,
+            'jen_target'    => '1',
+            'pagu_target'   => $pagu,
+            'status_target' => '0',
+            'id_tahun'      => $id_tahun,
+            'id_agency'     => $id_agency
+        ];
+
+        //validasi pagu target
+        if ($pagu == '0') {
+            return Redirect::back()->with(['warning' => 'Isi Pagu Target Dengan Benar']);
+        }else{
+
+        //End validasi pagu target
+
+        $simpan = DB::table('tb_target')->insert($data);
+        if ($simpan) {
+            return Redirect('/opt/targetapbd')->with(['success' => 'Data Berhasil Disimpan']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Data Gagal Disimpan']);
+        }
+       }
+     }
+
+     //Tampilkan Halaman Edit Data
+     public function edit(Request $request){
+
+        $id_target    = $request->id_target;
+        $id_target    = Crypt::decrypt($id_target);
+        $target       = DB::table('tb_target')
+                        ->where('id_target', $id_target)
+                        ->first();
+
+        return view('operator.target.murni.edittarget', compact('target'));
+    }
+
+        //Update Data
+        public function update($id_target, Request $request){
+
+            $id_target      = Crypt::decrypt($id_target);
+            $pagu_target    = $request->pagutarget;
+            $pagu           = str_replace('.','', $pagu_target);
+
+            $data = [
+                'pagu_target'   => $pagu
+            ];
+
+            $update = DB::table('tb_target')->where('id_target', $id_target)->update($data);
+            if ($update) {
+                return Redirect('/opt/targetapbd')->with(['success' => 'Data Berhasil Dirubah']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Data Gagal Dirubah']);
+            }
+         }
 
 }

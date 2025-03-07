@@ -19,7 +19,7 @@ use Spatie\Permission\Models\Role;
 //Crud Login Admin
 Route::get('/ctrl_admin', [LoginController::class, 'admin']);
 Route::post('/admin_login', [LoginController::class, 'admin_proses']);
-Route::get('/adminlogout', [LoginController::class, 'logout_admin']);
+Route::get('/logout', [LoginController::class, 'logout']);
 
 
 //Halaman Utama Admin
@@ -75,3 +75,6 @@ Route::get('/opt/dashboard', [DashboardController::class, 'operator']);
 
 // Target Operator
 Route::get('/opt/targetapbd', [TargetController::class, 'apbd']);
+Route::post('/opt/targetapbd/store', [TargetController::class, 'store']);
+Route::post('/opt/targetapbd/edit', [TargetController::class, 'edit']);
+Route::post('/opt/targetapbd/{id_target}/update', [TargetController::class, 'update']);

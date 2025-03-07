@@ -26,7 +26,7 @@ class LoginController extends Controller
 
     }
 
-    public function logout_admin(Request $request)
+    public function logout(Request $request)
     {
     Auth::logout();
 

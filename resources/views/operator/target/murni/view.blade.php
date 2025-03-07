@@ -65,35 +65,29 @@
                             <div class="card-header">
                                 <h4 class="card-title">Data Target APBD {{ Auth::guard('operator')->user()->id_tahun }}</h4>
                                 <!-- Button trigger modal -->
-                                <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#tambahdata">+Tetapkan Target</button>
+                                 @if($view)
+                                 @csrf
+                                 <button type="button" class="btn btn-warning mb-2 edit1" data-id="{{Crypt::encrypt($view->id_target)}}">✎ Edit Pagu Target</button>
+                                 @else
+                                 <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#tambahdata">+ Tetapkan Pagu Target</button>
+                                 @endif
                             </div>
                             <!-- Start Modal -->
                             <div class="modal fade" id="tambahdata">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h3 class="modal-title">Tambah Data</h3>
+                                            <h3 class="modal-title">Tetapkan Target</h3>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal">
                                             </button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="basic-form">
-                                            <form action="/admin/objekretribusi/store" method="POST">
+                                            <form action="/opt/targetapbd/store" method="POST">
                                             @csrf
                                                 <div class="mb-3">
-                                                    <label class="form-label">Kode Akun :</label>
-                                                    <input type="text" pattern="[0-9\.]+" name="kode" class="form-control input-default" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Nama Akun :</label>
-                                                    <input type="text" name="nama" class="form-control input-default" required>
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label class="form-label">Sub Retribusi :</label>
-                                                    <select class="input-select  form-control" name="sub" id="sub" required>
-                                                    <option value="">Pilih Sub Retribusi</option>
-                                                    </select>
+                                                    <label class="form-label">Pagu Target (Rp) :</label>
+                                                    <input type="text" placeholder="0" name="pagutarget" id="pagu" class="form-control input-default pagu" required>
                                                 </div>
                                            </div>
                                         </div>
@@ -111,24 +105,43 @@
 				            <div class="card-header flex-wrap border-0 pb-0 align-items-end">
 				            	<div class="mb-3 me-3">
 				            		<h5 class="fs-20 text-black font-w500">Pagu Target</h5>
-				            		<span class="text-num text-black fs-36 font-w500">Rp15.000.000</span>
+                                    @if($view)
+                                    <span class="text-num text-black fs-36 font-w500">Rp<?php echo number_format($view->pagu_target ,0,',','.')?></span>
+                                    @else
+                                    <span class="text-num text-black fs-36 font-w500">Rp0</span>
+                                    @endif
 				            	</div>
 				            	<div class="me-3 mb-3">
 				            		<p class="fs-14 mb-1">RINCIAN</p>
-                                    <button type="button" class="btn btn-rounded btn-info"><span
-                                        class="btn-icon-start text-info"><i class="fa fa-plus color-info"></i>
+                                    @if($view)
+                                    <button type="button" class="btn btn-rounded btn-primary"><span
+                                        class="btn-icon-start text-primary"><i class="fa fa-plus color-primary"></i>
                                     </span>Tetapkan Rincian</button>
+                                    @else
+                                    <button type="button" class="btn btn-rounded btn-dark off"><span
+                                        class="btn-icon-start text-dark"><i class="fa fa-plus color-dark"></i>
+                                    </span>Tetapkan Rincian</button>
+                                    @endif
 				            	</div>
 				            	<div class="me-3 mb-3">
 				            		<p class="fs-14 mb-1">SURAT USUL TARGET</p>
-                                    <button type="button" class="btn btn-rounded btn-warning"><span
-                                        class="btn-icon-start text-warning"><i class="fa fa-upload color-warning"></i>
+                                    @if($view)
+                                    <button type="button" class="btn btn-rounded btn-info"><span
+                                        class="btn-icon-start text-info"><i class="fa fa-upload color-info"></i>
                                     </span>Upload Dokumen</button>
+                                    @else
+                                    <button type="button" class="btn btn-rounded btn-dark off"><span
+                                        class="btn-icon-start text-dark"><i class="fa fa-upload color-dark"></i>
+                                    </span>Upload Dokumen</button>
+                                    @endif
 				            	</div>
 				            	<span class="fs-20 text-black font-w500 me-3 mb-3">
+                                @if($view)
                                 <button type="button" class="btn btn-success ">POSTING <span class="btn-icon-end">
                                         <i class="fa fa-check"></i></span>
                                 </button>
+                                @else
+                                @endif
                                 </span>
                             </div>
                             <div><br></div>
@@ -153,11 +166,108 @@
                                 </div>
                             </div>
                             <!-- End Edit Modal -->
+
+                             <!-- Start Edit Target Modal -->
+                            <div class="modal fade" id="modal-edittarget">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3 class="modal-title">Edit Pagu Target</h3>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                            </button>
+                                        </div>
+                                        <div class="modal-body" id="loadedittarget">
+                                            <div class="basic-form">
+                                            <!-- Form
+                                                        Edit -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Edit Target Modal -->
                         </div>
                     </div>
                 </div>
+                @if($view)
+                 <!-- row -->
+                 <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Rincian</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-responsive-sm ">
+                                        <thead>
+                                            <tr>
+                                                <th style="color: black;">KODE AKUN</th>
+                                                <th style="color: black;">JENIS / SUB / OBJEK / RINCIAN</th>
+                                                <th style="color: black;">PAGU</th>
+                                                <th style="color: black;">AKSI</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach ($rincian as $kode_jr => $jr)
+                                        <tr>
+                                            <td style="color: black;"><b>{{$kode_jr}}</b></td>
+                                            <td style="color: black;"><b>{{$jr->first()->first()->first()->nama_jr}}</b></td>
+                                            <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_rtarget'), 0, ',', '.') }}</b></td>
+                                            <td></td>
+                                        </tr>
+                                        @foreach ($jr as $kode_sr => $sr)
+                                            <tr>
+                                                <td style="color: black;"><b>{{$kode_sr}}</b></td>
+                                                <td style="color: black;"><b>{{$sr->first()->first()->nama_sr}}</b></td>
+                                                <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_rtarget'), 0, ',', '.') }}</b></td>
+                                                <td style="color: black;"></td>
+                                            </tr>
+                                            @foreach ($sr as $kode_ojk => $ojk)
+                                            <tr>
+                                                <td style="color: black;"><b>{{$kode_ojk}}</b></td>
+                                                <td style="color: black;"><b>{{$ojk->first()->nama_ojk}}</td>
+                                                <td style="color: black;"><b>Rp{{ number_format($ojk->sum('pagu_rtarget'), 0, ',', '.') }}</b></td>
+                                                <td style="color: black;"></td>
+                                            </tr>
+                                            @foreach ($ojk as $d)
+                                            <tr>
+                                                <td style="color: black;"></td>
+                                                <td style="color: black;">- {{$d->uraian_rtarget}}</td>
+                                                <td style="color: black;">Rp<?php echo number_format($d->pagu_rtarget ,0,',','.')?></td>
+                                                <td>
+                                                    <div class="dropdown">
+														<button type="button" class="btn btn-warning dark sharp" data-bs-toggle="dropdown">
+															<svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><circle fill="#000000" cx="5" cy="12" r="2"/><circle fill="#000000" cx="12" cy="12" r="2"/><circle fill="#000000" cx="19" cy="12" r="2"/></g></svg>
+														</button>
+                                                        @csrf
+														<div class="dropdown-menu">
+															<a class="dropdown-item edit" href="#" id_rtarget="{{Crypt::encrypt($d->id_rtarget)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
+															<a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_rtarget)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
+														</div>
+													</div>
+                                                </td>
+                                            @endforeach
+                                            @endforeach
+                                            @endforeach
+                                            @endforeach
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="2" style="text-align:center; color:black;" >TOTAL PAGU</th>
+                                                <th colspan="2" style="text-align:center; color:black;">Rp<?php echo number_format($jumlah ,0,',','.')?></th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        @else
+                        @endif
+                    </div>
+                </div>
             </div>
-        </div>
+
         <!--**********************************
             Content body end
         ***********************************-->
@@ -165,157 +275,193 @@
 @endsection
 
 @push('myscript')
-    <!-- Datatable -->
-    <script src="{{asset ('./vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{asset ('./js/plugins-init/datatables.init.js') }}"></script>
+<!-- Datatable -->
+<script src="{{asset ('./vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{asset ('./js/plugins-init/datatables.init.js') }}"></script>
 
-    <!-- Button Edit -->
-    <script>
-    $('.edit').click(function(){
-        var id_ojk = $(this).attr('data-id');
+<!-- Button Edit -->
+<script>
+$('.edit').click(function(){
+    var id_ojk = $(this).attr('data-id');
+    $.ajax({
+                    type: 'POST',
+                    url: '/admin/objekretribusi/edit',
+                    cache: false,
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id_ojk: id_ojk
+                    },
+                    success: function(respond) {
+                        $("#loadeditform").html(respond);
+                        $("#select2").on('change', function(){
+        var id_jr = $(this).val();
+       //console.log(id_wajibpajak);
+       if (id_jr) {
         $.ajax({
-                        type: 'POST',
-                        url: '/admin/objekretribusi/edit',
-                        cache: false,
-                        data: {
-                            _token: "{{ csrf_token() }}",
-                            id_ojk: id_ojk
-                        },
-                        success: function(respond) {
-                            $("#loadeditform").html(respond);
-                            $("#select2").on('change', function(){
-            var id_jr = $(this).val();
-           //console.log(id_wajibpajak);
-           if (id_jr) {
-            $.ajax({
-                url: '/admin/filtersub/'+id_jr,
-                type: 'GET',
-                data: {
-                    '_token': '{{ csrf_token() }}'
-                },
-                dataType: 'json',
-                success: function (data){
-                    //console.log(data);
-                     if (data) {
-                        $("#sub2").empty();
-                        $('#sub2').append('<option value=""> Pilih Sub Retribusi </option>');
-                        $.each(data, function(key, sub){
-                            $('select[name="sub2"]').append(
-                                '<Option value="'+sub.id_sr+'">'+sub.kode_sr+' '+sub.nama_sr+'</Option>'
-                            )
-                        });
-                     }else{
-                        $("#sub2").empty();
-                     }
-                }
-            });
-           } else {
-            $("#sub2").empty();
-            $('#sub2').append('<option value=""> Pilih Sub Retribusi </option>');
-           }
-        });
-
-                        }
+            url: '/admin/filtersub/'+id_jr,
+            type: 'GET',
+            data: {
+                '_token': '{{ csrf_token() }}'
+            },
+            dataType: 'json',
+            success: function (data){
+                //console.log(data);
+                 if (data) {
+                    $("#sub2").empty();
+                    $('#sub2').append('<option value=""> Pilih Sub Retribusi </option>');
+                    $.each(data, function(key, sub){
+                        $('select[name="sub2"]').append(
+                            '<Option value="'+sub.id_sr+'">'+sub.kode_sr+' '+sub.nama_sr+'</Option>'
+                        )
                     });
-         $("#modal-editobjek").modal("show");
-
-    });
-    var span = document.getElementsByClassName("close")[0];
-    </script>
-    <!-- END Button Edit -->
-
-    <!-- Start Button Hapus -->
-    <script>
-    $('.hapus').click(function(){
-        var id_jr = $(this).attr('data-id');
-    Swal.fire({
-      title: "Apakah Anda Yakin Data Ini Ingin Di Hapus ?",
-      text: "Jika Ya Maka Data Akan Terhapus Permanen",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, Hapus Saja!"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.location = "/admin/jenisretribusi/"+id_jr+"/hapus"
-        Swal.fire({
-          title: "Data Berhasil Dihapus !",
-          icon: "success"
+                 }else{
+                    $("#sub2").empty();
+                 }
+            }
         });
-      }
+       } else {
+        $("#sub2").empty();
+        $('#sub2').append('<option value=""> Pilih Sub Retribusi </option>');
+       }
     });
-    });
-    </script>
-    <!-- End Button Hapus -->
+                    }
+                });
+     $("#modal-editobjek").modal("show");
+});
+var span = document.getElementsByClassName("close")[0];
+</script>
+<!-- END Button Edit -->
 
-    <!-- Start Button Status -->
-    <script>
-    $('.status').click(function(){
-        var id_sr = $(this).attr('data-id');
-    Swal.fire({
-      title: "Apakah Anda Yakin Mengubah Status Data Ini ?",
-      text: "Jika Ya Maka Status Data Akan Berubah",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, Ubah Status!"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.location = "/admin/subretribusi/"+id_sr+"/status"
-      }
-    });
-    });
-    </script>
-    <!-- End Button Status -->
-
-    <!-- Select1 -->
-    <script>
-    $(document).ready(function(){
-        $("#selectJen").on('change', function(){
-            var id_jr = $(this).val();
-           //console.log(id_wajibpajak);
-           if (id_jr) {
-            $.ajax({
-                url: '/admin/filtersub/'+id_jr,
-                type: 'GET',
-                data: {
-                    '_token': '{{ csrf_token() }}'
-                },
-                dataType: 'json',
-                success: function (data){
-                    //console.log(data);
-                     if (data) {
-                        $("#sub").empty();
-                        $('#sub').append('<option value=""> Pilih Sub Retribusi </option>');
-                        $.each(data, function(key, sub){
-                            $('select[name="sub"]').append(
-                                '<Option value="'+sub.id_sr+'">'+sub.kode_sr+' '+sub.nama_sr+'</Option>'
-                            )
+<!-- Button Edit Pagu Target -->
+<script>
+$('.edit1').click(function(){
+    var id_target = $(this).attr('data-id');
+    $.ajax({
+                    type: 'POST',
+                    url: '/opt/targetapbd/edit',
+                    cache: false,
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id_target: id_target
+                    },
+                    success: function(respond) {
+                        $("#loadedittarget").html(respond);
+                        $('.pagu').mask("#.##0", {
+                            reverse:true
                         });
-                     }else{
-                        $("#sub").empty();
-                     }
-                }
-            });
-           } else {
-            $("#sub").empty();
-            $('#sub').append('<option value=""> Pilih Sub Retribusi </option>');
-           }
+                    }
+                });
+     $("#modal-edittarget").modal("show");
+});
+var span = document.getElementsByClassName("close")[0];
+</script>
+<!-- END Button Edit Pagu Target -->
+
+<!-- Start Button Hapus -->
+<script>
+$('.hapus').click(function(){
+    var id_jr = $(this).attr('data-id');
+Swal.fire({
+  title: "Apakah Anda Yakin Data Ini Ingin Di Hapus ?",
+  text: "Jika Ya Maka Data Akan Terhapus Permanen",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonColor: "#3085d6",
+  cancelButtonColor: "#d33",
+  confirmButtonText: "Ya, Hapus Saja!"
+}).then((result) => {
+  if (result.isConfirmed) {
+    window.location = "/admin/jenisretribusi/"+id_jr+"/hapus"
+    Swal.fire({
+      title: "Data Berhasil Dihapus !",
+      icon: "success"
+    });
+  }
+});
+});
+</script>
+<!-- End Button Hapus -->
+
+<!-- Start Button Status -->
+<script>
+$('.status').click(function(){
+    var id_sr = $(this).attr('data-id');
+Swal.fire({
+  title: "Apakah Anda Yakin Mengubah Status Data Ini ?",
+  text: "Jika Ya Maka Status Data Akan Berubah",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonColor: "#3085d6",
+  cancelButtonColor: "#d33",
+  confirmButtonText: "Ya, Ubah Status!"
+}).then((result) => {
+  if (result.isConfirmed) {
+    window.location = "/admin/subretribusi/"+id_sr+"/status"
+  }
+});
+});
+</script>
+<!-- End Button Status -->
+
+<!-- Select1 -->
+<script>
+$(document).ready(function(){
+    $("#selectJen").on('change', function(){
+        var id_jr = $(this).val();
+       //console.log(id_wajibpajak);
+       if (id_jr) {
+        $.ajax({
+            url: '/admin/filtersub/'+id_jr,
+            type: 'GET',
+            data: {
+                '_token': '{{ csrf_token() }}'
+            },
+            dataType: 'json',
+            success: function (data){
+                //console.log(data);
+                 if (data) {
+                    $("#sub").empty();
+                    $('#sub').append('<option value=""> Pilih Sub Retribusi </option>');
+                    $.each(data, function(key, sub){
+                        $('select[name="sub"]').append(
+                            '<Option value="'+sub.id_sr+'">'+sub.kode_sr+' '+sub.nama_sr+'</Option>'
+                        )
+                    });
+                 }else{
+                    $("#sub").empty();
+                 }
+            }
+        });
+       } else {
+        $("#sub").empty();
+        $('#sub').append('<option value=""> Pilih Sub Retribusi </option>');
+       }
+    });
+});
+</script>
+<!-- End Select1 -->
+
+<!-- Begin Alert Button Off -->
+<script>
+    $('.off').click(function() {
+  Swal.fire({
+    icon: 'error',
+    title: 'Proses Gagal',
+    text: 'Data tidak dapat diproses karena target belum ditetapkan',
+    confirmButtonText: 'OK'
+  })
+})
+</script>
+<!-- End Alert Button Off -->
+
+<!-- Begin Rupiah Pagu Target -->
+<script>
+    $(document).ready(function(){
+        $('#pagu').mask("#.##0", {
+            reverse:true
         });
     });
-
-    </script>
-    <!-- End Select1 -->
-
-        <!-- Select2 -->
-    <script>
-    $(document).ready(function(){
-
-    });
-
-    </script>
-    <!-- End Select2 -->
+</script>
+<!-- End Rupiah Pagu Target -->
 
 @endpush
