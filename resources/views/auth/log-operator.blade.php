@@ -2,16 +2,15 @@
 <html lang="en" class="h-100">
 
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="keywords" content="SI-PREDRA" />
-	<meta name="author" content="Badan Pendapatan Daerah Provinsi Kalimantan Selatan" />
-	<meta name="robots" content="" />
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="SI-PREDRA" />
-	<meta property="og:title" content="Sistem Informasi Pendapatan Retribusi Daerah Provinsi Kalimantan Selatan" />
-	<meta property="og:description" content="Sistem Informasi Pendapatan Retribusi Daerah Provinsi Kalimantan Selatan" />
-	<meta name="format-detection" content="telephone=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="Pastikan Data Biodata/Profil Diri dan Input Data SK (Surat Keputusan) dengan Benar">
+    <meta name="keywords" content="Data NON-ASN Balai Pelatihan Koperasi dan Usaha Kecil Prov. Kalsel" />
+
 
 	<!-- PAGE TITLE HERE -->
 	<title>SI-PREDRA</title>
