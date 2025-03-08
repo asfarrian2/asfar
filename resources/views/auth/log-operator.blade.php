@@ -4,11 +4,11 @@
 <head>
     <meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="keywords" content="SI-PREDRA" />
+	<meta name="keywords" content="SI-RETDA" />
 	<meta name="author" content="Badan Pendapatan Daerah Provinsi Kalimantan Selatan" />
 	<meta name="robots" content="" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="SI-PREDRA" />
+	<meta name="description" content="SI-RETDA" />
 	<meta property="og:title" content="Sistem Informasi Pendapatan Retribusi Daerah Provinsi Kalimantan Selatan" />
 	<meta property="og:description" content="Sistem Informasi Pendapatan Retribusi Daerah Provinsi Kalimantan Selatan" />
     <meta property="og:image" content="{{ url('images/profile/cover website.png') }}" />

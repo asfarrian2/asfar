@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
 
-    <meta charset="utf-8">
+<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="keywords" content="" />
-	<meta name="author" content="" />
+	<meta name="keywords" content="SI-RETDA" />
+	<meta name="author" content="Badan Pendapatan Daerah Provinsi Kalimantan Selatan" />
 	<meta name="robots" content="" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="Dompet : Payment Admin Template" />
-	<meta property="og:title" content="Dompet : Payment Admin Template" />
-	<meta property="og:description" content="Dompet : Payment Admin Template" />
-	<meta property="og:image" content="https://dompet.dexignlab.com/xhtml/social-image.png" />
+	<meta name="description" content="SI-RETDA" />
+	<meta property="og:title" content="Sistem Informasi Pendapatan Retribusi Daerah Provinsi Kalimantan Selatan" />
+	<meta property="og:description" content="Sistem Informasi Pendapatan Retribusi Daerah Provinsi Kalimantan Selatan" />
+    <meta property="og:image" content="{{ url('/images/profile/cover website.png') }}" />
 	<meta name="format-detection" content="telephone=no">
 
 	<!-- PAGE TITLE HERE -->
