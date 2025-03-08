@@ -11,14 +11,14 @@
 	<meta name="description" content="SI-PREDRA" />
 	<meta property="og:title" content="Sistem Informasi Pendapatan Retribusi Daerah Provinsi Kalimantan Selatan" />
 	<meta property="og:description" content="Sistem Informasi Pendapatan Retribusi Daerah Provinsi Kalimantan Selatan" />
-    <meta property="og:image" content="{{ asset('images/profile/cover website.png') }}" />
+    <meta property="og:image" content="{{ url('images/profile/cover website.png') }}" />
 	<meta name="format-detection" content="telephone=no">
 
 	<!-- PAGE TITLE HERE -->
 	<title>SI-PREDRA</title>
 
 	<!-- FAVICONS ICON -->
-	<link rel="shortcut icon" type="image/png" href="{{ asset('images/profile/Default Picture Profile.png') }}" />
+	<link rel="shortcut icon" type="image/x-icon" href="{{ asset('images/profile/Default Picture Profile.png') }}" />
     <link href="./css/style.css" rel="stylesheet">
 
 </head>
