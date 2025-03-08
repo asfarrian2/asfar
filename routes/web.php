@@ -90,5 +90,6 @@ Route::get('/opt/filtersub/{id_jr}', [RtargetController::class, 'getsub']);
 Route::get('/opt/filterojk/{id_sr}', [RtargetController::class, 'getobjek']);
 Route::post('/opt/rtargetapbd/store', [RtargetController::class, 'store']);
 Route::post('/opt/rtargetapbd/edit', [RtargetController::class, 'edit']);
+Route::post('/opt/rtargetapbd/{id_rtarget}/update', [RtargetController::class, 'update']);
 Route::get('/opt/rtargetapbd/{id_rtarget}/hapus', [RtargetController::class, 'delate']);
 });

@@ -54,7 +54,7 @@
                 <!-- End Pemberitahuan -->
 				<div class="row page-titles">
 					<ol class="breadcrumb">
-						<li class="breadcrumb-item active"><a href="/opt/dashboard">SI-PREDRA</a></li>
+						<li class="breadcrumb-item active"><a href="/opt/dashboard">SI-RETDA</a></li>
 						<li class="breadcrumb-item"><a href="#">Target APBD</a></li>
 					</ol>
                 </div>
@@ -378,6 +378,74 @@ $('.edit').click(function(){
                         $('.pagu').mask("#.##0", {
                             reverse:true
                         });
+                        $("#SelectJre").on('change', function(){
+                            var id_jr = $(this).val();
+                           //console.log(id_wajibpajak);
+                           if (id_jr) {
+                            $.ajax({
+                                url: '/opt/filtersub/'+id_jr,
+                                type: 'GET',
+                                data: {
+                                    '_token': '{{ csrf_token() }}'
+                                },
+                                dataType: 'json',
+                                success: function (data){
+                                    //console.log(data);
+                                     if (data) {
+                                        $("#SelectSre").empty();
+                                        $("#ojke").empty();
+                                        $('#ojke').append('<option value=""> Pilih Objek Retribusi </option>');
+                                        $('#SelectSre').append('<option value=""> Pilih Sub Retribusi </option>');
+                                        $.each(data, function(key, sub){
+                                            $('select[name="sub"]').append(
+                                                '<Option value="'+sub.id_sr+'">'+sub.kode_sr+' '+sub.nama_sr+'</Option>'
+                                            )
+                                        });
+                                     }else{
+                                        $("#SelectSre").empty();
+                                        $("#ojke").empty();
+                                     }
+                                }
+                            });
+                           } else {
+                            $("#SelectSre").empty();
+                            $('#SelectSre').append('<option value=""> Pilih Sub Retribusi </option>');
+                            $("#ojke").empty();
+                            $('#ojke').append('<option value=""> Pilih Objek Retribusi </option>');
+                           }
+                        });
+                        $("#SelectSre").on('change', function(){
+        var id_sr = $(this).val();
+       //console.log(id_wajibpajak);
+       if (id_sr) {
+        $.ajax({
+            url: '/opt/filterojk/'+id_sr,
+            type: 'GET',
+            data: {
+                '_token': '{{ csrf_token() }}'
+            },
+            dataType: 'json',
+            success: function (data){
+                //console.log(data);
+                 if (data) {
+                    $("#ojke").empty();
+                    $('#ojke').append('<option value=""> Pilih Objek Retribusi </option>');
+                    $.each(data, function(key, ojk){
+                        $('select[name="objek"]').append(
+                            '<Option value="'+ojk.id_ojk+'">'+ojk.kode_ojk+' '+ojk.nama_ojk+'</Option>'
+                        )
+                    });
+                 }else{
+                    $("#ojke").empty();
+                 }
+            }
+        });
+       } else {
+        $("#ojke").empty();
+        $('#ojke').append('<option value=""> Pilih Objek Retribusi </option>');
+       }
+    });
+                        ////////////////////////////
                     }
                 });
      $("#modal-editrincian").modal("show");
@@ -491,7 +559,7 @@ $(document).ready(function(){
 </script>
 <!-- End Select1 -->
 
-<!-- End Select2 -->
+<!-- Select2 -->
 <script>
 $(document).ready(function(){
     $("#SelectJr").on('change', function(){

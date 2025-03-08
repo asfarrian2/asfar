@@ -132,8 +132,8 @@ class TargetController extends Controller
         return view('operator.target.murni.edittarget', compact('target'));
     }
 
-        //Update Data
-        public function update($id_target, Request $request){
+    //Update Data
+    public function update($id_target, Request $request){
 
             $id_target      = Crypt::decrypt($id_target);
             $pagu_target    = $request->pagutarget;

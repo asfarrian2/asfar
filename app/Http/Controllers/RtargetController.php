@@ -67,6 +67,7 @@ class RtargetController extends Controller
             'id_rtarget'     => $id,
             'uraian_rtarget' => $uraian_rtarget,
             'pagu_rtarget'   => $pagu,
+            'status_rtarget' => '0',
             'pagu_prtarget'  => $pagu,
             'id_ojk'         => $id_ojk,
             'id_target'      => $id_target
@@ -107,28 +108,82 @@ class RtargetController extends Controller
         $id_rtarget    = Crypt::decrypt($id_rtarget);
 
         $data     = DB::table('tb_rtarget')
+                    ->leftJoin('tb_ojkretribusi', 'tb_rtarget.id_ojk', '=', 'tb_ojkretribusi.id_ojk')
+                    ->leftJoin('tb_subretribusi', 'tb_ojkretribusi.id_sr', '=', 'tb_subretribusi.id_sr')
+                    ->leftJoin('tb_jenretribusi', 'tb_subretribusi.id_jr', '=', 'tb_jenretribusi.id_jr')
+                    ->select('tb_rtarget.*', 'tb_ojkretribusi.kode_ojk', 'tb_ojkretribusi.nama_ojk', 'tb_subretribusi.*')
                     ->where('id_rtarget', $id_rtarget)
                     ->first();
 
-        // $id_sr   = $data->id_sr;
-        // $id_jr   = $data->id_jr;
+        $id_sr   = $data->id_sr;
+        $id_jr   = $data->id_jr;
 
-        // $jenis    = DB::table('tb_jenretribusi')
-        //             ->where('status_jr', '1')
-        //             ->get();
+        $jenis     = DB::table('tb_jenretribusi')
+                    ->where('status_jr', '1')
+                    ->get();
 
-        // $subr     = DB::table('tb_subretribusi')
-        //             ->where('id_jr', $id_jr)
-        //             ->get();
+        $sub       = DB::table('tb_subretribusi')
+                    ->where('id_jr', $id_jr)
+                    ->where('status_sr', '1')
+                    ->get();
 
-        // $ojkr     = DB::table('tb_subretribusi')
-        //             ->where('id_sr', $id_sr)
-        //             ->get();
+        $objek     = DB::table('tb_ojkretribusi')
+                    ->where('id_sr', $id_sr)
+                    ->where('status_ojk', '1')
+                    ->get();
 
-        return view('operator.target.murni.edit', compact('data'));
+        return view('operator.target.murni.edit', compact('data', 'jenis', 'sub', 'objek'));
     }
     //
 
+    //Update Data
+    public function update($id_rtarget, Request $request){
+
+        $id_rtarget     = Crypt::decrypt($id_rtarget);
+
+        $uraian_rtarget = $request->uraian;
+        $id_ojk         = $request->objek;
+        $pagu_target    = $request->pagutarget;
+        $pagu           = str_replace('.','', $pagu_target);
+
+        $data = [
+            'uraian_rtarget' => $uraian_rtarget,
+            'id_ojk'         => $id_ojk,
+            'pagu_prtarget'  => $pagu,
+            'pagu_rtarget'   => $pagu
+        ];
+
+    //Cek Total Antara Pagu Ketetapan dan Rincian
+    $rincian = DB::table('tb_rtarget')
+                ->where('id_rtarget',$id_rtarget)
+                ->first();
+    $id_target = $rincian->id_target;
+    $pagu_lama = $rincian->pagu_rtarget;
+
+    $target = DB::table('tb_target')
+                ->where('id_target',$id_target)
+                ->first();
+
+    $jumtarget = $target->pagu_target;
+
+    $jumlah_rincian = DB::table('tb_rtarget')
+    ->where('id_target',$id_target)
+    ->sum('pagu_rtarget');
+    //
+
+    //validasi pagu rincian
+    if ($jumlah_rincian-$pagu_lama+$pagu > $jumtarget) {
+        return Redirect::back()->with(['warning' => 'Total Pagu Lebih Kecil Dari Pada Total Rincian Yang Telah Diinputkan']);
+    }else{
+        $update = DB::table('tb_rtarget')->where('id_rtarget', $id_rtarget)->update($data);
+        if ($update) {
+            return Redirect::back()->with(['success' => 'Data Berhasil Dirubah']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Data Gagal Dirubah']);
+        }
+      }
+     }
+    //
 
     //Hapus Data
      public function delate($id_rtarget){
