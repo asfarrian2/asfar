@@ -1,12 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" class="h-100">
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="keywords" content="SI-PREDRA" />
 	<meta name="author" content="Badan Pendapatan Daerah Provinsi Kalimantan Selatan" />
+	<meta name="robots" content="" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="SI-PREDRA" />
+	<meta property="og:title" content="Sistem Informasi Pendapatan Retribusi Daerah Provinsi Kalimantan Selatan" />
+	<meta property="og:description" content="Sistem Informasi Pendapatan Retribusi Daerah Provinsi Kalimantan Selatan" />
+	<meta name="format-detection" content="telephone=no">
 
 	<!-- PAGE TITLE HERE -->
 	<title>SI-PREDRA</title>
@@ -90,7 +95,9 @@
         Scripts
     ***********************************-->
     <!-- Required vendors -->
-
+    <script src="./vendor/global/global.min.js"></script>
+    <script src="./js/custom.min.js"></script>
+    <script src="./js/dlabnav-init.js"></script>
 
 </body>
 </html>
