@@ -17,7 +17,7 @@
 
 	<!-- FAVICONS ICON -->
 	<link rel="shortcut icon" type="image/png" href="{{ asset('images/profile/Default Picture Profile.png') }}" />
-    <link href="./css/style.css" rel="stylesheet">
+
 
 </head>
 
