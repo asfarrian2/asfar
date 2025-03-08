@@ -15,7 +15,7 @@
 	<meta name="format-detection" content="telephone=no">
 
 	<!-- PAGE TITLE HERE -->
-	<title>SI-PREDRA 2025</title>
+	<title>SI-RETDA KALSEL</title>
 
 	<!-- FAVICONS ICON -->
 	<link rel="shortcut icon" type="image/png" href="{{ asset('images/profile/Default Picture Profile.png') }}" />
