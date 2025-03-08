@@ -18,7 +18,7 @@ use Spatie\Permission\Models\Role;
 
 
 //Crud Login Admin
-Route::get('/ctrl_admin', [LoginController::class, 'admin']);
+Route::get('/ctr_admin', [LoginController::class, 'admin']);
 Route::post('/admin_login', [LoginController::class, 'admin_proses']);
 Route::get('/logout', [LoginController::class, 'logout']);
 
