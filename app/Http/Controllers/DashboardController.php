@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
@@ -20,7 +21,55 @@ class DashboardController extends Controller
 
     // Operator
     public function operator(){
-        return view('operator.dashboard.view');
+        $jenis = DB::table('tb_jenretribusi')
+        ->where('status_jr', '1')
+        ->get();
+
+        $objek = DB::table('tb_ojkretribusi')
+        ->where('status_ojk', '1')
+        ->get();
+
+        $sub = DB::table('tb_subretribusi')
+        ->where('status_sr', '1')
+        ->get();
+
+        //Menampilkan Data Utama Target
+        $id_agency  = Auth::guard('operator')->user()->id_agency;
+        $id_tahun   = Auth::guard('operator')->user()->id_tahun;
+
+
+        $view = DB::table('tb_target')
+        ->where('id_agency',$id_agency)
+        ->where('id_tahun',$id_tahun)
+        ->first();
+        //
+        if (empty($view)){
+            return view('operator.dashboard.view', compact('view'));
+        }else{
+        //Menampilkan Data Rincian Target
+        $id_target = $view->id_target;
+        $rincian = DB::table('tb_rtarget')
+        ->leftJoin('tb_ojkretribusi', 'tb_rtarget.id_ojk', '=', 'tb_ojkretribusi.id_ojk')
+        ->leftJoin('tb_subretribusi', 'tb_ojkretribusi.id_sr', '=', 'tb_subretribusi.id_sr')
+        ->leftJoin('tb_jenretribusi', 'tb_subretribusi.id_jr', '=', 'tb_jenretribusi.id_jr')
+        ->select('tb_rtarget.*','tb_ojkretribusi.nama_ojk', 'tb_ojkretribusi.kode_ojk', 'tb_subretribusi.nama_sr', 'tb_subretribusi.kode_sr', 'tb_jenretribusi.nama_jr', 'tb_jenretribusi.kode_jr')
+        ->where('id_target',$id_target)
+        ->get()
+        ->groupBy('kode_jr')
+        ->map(function($item, $key) {
+            return $item->groupBy('kode_sr')
+                ->map(function($item, $key) {
+                    return $item->groupBy('kode_ojk');
+                });
+        });
+        //
+
+        $jumlah = DB::table('tb_rtarget')
+        ->where('id_target',$id_target)
+        ->sum('pagu_rtarget');
+
+        return view('operator.dashboard.view', compact('view'));
+    }
     }
 
 }

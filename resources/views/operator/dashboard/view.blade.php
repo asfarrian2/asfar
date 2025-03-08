@@ -42,7 +42,11 @@
 									</svg>
 								</div>
 								<div>
-									<h2 class="text-white invoice-num">Rp15.000.000</h2>
+                                    @if($view)
+									<h2 class="text-white invoice-num">Rp<?php echo number_format($view->pagu_target ,0,',','.')?></h2>
+                                    @else
+                                    <h2 class="text-white invoice-num">Target Belum Ditetapkan</h2>
+                                    @endif
 									<span class="text-white fs-18">Target Tahun Anggaran {{ Auth::guard('operator')->user()->id_tahun }}</span>
 								</div>
 							</div>
@@ -81,7 +85,11 @@
 										</div>
 										<div class="me-3 mb-3">
 											<p class="fs-14 mb-1">TARGET</p>
-											<span class="text-black fs-16">Rp15.000.000</span>
+                                            @if($view)
+											<span class="text-black fs-16">Rp<?php echo number_format($view->pagu_target ,0,',','.')?></span>
+                                            @else
+                                            <span class="text-black fs-16">Belum Ditetapkan</span>
+                                            @endif
 										</div>
 										<div class="me-3 mb-3">
 											<p class="fs-14 mb-1">TAHUN ANGGARAN</p>

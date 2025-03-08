@@ -6,6 +6,7 @@ use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JenisretribusiController;
 use App\Http\Controllers\ObjekretribusiController;
+use App\Http\Controllers\RtargetController;
 use App\Http\Controllers\SubretribusiController;
 use App\Http\Controllers\TahunController;
 use App\Http\Controllers\TargetController;
@@ -22,6 +23,7 @@ Route::post('/admin_login', [LoginController::class, 'admin_proses']);
 Route::get('/logout', [LoginController::class, 'logout']);
 
 
+Route::middleware('auth:user')->group(function () {
 //Halaman Utama Admin
 Route::get('/admin/dashboardAll', [DashboardController::class, 'all']);
 
@@ -63,6 +65,8 @@ Route::get('/admin/filtersub/{id_jr}', [ObjekretribusiController::class, 'getobj
 Route::post('/admin/objekretribusi/store', [ObjekretribusiController::class, 'store']);
 Route::post('/admin/objekretribusi/edit', [ObjekretribusiController::class, 'edit']);
 
+});
+
 
 
 //Crud Login Operator
@@ -70,11 +74,21 @@ Route::get('/', [LoginController::class, 'operator'])->name('login');;
 Route::post('/opt_login', [LoginController::class, 'operator_proses']);
 Route::get('/adminlogout', [LoginController::class, 'logout_admin']);
 
+//
+Route::middleware('auth:operator')->group(function () {
 // Dashboard Operator
 Route::get('/opt/dashboard', [DashboardController::class, 'operator']);
 
-// Target Operator
+// Crud Target Operator
 Route::get('/opt/targetapbd', [TargetController::class, 'apbd']);
 Route::post('/opt/targetapbd/store', [TargetController::class, 'store']);
 Route::post('/opt/targetapbd/edit', [TargetController::class, 'edit']);
 Route::post('/opt/targetapbd/{id_target}/update', [TargetController::class, 'update']);
+
+// Crud Rincian Target Operator
+Route::get('/opt/filtersub/{id_jr}', [RtargetController::class, 'getsub']);
+Route::get('/opt/filterojk/{id_sr}', [RtargetController::class, 'getobjek']);
+Route::post('/opt/rtargetapbd/store', [RtargetController::class, 'store']);
+Route::post('/opt/rtargetapbd/edit', [RtargetController::class, 'edit']);
+Route::get('/opt/rtargetapbd/{id_rtarget}/hapus', [RtargetController::class, 'delate']);
+});

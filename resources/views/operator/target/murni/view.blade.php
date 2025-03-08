@@ -101,6 +101,68 @@
                             </div>
                             <!-- End Modal -->
 
+                            <!-- Start Modal Create Rincian-->
+                            <div class="modal fade" id="tambahrincian">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3 class="modal-title">Tambahkan Rincian</h3>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="basic-form">
+                                            <form action="/opt/rtargetapbd/store" method="POST">
+                                            @csrf
+                                                @if($view)
+                                                <input type="hidden" placeholder="0" name="target" id="target" value="{{ $view->id_target }}"  class="form-control input-default" required>
+                                                @else
+                                                @endif
+                                                <!-- ... -->
+                                                <div class="mb-3">
+                                                    <label class="form-label">Uraian Target :</label>
+                                                    <input type="text" placeholder="Masukkan Uraian" name="uraianrincian" class="form-control input-default" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Pagu Target (Rp) :</label>
+                                                    <input type="text" placeholder="0" name="pagurtarget" class="form-control input-default pagu" required>
+                                                </div>
+                                                @if($view)
+                                                <div class="mb-3">
+                                                    <label class="form-label">Jenis Retribusi :</label>
+                                                    <select class="input-default  form-control" name="jenis" id="SelectJr">
+                                                    <option value="">Pilih Jenis Retribusi</option>
+                                                    @foreach ($jenis as $d)
+                                                    <option value="{{ $d->id_jr }}">{{$d->kode_jr }} - {{$d->nama_jr }} </option>
+                                                    @endforeach
+                                                    </select>
+                                                </div>
+                                                @else
+                                                @endif
+                                                <div class="mb-3">
+                                                    <label class="form-label">Sub Retribusi :</label>
+                                                    <select class="input-default  form-control" name="sub" id="SelectSr">
+                                                    <option value="">Pilih Sub Retribusi</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Objek Retribusi :</label>
+                                                    <select class="input-default  form-control" name="objek" id="ojk" >
+                                                    <option value="">Pilih Objek Retribusi</option>
+                                                    </select>
+                                                </div>
+                                           </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Batal</button>
+                                            <button type="submit" class="btn btn-primary">Simpan</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Modal Create Rincian -->
+
                              <!-- Main Balance -->
 				            <div class="card-header flex-wrap border-0 pb-0 align-items-end">
 				            	<div class="mb-3 me-3">
@@ -114,13 +176,13 @@
 				            	<div class="me-3 mb-3">
 				            		<p class="fs-14 mb-1">RINCIAN</p>
                                     @if($view)
-                                    <button type="button" class="btn btn-rounded btn-primary"><span
+                                    <button type="button" class="btn btn-rounded btn-primary" data-bs-toggle="modal" data-bs-target="#tambahrincian"><span
                                         class="btn-icon-start text-primary"><i class="fa fa-plus color-primary"></i>
-                                    </span>Tetapkan Rincian</button>
+                                    </span>Buat Rincian</button>
                                     @else
-                                    <button type="button" class="btn btn-rounded btn-dark off"><span
+                                    <button type="button" class="btn btn-rounded btn-dark off" ><span
                                         class="btn-icon-start text-dark"><i class="fa fa-plus color-dark"></i>
-                                    </span>Tetapkan Rincian</button>
+                                    </span>Buat Rincian</button>
                                     @endif
 				            	</div>
 				            	<div class="me-3 mb-3">
@@ -186,6 +248,26 @@
                                 </div>
                             </div>
                             <!-- End Edit Target Modal -->
+
+                             <!-- Start Edit Rincian Modal -->
+                             <div class="modal fade" id="modal-editrincian">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3 class="modal-title">Edit Rincian</h3>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                            </button>
+                                        </div>
+                                        <div class="modal-body" id="loadeditrincian">
+                                            <div class="basic-form">
+                                            <!-- Form
+                                                        Edit -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Edit Target Modal -->
                         </div>
                     </div>
                 </div>
@@ -241,7 +323,7 @@
 														</button>
                                                         @csrf
 														<div class="dropdown-menu">
-															<a class="dropdown-item edit" href="#" id_rtarget="{{Crypt::encrypt($d->id_rtarget)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
+															<a class="dropdown-item edit" href="#" data-id="{{Crypt::encrypt($d->id_rtarget)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
 															<a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_rtarget)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
 														</div>
 													</div>
@@ -282,51 +364,23 @@
 <!-- Button Edit -->
 <script>
 $('.edit').click(function(){
-    var id_ojk = $(this).attr('data-id');
+    var id_rtarget = $(this).attr('data-id');
     $.ajax({
                     type: 'POST',
-                    url: '/admin/objekretribusi/edit',
+                    url: '/opt/rtargetapbd/edit',
                     cache: false,
                     data: {
                         _token: "{{ csrf_token() }}",
-                        id_ojk: id_ojk
+                        id_rtarget: id_rtarget
                     },
                     success: function(respond) {
-                        $("#loadeditform").html(respond);
-                        $("#select2").on('change', function(){
-        var id_jr = $(this).val();
-       //console.log(id_wajibpajak);
-       if (id_jr) {
-        $.ajax({
-            url: '/admin/filtersub/'+id_jr,
-            type: 'GET',
-            data: {
-                '_token': '{{ csrf_token() }}'
-            },
-            dataType: 'json',
-            success: function (data){
-                //console.log(data);
-                 if (data) {
-                    $("#sub2").empty();
-                    $('#sub2').append('<option value=""> Pilih Sub Retribusi </option>');
-                    $.each(data, function(key, sub){
-                        $('select[name="sub2"]').append(
-                            '<Option value="'+sub.id_sr+'">'+sub.kode_sr+' '+sub.nama_sr+'</Option>'
-                        )
-                    });
-                 }else{
-                    $("#sub2").empty();
-                 }
-            }
-        });
-       } else {
-        $("#sub2").empty();
-        $('#sub2').append('<option value=""> Pilih Sub Retribusi </option>');
-       }
-    });
+                        $("#loadeditrincian").html(respond);
+                        $('.pagu').mask("#.##0", {
+                            reverse:true
+                        });
                     }
                 });
-     $("#modal-editobjek").modal("show");
+     $("#modal-editrincian").modal("show");
 });
 var span = document.getElementsByClassName("close")[0];
 </script>
@@ -360,7 +414,7 @@ var span = document.getElementsByClassName("close")[0];
 <!-- Start Button Hapus -->
 <script>
 $('.hapus').click(function(){
-    var id_jr = $(this).attr('data-id');
+    var id_rtarget = $(this).attr('data-id');
 Swal.fire({
   title: "Apakah Anda Yakin Data Ini Ingin Di Hapus ?",
   text: "Jika Ya Maka Data Akan Terhapus Permanen",
@@ -371,11 +425,7 @@ Swal.fire({
   confirmButtonText: "Ya, Hapus Saja!"
 }).then((result) => {
   if (result.isConfirmed) {
-    window.location = "/admin/jenisretribusi/"+id_jr+"/hapus"
-    Swal.fire({
-      title: "Data Berhasil Dihapus !",
-      icon: "success"
-    });
+    window.location = "/opt/rtargetapbd/"+id_rtarget+"/hapus"
   }
 });
 });
@@ -406,12 +456,12 @@ Swal.fire({
 <!-- Select1 -->
 <script>
 $(document).ready(function(){
-    $("#selectJen").on('change', function(){
-        var id_jr = $(this).val();
+    $("#SelectSr").on('change', function(){
+        var id_sr = $(this).val();
        //console.log(id_wajibpajak);
-       if (id_jr) {
+       if (id_sr) {
         $.ajax({
-            url: '/admin/filtersub/'+id_jr,
+            url: '/opt/filterojk/'+id_sr,
             type: 'GET',
             data: {
                 '_token': '{{ csrf_token() }}'
@@ -420,26 +470,69 @@ $(document).ready(function(){
             success: function (data){
                 //console.log(data);
                  if (data) {
-                    $("#sub").empty();
-                    $('#sub').append('<option value=""> Pilih Sub Retribusi </option>');
+                    $("#ojk").empty();
+                    $('#ojk').append('<option value=""> Pilih Objek Retribusi </option>');
+                    $.each(data, function(key, ojk){
+                        $('select[name="objek"]').append(
+                            '<Option value="'+ojk.id_ojk+'">'+ojk.kode_ojk+' '+ojk.nama_ojk+'</Option>'
+                        )
+                    });
+                 }else{
+                    $("#ojk").empty();
+                 }
+            }
+        });
+       } else {
+        $("#ojk").empty();
+        $('#ojk').append('<option value=""> Pilih Objek Retribusi </option>');
+       }
+    });
+});
+</script>
+<!-- End Select1 -->
+
+<!-- End Select2 -->
+<script>
+$(document).ready(function(){
+    $("#SelectJr").on('change', function(){
+        var id_jr = $(this).val();
+       //console.log(id_wajibpajak);
+       if (id_jr) {
+        $.ajax({
+            url: '/opt/filtersub/'+id_jr,
+            type: 'GET',
+            data: {
+                '_token': '{{ csrf_token() }}'
+            },
+            dataType: 'json',
+            success: function (data){
+                //console.log(data);
+                 if (data) {
+                    $("#SelectSr").empty();
+                    $("#ojk").empty();
+                    $('#ojk').append('<option value=""> Pilih Objek Retribusi </option>');
+                    $('#SelectSr').append('<option value=""> Pilih Sub Retribusi </option>');
                     $.each(data, function(key, sub){
                         $('select[name="sub"]').append(
                             '<Option value="'+sub.id_sr+'">'+sub.kode_sr+' '+sub.nama_sr+'</Option>'
                         )
                     });
                  }else{
-                    $("#sub").empty();
+                    $("#SelectSr").empty();
+                    $("#ojk").empty();
                  }
             }
         });
        } else {
-        $("#sub").empty();
-        $('#sub').append('<option value=""> Pilih Sub Retribusi </option>');
+        $("#SelectSr").empty();
+        $('#SelectSr').append('<option value=""> Pilih Sub Retribusi </option>');
+        $("#ojk").empty();
+        $('#ojk').append('<option value=""> Pilih Objek Retribusi </option>');
        }
     });
 });
 </script>
-<!-- End Select1 -->
+<!-- End Select2 -->
 
 <!-- Begin Alert Button Off -->
 <script>
@@ -457,7 +550,7 @@ $(document).ready(function(){
 <!-- Begin Rupiah Pagu Target -->
 <script>
     $(document).ready(function(){
-        $('#pagu').mask("#.##0", {
+        $('.pagu').mask("#.##0", {
             reverse:true
         });
     });

@@ -41,7 +41,7 @@ class OperatorController extends Controller
         $id=$kodeobjek.$nomorurut;
 
         $username       = $request->username;
-        $password       = Hash::make($username);
+        $password       = Hash::make($username.'1405*');
         $id_agency      = $request->id_agency;
 
         $data = [

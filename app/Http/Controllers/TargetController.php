@@ -18,9 +18,22 @@ class TargetController extends Controller
     // View Data
     public function apbd(){
 
+        $jenis = DB::table('tb_jenretribusi')
+        ->where('status_jr', '1')
+        ->get();
+
+        $objek = DB::table('tb_ojkretribusi')
+        ->where('status_ojk', '1')
+        ->get();
+
+        $sub = DB::table('tb_subretribusi')
+        ->where('status_sr', '1')
+        ->get();
+
         //Menampilkan Data Utama Target
         $id_agency  = Auth::guard('operator')->user()->id_agency;
         $id_tahun   = Auth::guard('operator')->user()->id_tahun;
+
 
         $view = DB::table('tb_target')
         ->where('id_agency',$id_agency)
@@ -52,7 +65,7 @@ class TargetController extends Controller
         ->where('id_target',$id_target)
         ->sum('pagu_rtarget');
 
-        return view('operator.target.murni.view', compact('view', 'rincian', 'jumlah'));
+        return view('operator.target.murni.view', compact('view', 'rincian', 'jumlah', 'objek', 'sub', 'jenis'));
         }
     }
 
@@ -85,6 +98,7 @@ class TargetController extends Controller
             'id_target'     => $id,
             'jen_target'    => '1',
             'pagu_target'   => $pagu,
+            'pagu_ptarget'   => $pagu,
             'status_target' => '0',
             'id_tahun'      => $id_tahun,
             'id_agency'     => $id_agency
@@ -126,15 +140,27 @@ class TargetController extends Controller
             $pagu           = str_replace('.','', $pagu_target);
 
             $data = [
+                'pagu_ptarget'   => $pagu,
                 'pagu_target'   => $pagu
             ];
 
+        //Cek Total Antara Pagu Ketetapan dan Rincian
+        $jumlah_rincian = DB::table('tb_rtarget')
+        ->where('id_target',$id_target)
+        ->sum('pagu_rtarget');
+        //
+
+        //validasi pagu rincian
+        if ($jumlah_rincian > $pagu) {
+            return Redirect::back()->with(['warning' => 'Total Pagu Lebih Kecil Dari Pada Total Rincian Yang Telah Diinputkan']);
+        }else{
             $update = DB::table('tb_target')->where('id_target', $id_target)->update($data);
             if ($update) {
                 return Redirect('/opt/targetapbd')->with(['success' => 'Data Berhasil Dirubah']);
             } else {
                 return Redirect::back()->with(['warning' => 'Data Gagal Dirubah']);
             }
+          }
          }
 
 }
