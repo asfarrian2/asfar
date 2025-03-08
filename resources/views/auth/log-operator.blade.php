@@ -11,6 +11,7 @@
 	<meta name="description" content="SI-PREDRA" />
 	<meta property="og:title" content="Sistem Informasi Pendapatan Retribusi Daerah Provinsi Kalimantan Selatan" />
 	<meta property="og:description" content="Sistem Informasi Pendapatan Retribusi Daerah Provinsi Kalimantan Selatan" />
+    <meta property="og:image" content="{{ asset('images/profile/cover website.png') }}" />
 	<meta name="format-detection" content="telephone=no">
 
 	<!-- PAGE TITLE HERE -->
