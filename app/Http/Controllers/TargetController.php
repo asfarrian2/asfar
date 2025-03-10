@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class TargetController extends Controller
 {
@@ -75,7 +76,33 @@ class TargetController extends Controller
         $id_agency      = Auth::guard('operator')->user()->id_agency;
         $id_tahun       = Auth::guard('operator')->user()->id_tahun;
         $pagu_target    = $request->pagutarget;
+        $dokumen        = $request->file('dokumen');
         $pagu           = str_replace('.','', $pagu_target);
+
+        //Pemprosesan Dokumen
+        $dinas = DB::table('tb_agency')
+                ->where('id_agency', $id_agency)
+                ->first();
+        $nama_dinas = $dinas->nama_agency;
+
+        if ($dokumen) {
+            // Proses file
+            $validator = Validator::make($request->all(),[
+                'dokumen' => 'required|mimes:pdf|max:1024',
+            ], [
+                'dokumen.max' => 'Upload gagal karena ukuran file terlalu besar. Maksimal ukuran file adalah 1MB',
+            ]);
+            if ($validator->fails()) {
+                return Redirect::back()->with(['warning' => $validator->messages()->first()]);
+            }
+
+            $nama_dokumen = 'Surat Usulan Target Retribusi APBD '. $id_tahun.' '.$nama_dinas.'.'. $dokumen->getClientOriginalExtension();
+        } else {
+            return Redirect::back()->with(['warning' => 'Dokumen Belum Diupload']);
+        }
+
+        //Save Dokumen
+        $dokumen->move('upload/dokumen/targetapbd/', $nama_dokumen);
 
         // Buat Kode Auto Target
         $id_target=DB::table('tb_target')
@@ -98,7 +125,8 @@ class TargetController extends Controller
             'id_target'     => $id,
             'jen_target'    => '1',
             'pagu_target'   => $pagu,
-            'pagu_ptarget'   => $pagu,
+            'pagu_ptarget'  => $pagu,
+            'surat_apbd'    => $nama_dokumen,
             'status_target' => '0',
             'id_tahun'      => $id_tahun,
             'id_agency'     => $id_agency
@@ -136,11 +164,41 @@ class TargetController extends Controller
     public function update($id_target, Request $request){
 
             $id_target      = Crypt::decrypt($id_target);
+            $id_agency      = Auth::guard('operator')->user()->id_agency;
+            $id_tahun       = Auth::guard('operator')->user()->id_tahun;
             $pagu_target    = $request->pagutarget;
+            $dokumen        = $request->file('dokumen');
             $pagu           = str_replace('.','', $pagu_target);
+
+            //Pemprosesan Dokumen
+        $dinas = DB::table('tb_agency')
+                ->where('id_agency', $id_agency)
+                ->first();
+        $nama_dinas = $dinas->nama_agency;
+
+        if ($dokumen) {
+            // Proses file
+            $validator = Validator::make($request->all(),[
+                'dokumen' => 'required|mimes:pdf|max:1024',
+            ], [
+                'dokumen.max' => 'Upload gagal karena ukuran file terlalu besar. Maksimal ukuran file adalah 1MB',
+            ]);
+            if ($validator->fails()) {
+                return Redirect::back()->with(['warning' => $validator->messages()->first()]);
+            }
+
+            $nama_dokumen = 'Surat Usulan Target Retribusi APBD '. $id_tahun.' '.$nama_dinas.'.'. $dokumen->getClientOriginalExtension();
+        } else {
+            return Redirect::back()->with(['warning' => 'Dokumen Belum Diupload']);
+        }
+
+        //Save Dokumen
+        $dokumen->move('upload/dokumen/targetapbd/', $nama_dokumen);
+
 
             $data = [
                 'pagu_ptarget'   => $pagu,
+                'surat_apbd'    => $nama_dokumen,
                 'pagu_target'   => $pagu
             ];
 

@@ -83,11 +83,15 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="basic-form">
-                                            <form action="/opt/targetapbd/store" method="POST">
+                                            <form action="/opt/targetapbd/store" method="POST" enctype="multipart/form-data">
                                             @csrf
                                                 <div class="mb-3">
                                                     <label class="form-label">Pagu Target (Rp) :</label>
                                                     <input type="text" placeholder="0" name="pagutarget" id="pagu" class="form-control input-default pagu" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Surat Usul Target :</label>
+                                                    <input type="file" accept="application/pdf" name="dokumen" maxsize="1024" class="form-control input-default" required>
                                                 </div>
                                            </div>
                                         </div>
@@ -188,13 +192,13 @@
 				            	<div class="me-3 mb-3">
 				            		<p class="fs-14 mb-1">SURAT USUL TARGET</p>
                                     @if($view)
-                                    <button type="button" class="btn btn-rounded btn-info"><span
-                                        class="btn-icon-start text-info"><i class="fa fa-upload color-info"></i>
-                                    </span>Upload Dokumen</button>
+                                    <a type="button" class="btn btn-rounded btn-info" href="{{ asset('upload/dokumen/targetapbd/'.$view->surat_apbd) }}" target="_blank"><span
+                                        class="btn-icon-start text-info"><i class="fa fa-download color-info"></i>
+                                    </span>Download Dokumen</a>
                                     @else
                                     <button type="button" class="btn btn-rounded btn-dark off"><span
                                         class="btn-icon-start text-dark"><i class="fa fa-upload color-dark"></i>
-                                    </span>Upload Dokumen</button>
+                                    </span>Download Dokumen</button>
                                     @endif
 				            	</div>
 				            	<span class="fs-20 text-black font-w500 me-3 mb-3">

@@ -4,6 +4,10 @@
                 <label class="form-label">Pagu Target (Rp) :</label>
                 <input type="text" placeholder="0" name="pagutarget" id="edit1pagu" value="{{$target->pagu_target}}" class="form-control input-default pagu" required>
              </div>
+             <div class="mb-3">
+                <label class="form-label">Surat Usul Target :</label>
+                <input type="file" accept="application/pdf" name="dokumen" maxsize="1024" class="form-control input-default" required>
+            </div>
         </div>
      </div>
      <div class="modal-footer">
