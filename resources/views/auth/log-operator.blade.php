@@ -96,9 +96,9 @@
         Scripts
     ***********************************-->
     <!-- Required vendors -->
-    <script src="./vendor/global/global.min.js"></script>
-    <script src="./js/custom.min.js"></script>
-    <script src="./js/dlabnav-init.js"></script>
+    <script src="{{ asset('./vendor/global/global.min.js') }}"></script>
+    <script src="{{ asset('./js/custom.min.js') }}"></script>
+    <script src="{{ asset('./js/dlabnav-init.js') }}"></script>
 
 </body>
 </html>

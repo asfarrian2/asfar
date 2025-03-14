@@ -84,6 +84,7 @@ Route::get('/opt/targetapbd', [TargetController::class, 'apbd']);
 Route::post('/opt/targetapbd/store', [TargetController::class, 'store']);
 Route::post('/opt/targetapbd/edit', [TargetController::class, 'edit']);
 Route::post('/opt/targetapbd/{id_target}/update', [TargetController::class, 'update']);
+Route::get('/opt/targetapbd/{id_target}/posting', [TargetController::class, 'post']);
 
 // Crud Rincian Target Operator
 Route::get('/opt/filtersub/{id_jr}', [RtargetController::class, 'getsub']);

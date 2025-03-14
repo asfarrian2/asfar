@@ -221,4 +221,34 @@ class TargetController extends Controller
           }
          }
 
+
+     //Posting Target Data
+     public function post($id_target){
+
+        $id_target    = Crypt::decrypt($id_target);
+        $target       = DB::table('tb_target')
+                        ->where('id_target', $id_target)
+                        ->first();
+        $jtarget      = $target->pagu_target;
+
+        $rtarget       = DB::table('tb_rtarget')
+                        ->where('id_target', $id_target)
+                        ->sum('pagu_rtarget');
+
+        $data = [
+            'status_target' => '1'
+        ];
+
+        //validasi pagu rincian
+         if ($rtarget == $jtarget) {
+            $update = DB::table('tb_target')->where('id_target', $id_target)->update($data);
+            if ($update) {
+                return Redirect::back()->with(['success' => 'Target Berhasil Diposting']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Target Gagal Diposting']);
+            }
+        }else{
+            return Redirect::back()->with(['warning' => 'Antara Nominal Pagu Target dengan Nominal pada Rincian Masih Memiliki Jumlah Nominal yang Berbeda']);
+        }
+    }
 }

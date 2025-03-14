@@ -65,8 +65,10 @@
                             <div class="card-header">
                                 <h4 class="card-title">Data Target APBD {{ Auth::guard('operator')->user()->id_tahun }}</h4>
                                 <!-- Button trigger modal -->
-                                 @if($view)
+                                 @if($view->status_target == 1)
                                  @csrf
+                                <!-- Blank -->
+                                @elseif($view->status_target == 0)
                                  <button type="button" class="btn btn-warning mb-2 edit1" data-id="{{Crypt::encrypt($view->id_target)}}">✎ Edit Pagu Target</button>
                                  @else
                                  <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#tambahdata">+ Tetapkan Pagu Target</button>
@@ -178,12 +180,15 @@
                                     @endif
 				            	</div>
 				            	<div class="me-3 mb-3">
-				            		<p class="fs-14 mb-1">RINCIAN</p>
-                                    @if($view)
+                                    @if($view->status_target == 1)
+                                    <!-- Blank -->
+                                    @elseif($view->status_target == 0)
+                                    <p class="fs-14 mb-1">RINCIAN</p>
                                     <button type="button" class="btn btn-rounded btn-primary" data-bs-toggle="modal" data-bs-target="#tambahrincian"><span
                                         class="btn-icon-start text-primary"><i class="fa fa-plus color-primary"></i>
                                     </span>Buat Rincian</button>
                                     @else
+                                    <p class="fs-14 mb-1">RINCIAN</p>
                                     <button type="button" class="btn btn-rounded btn-dark off" ><span
                                         class="btn-icon-start text-dark"><i class="fa fa-plus color-dark"></i>
                                     </span>Buat Rincian</button>
@@ -202,11 +207,14 @@
                                     @endif
 				            	</div>
 				            	<span class="fs-20 text-black font-w500 me-3 mb-3">
-                                @if($view)
-                                <button type="button" class="btn btn-success ">POSTING <span class="btn-icon-end">
+                                @if($view->status_target == 0)
+                                <a type="button" class="btn btn-success posting" data-id="{{Crypt::encrypt($view->id_target)}}" >POSTING <span class="btn-icon-end">
                                         <i class="fa fa-check"></i></span>
-                                </button>
-                                @else
+                                </a>
+                                @elseif($view->status_target == 1)
+                                <a type="button" class="btn btn-success terposting">Terposting <span class="btn-icon-end">
+                                        <i class="fa fa-check"></i></span>
+                                </a>
                                 @endif
                                 </span>
                             </div>
@@ -321,6 +329,10 @@
                                                 <td style="color: black;">- {{$d->uraian_rtarget}}</td>
                                                 <td style="color: black;">Rp<?php echo number_format($d->pagu_rtarget ,0,',','.')?></td>
                                                 <td>
+                                                @if($view->status_target == 1)
+                                                        <!-- Blank -->
+                                                 @else
+
                                                     <div class="dropdown">
 														<button type="button" class="btn btn-warning dark sharp" data-bs-toggle="dropdown">
 															<svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><circle fill="#000000" cx="5" cy="12" r="2"/><circle fill="#000000" cx="12" cy="12" r="2"/><circle fill="#000000" cx="19" cy="12" r="2"/></g></svg>
@@ -331,6 +343,7 @@
 															<a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_rtarget)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
 														</div>
 													</div>
+                                                    @endif
                                                 </td>
                                             @endforeach
                                             @endforeach
@@ -619,6 +632,19 @@ $(document).ready(function(){
 </script>
 <!-- End Alert Button Off -->
 
+<!-- Begin Alert Button Terposting -->
+<script>
+    $('.terposting').click(function() {
+  Swal.fire({
+    icon: 'success',
+    title: 'Data Telah Terposting',
+    text: 'Pagu Target Telah Ditetapkan',
+    confirmButtonText: 'OK'
+  })
+})
+</script>
+<!-- End Alert Button Terposting -->
+
 <!-- Begin Rupiah Pagu Target -->
 <script>
     $(document).ready(function(){
@@ -628,5 +654,26 @@ $(document).ready(function(){
     });
 </script>
 <!-- End Rupiah Pagu Target -->
+
+<!-- Start Button posting -->
+<script>
+$('.posting').click(function(){
+    var id_target = $(this).attr('data-id');
+Swal.fire({
+  title: "Apakah Anda Yakin Ingin Memposting Data Target Ini ?",
+  text: "Jika Ya Maka Data Akan Diposting dan Tidak Bisa Lagi Melakukan Pengeditan Data",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonColor: "#3085d6",
+  cancelButtonColor: "#d33",
+  confirmButtonText: "Ya, Posting Saja!"
+}).then((result) => {
+  if (result.isConfirmed) {
+    window.location = "/opt/targetapbd/"+id_target+"/posting"
+  }
+});
+});
+</script>
+<!-- End Button Hapus -->
 
 @endpush
