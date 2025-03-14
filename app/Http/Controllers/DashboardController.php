@@ -10,12 +10,20 @@ use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class DashboardController extends Controller
 {
     // Admin
     public function all(){
-        return view('admin.dashboard.semua');
+
+        $id_tahun = Auth::guard('admin')->user()->id_tahun;
+
+        $jtarget = DB::table('tb_target')
+        ->where('id_tahun', $id_tahun)
+        ->sum('pagu_target');
+
+        return view('admin.dashboard.semua', compact('jtarget'));
     }
 
 

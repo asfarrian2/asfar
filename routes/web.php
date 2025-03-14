@@ -23,7 +23,7 @@ Route::post('/admin_login', [LoginController::class, 'admin_proses']);
 Route::get('/logout', [LoginController::class, 'logout']);
 
 
-Route::middleware('auth:user')->group(function () {
+Route::middleware('auth:admin')->group(function () {
 //Halaman Utama Admin
 Route::get('/admin/dashboardAll', [DashboardController::class, 'all']);
 
@@ -64,6 +64,9 @@ Route::get('/admin/objekretribusi', [ObjekretribusiController::class, 'view']);
 Route::get('/admin/filtersub/{id_jr}', [ObjekretribusiController::class, 'getobjek']);
 Route::post('/admin/objekretribusi/store', [ObjekretribusiController::class, 'store']);
 Route::post('/admin/objekretribusi/edit', [ObjekretribusiController::class, 'edit']);
+
+//Crud Monitoring Target APBD
+Route::get('/admin/targetapbd', [TargetController::class, 'adm_view']);
 
 });
 

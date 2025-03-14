@@ -42,8 +42,8 @@
 									</svg>
 								</div>
 								<div>
-									<h2 class="text-white invoice-num">Rp34.000.222.111</h2>
-									<span class="text-white fs-18">Target Pendapatan Retribusi Daerah <br>T.A. 2025</span>
+									<h2 class="text-white invoice-num">Rp{{ number_format($jtarget, 0, ',', '.') }}</h2>
+									<span class="text-white fs-18">Target Pendapatan Retribusi Daerah <br>{{ Auth::guard('admin')->user()->id_tahun }}</span>
 								</div>
 							</div>
 						</div>

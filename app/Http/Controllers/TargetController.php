@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Validator;
 
 class TargetController extends Controller
 {
-    // (--------- Operator ----------)
+    //(------------------------Begin Target Hak User----------------------------//)
 
     // View Data
     public function apbd(){
@@ -42,7 +42,7 @@ class TargetController extends Controller
         ->first();
         //
         if (empty($view)){
-            return view('operator.target.murni.view', compact('view'));
+            return view('operator.target.murni.blank', compact('view'));
         }else{
         //Menampilkan Data Rincian Target
         $id_target = $view->id_target;
@@ -251,4 +251,25 @@ class TargetController extends Controller
             return Redirect::back()->with(['warning' => 'Antara Nominal Pagu Target dengan Nominal pada Rincian Masih Memiliki Jumlah Nominal yang Berbeda']);
         }
     }
+
+    // //(------------------------End Target Hak User----------------------------//
+
+
+    // //(------------------------Begin Target Hak Admin----------------------------//
+    public function adm_view(){
+
+        //Menampilkan Data Utama Target
+        $tahun_sekarang   = Auth::guard('admin')->user()->id_tahun;
+
+        $view = DB::table('tb_agency')
+        ->get();
+
+        $target = DB::table('tb_target')
+        ->where('id_tahun', $tahun_sekarang)
+        ->get();
+
+        return view('admin.target.apbd.view', compact('view', 'target'));
+    }
+
+    // //(------------------------Begin Target Hak Admin----------------------------//
 }

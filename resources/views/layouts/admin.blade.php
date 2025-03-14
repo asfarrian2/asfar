@@ -111,16 +111,22 @@
 							<span class="nav-text">Dashboard</span>
 						</a>
                         <ul aria-expanded="false">
-							<li><a href="/admin/dashboardAll">All</a></li>
+							<li><a href="/admin/dashboardAll">APBD T.A. {{Auth::guard('admin')->user()->id_tahun}}</a></li>
 							<li><a href="index-2.html">Target</a></li>
 							<li><a href="my-wallet.html">Pendapatan</a></li>
 							<li><a href="/admin/skpd">SKPD/UPTD</a></li>
 						</ul>
                     </li>
-                    <li><a href="widget-basic.html" class="ai-icon" aria-expanded="false">
+                    <li><a href="javascript:void()" class="has-arrow ai-icon" aria-expanded="false">
 							<i class="flaticon-381-calculator"></i>
 							<span class="nav-text">Monitoring</span>
 						</a>
+                        <ul aria-expanded="false">
+                            <li><a href="/admin/targetapbd">Target APBD</a></li>
+                            <li><a href="/admin/targetapbdp">Target APBD P</a></li>
+                            <li><a href="/admin/realisasi">Realisasi</a></li>
+                            <li><a href="/admin/evaluasi">Evaluasi Retribusi</a></li>
+                        </ul>
 					</li>
                     <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
 							<i class="flaticon-043-menu"></i>

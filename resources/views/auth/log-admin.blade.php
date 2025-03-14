@@ -69,15 +69,15 @@
                                             <label class="mb-1"><strong>Password</strong></label>
                                             <input type="password" class="form-control" name="password">
                                         </div>
-                                        <!-- <div class="mb-3">
-                                            <label class="form-label">Tahun :</label>
-                                            <select class="default-select  form-control wide mt-3" name="id_agency" >
+                                        <div class="mb-3">
+                                        <label class="mb-1"><strong>Tahun </strong><small> *Untuk Filter Data Monitoring</small></label>
+                                            <select class="default-select  form-control wide mt-3" name="tahun" >
                                             <option value="">Pilih Tahun</option>
                                             @for ($tahun = date('Y'); $tahun >= date('Y') - 0; $tahun--)
                                             <option value="{{ $tahun }}">{{ $tahun }}</option>
                                             @endfor
                                             </select>
-                                        </div> -->
+                                        </div>
                                         <div class="text-center">
                                             <button type="submit" class="btn btn-info btn-block">LOGIN</button>
                                         </div>

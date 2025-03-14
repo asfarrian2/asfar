@@ -18,7 +18,15 @@ class LoginController extends Controller
 
     public function admin_proses(Request $request){
 
-        if (Auth::guard('user')->attempt(['email' => $request->email, 'password' => $request->password])) {
+        if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
+            $tahun      = $request->tahun;
+            $username   = $request->email;
+
+            $data = [
+                'id_tahun' => $tahun
+            ];
+
+            DB::table('users')->where('email', $username)->update($data);
             return redirect('/admin/dashboardAll');
         } else {
             return redirect('/')->with(['warning' => 'Username / Password Salah']);

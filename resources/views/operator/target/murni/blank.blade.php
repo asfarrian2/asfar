@@ -65,11 +65,9 @@
                             <div class="card-header">
                                 <h4 class="card-title">Data Target APBD {{ Auth::guard('operator')->user()->id_tahun }}</h4>
                                 <!-- Button trigger modal -->
-                                 @if($view->status_target == 0)
+                                 @if($view)
                                  @csrf
                                  <button type="button" class="btn btn-warning mb-2 edit1" data-id="{{Crypt::encrypt($view->id_target)}}">✎ Edit Pagu Target</button>
-                                <!-- Blank -->
-                                @elseif($view->status_target == 1)
                                  @else
                                  <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#tambahdata">+ Tetapkan Pagu Target</button>
                                  @endif
@@ -180,15 +178,12 @@
                                     @endif
 				            	</div>
 				            	<div class="me-3 mb-3">
-                                    @if($view->status_target == 1)
-                                    <!-- Blank -->
-                                    @elseif($view->status_target == 0)
-                                    <p class="fs-14 mb-1">RINCIAN</p>
+				            		<p class="fs-14 mb-1">RINCIAN</p>
+                                    @if($view)
                                     <button type="button" class="btn btn-rounded btn-primary" data-bs-toggle="modal" data-bs-target="#tambahrincian"><span
                                         class="btn-icon-start text-primary"><i class="fa fa-plus color-primary"></i>
                                     </span>Buat Rincian</button>
                                     @else
-                                    <p class="fs-14 mb-1">RINCIAN</p>
                                     <button type="button" class="btn btn-rounded btn-dark off" ><span
                                         class="btn-icon-start text-dark"><i class="fa fa-plus color-dark"></i>
                                     </span>Buat Rincian</button>
@@ -208,161 +203,17 @@
 				            	</div>
 				            	<span class="fs-20 text-black font-w500 me-3 mb-3">
                                 @if($view)
-                                <a type="button" class="btn btn-success posting" data-id="{{Crypt::encrypt($view->id_target)}}" >POSTING <span class="btn-icon-end">
+                                <button type="button" class="btn btn-success ">POSTING <span class="btn-icon-end">
                                         <i class="fa fa-check"></i></span>
-                                </a>
-                                @elseif($view->status_target == 1)
-                                <a type="button" class="btn btn-success terposting">Terposting <span class="btn-icon-end">
-                                        <i class="fa fa-check"></i></span>
-                                </a>
+                                </button>
+                                @else
                                 @endif
                                 </span>
                             </div>
                             <div><br></div>
                             <!-- End Mainbalance -->
-
-                            <!-- Start EditModal -->
-                            <div class="modal fade" id="modal-editobjek">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h3 class="modal-title">Edit Data</h3>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                            </button>
-                                        </div>
-                                        <div class="modal-body" id="loadeditform">
-                                            <div class="basic-form">
-                                            <!-- Form
-                                                        Edit -->
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End Edit Modal -->
-
-                             <!-- Start Edit Target Modal -->
-                            <div class="modal fade" id="modal-edittarget">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h3 class="modal-title">Edit Pagu Target</h3>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                            </button>
-                                        </div>
-                                        <div class="modal-body" id="loadedittarget">
-                                            <div class="basic-form">
-                                            <!-- Form
-                                                        Edit -->
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End Edit Target Modal -->
-
-                             <!-- Start Edit Rincian Modal -->
-                             <div class="modal fade" id="modal-editrincian">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h3 class="modal-title">Edit Rincian</h3>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                            </button>
-                                        </div>
-                                        <div class="modal-body" id="loadeditrincian">
-                                            <div class="basic-form">
-                                            <!-- Form
-                                                        Edit -->
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End Edit Target Modal -->
-                        </div>
-                    </div>
-                </div>
-                @if($view)
-                 <!-- row -->
-                 <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title">Rincian</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-responsive-sm ">
-                                        <thead>
-                                            <tr>
-                                                <th style="color: black;">KODE AKUN</th>
-                                                <th style="color: black;">JENIS / SUB / OBJEK / RINCIAN</th>
-                                                <th style="color: black;">PAGU</th>
-                                                <th style="color: black;">AKSI</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        @foreach ($rincian as $kode_jr => $jr)
-                                        <tr>
-                                            <td style="color: black;"><b>{{$kode_jr}}</b></td>
-                                            <td style="color: black;"><b>{{$jr->first()->first()->first()->nama_jr}}</b></td>
-                                            <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_rtarget'), 0, ',', '.') }}</b></td>
-                                            <td></td>
-                                        </tr>
-                                        @foreach ($jr as $kode_sr => $sr)
-                                            <tr>
-                                                <td style="color: black;"><b>{{$kode_sr}}</b></td>
-                                                <td style="color: black;"><b>{{$sr->first()->first()->nama_sr}}</b></td>
-                                                <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_rtarget'), 0, ',', '.') }}</b></td>
-                                                <td style="color: black;"></td>
-                                            </tr>
-                                            @foreach ($sr as $kode_ojk => $ojk)
-                                            <tr>
-                                                <td style="color: black;"><b>{{$kode_ojk}}</b></td>
-                                                <td style="color: black;"><b>{{$ojk->first()->nama_ojk}}</td>
-                                                <td style="color: black;"><b>Rp{{ number_format($ojk->sum('pagu_rtarget'), 0, ',', '.') }}</b></td>
-                                                <td style="color: black;"></td>
-                                            </tr>
-                                            @foreach ($ojk as $d)
-                                            <tr>
-                                                <td style="color: black;"></td>
-                                                <td style="color: black;">- {{$d->uraian_rtarget}}</td>
-                                                <td style="color: black;">Rp<?php echo number_format($d->pagu_rtarget ,0,',','.')?></td>
-                                                <td>
-                                                @if($view->status_target == 1)
-                                                        <!-- Blank -->
-                                                 @else
-
-                                                    <div class="dropdown">
-														<button type="button" class="btn btn-warning dark sharp" data-bs-toggle="dropdown">
-															<svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><circle fill="#000000" cx="5" cy="12" r="2"/><circle fill="#000000" cx="12" cy="12" r="2"/><circle fill="#000000" cx="19" cy="12" r="2"/></g></svg>
-														</button>
-                                                        @csrf
-														<div class="dropdown-menu">
-															<a class="dropdown-item edit" href="#" data-id="{{Crypt::encrypt($d->id_rtarget)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
-															<a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_rtarget)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
-														</div>
-													</div>
-                                                    @endif
-                                                </td>
-                                            @endforeach
-                                            @endforeach
-                                            @endforeach
-                                            @endforeach
-                                            </tr>
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <th colspan="2" style="text-align:center; color:black;" >TOTAL PAGU</th>
-                                                <th colspan="2" style="text-align:center; color:black;">Rp<?php echo number_format($jumlah ,0,',','.')?></th>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
                             </div>
                         </div>
-                        @else
-                        @endif
                     </div>
                 </div>
             </div>
@@ -632,19 +483,6 @@ $(document).ready(function(){
 </script>
 <!-- End Alert Button Off -->
 
-<!-- Begin Alert Button Terposting -->
-<script>
-    $('.terposting').click(function() {
-  Swal.fire({
-    icon: 'success',
-    title: 'Data Telah Terposting',
-    text: 'Pagu Target Telah Ditetapkan',
-    confirmButtonText: 'OK'
-  })
-})
-</script>
-<!-- End Alert Button Terposting -->
-
 <!-- Begin Rupiah Pagu Target -->
 <script>
     $(document).ready(function(){
@@ -654,26 +492,5 @@ $(document).ready(function(){
     });
 </script>
 <!-- End Rupiah Pagu Target -->
-
-<!-- Start Button posting -->
-<script>
-$('.posting').click(function(){
-    var id_target = $(this).attr('data-id');
-Swal.fire({
-  title: "Apakah Anda Yakin Ingin Memposting Data Target Ini ?",
-  text: "Jika Ya Maka Data Akan Diposting dan Tidak Bisa Lagi Melakukan Pengeditan Data",
-  icon: "warning",
-  showCancelButton: true,
-  confirmButtonColor: "#3085d6",
-  cancelButtonColor: "#d33",
-  confirmButtonText: "Ya, Posting Saja!"
-}).then((result) => {
-  if (result.isConfirmed) {
-    window.location = "/opt/targetapbd/"+id_target+"/posting"
-  }
-});
-});
-</script>
-<!-- End Button Hapus -->
 
 @endpush
