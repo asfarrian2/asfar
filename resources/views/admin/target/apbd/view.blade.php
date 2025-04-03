@@ -64,8 +64,6 @@
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title">Data Target Retribusi APBD T.A. {{ Auth::guard('admin')->user()->id_tahun }} </h4>
-                                <!-- Button trigger modal -->
-                                <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#tambahdata">+Tambah</button>
                             </div>
                             <!-- Start Modal -->
                             <div class="modal fade" id="tambahdata">
@@ -135,6 +133,9 @@
                                                             </button>
                                                             @csrf
                                                             <div class="dropdown-menu">
+                                                                    <a class="dropdown-item" href="/admin/rtargetapbd/{{Crypt::encrypt($targetData->id_target)}}">
+                                                                        <i class="fa fa-eye color-muted"></i> Rincian
+                                                                    </a>
                                                                 @if ($targetData->status_target == '1')
                                                                     <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($targetData->id_target)}}">
                                                                         <i class="fa fa-ban color-muted"></i> Batalkan

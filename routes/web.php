@@ -67,6 +67,8 @@ Route::post('/admin/objekretribusi/edit', [ObjekretribusiController::class, 'edi
 
 //Crud Monitoring Target APBD
 Route::get('/admin/targetapbd', [TargetController::class, 'adm_view']);
+Route::get('/admin/rtargetapbd/{id_target}', [TargetController::class, 'adm_rview']);
+
 
 });
 
@@ -82,18 +84,23 @@ Route::middleware('auth:operator')->group(function () {
 // Dashboard Operator
 Route::get('/opt/dashboard', [DashboardController::class, 'operator']);
 
-// Crud Target Operator
+// Crud Target APBD Operator
 Route::get('/opt/targetapbd', [TargetController::class, 'apbd']);
 Route::post('/opt/targetapbd/store', [TargetController::class, 'store']);
 Route::post('/opt/targetapbd/edit', [TargetController::class, 'edit']);
 Route::post('/opt/targetapbd/{id_target}/update', [TargetController::class, 'update']);
 Route::get('/opt/targetapbd/{id_target}/posting', [TargetController::class, 'post']);
 
-// Crud Rincian Target Operator
+// Crud Rincian Target APBD Operator
 Route::get('/opt/filtersub/{id_jr}', [RtargetController::class, 'getsub']);
 Route::get('/opt/filterojk/{id_sr}', [RtargetController::class, 'getobjek']);
 Route::post('/opt/rtargetapbd/store', [RtargetController::class, 'store']);
 Route::post('/opt/rtargetapbd/edit', [RtargetController::class, 'edit']);
 Route::post('/opt/rtargetapbd/{id_rtarget}/update', [RtargetController::class, 'update']);
 Route::get('/opt/rtargetapbd/{id_rtarget}/hapus', [RtargetController::class, 'delate']);
+
+// Crud Target APBD Perubahan Operator
+Route::get('/opt/targetapbdp', [TargetController::class, 'apbdp']);
+
+
 });
