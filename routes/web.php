@@ -69,13 +69,17 @@ Route::post('/admin/objekretribusi/edit', [ObjekretribusiController::class, 'edi
 Route::get('/admin/targetapbd', [TargetController::class, 'adm_view']);
 Route::get('/admin/rtargetapbd/{id_target}', [TargetController::class, 'adm_rview']);
 
+//Crud Monitoring Target APBD Perubahan
+Route::get('/admin/targetapbdp', [TargetController::class, 'adm_view_p']);
+Route::get('/admin/rtargetapbdp/{id_target}', [TargetController::class, 'adm_rview_p']);
+
 
 });
 
 
 
 //Crud Login Operator
-Route::get('/', [LoginController::class, 'operator'])->name('login');;
+Route::get('/', [LoginController::class, 'operator']);
 Route::post('/opt_login', [LoginController::class, 'operator_proses']);
 Route::get('/adminlogout', [LoginController::class, 'logout_admin']);
 

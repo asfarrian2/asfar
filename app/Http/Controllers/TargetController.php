@@ -470,5 +470,66 @@ class TargetController extends Controller
         }
     }
 
+    //Tampilan Data Target APBD Perubahan
+    public function adm_view_p(){
+
+        //Menampilkan Data Utama Target
+        $tahun_sekarang   = Auth::guard('admin')->user()->id_tahun;
+
+        $view = DB::table('tb_agency')
+        ->get();
+
+        $target = DB::table('tb_target')
+        ->where('id_tahun', $tahun_sekarang)
+        ->get();
+
+        return view('admin.target.apbdp.view', compact('view', 'target'));
+    }
+
+       // View Data
+       public function adm_rview_p($id_target){
+
+        $id_target    = Crypt::decrypt($id_target);
+
+        $view = DB::table('tb_target')
+        ->leftJoin('tb_agency', 'tb_target.id_agency', '=', 'tb_agency.id_agency')
+        ->select('tb_target.*', 'tb_agency.nama_agency')
+        ->where('id_target',$id_target)
+        ->first();
+
+        //
+        if (empty($view)){
+            return view('operator.target.murni.blank', compact('view'));
+        }else{
+        //Menampilkan Data Rincian Target
+        $id_target = $view->id_target;
+        $rincian = DB::table('tb_rtarget')
+        ->leftJoin('tb_ojkretribusi', 'tb_rtarget.id_ojk', '=', 'tb_ojkretribusi.id_ojk')
+        ->leftJoin('tb_subretribusi', 'tb_ojkretribusi.id_sr', '=', 'tb_subretribusi.id_sr')
+        ->leftJoin('tb_jenretribusi', 'tb_subretribusi.id_jr', '=', 'tb_jenretribusi.id_jr')
+        ->select('tb_rtarget.*','tb_ojkretribusi.nama_ojk', 'tb_ojkretribusi.kode_ojk', 'tb_subretribusi.nama_sr', 'tb_subretribusi.kode_sr', 'tb_jenretribusi.nama_jr', 'tb_jenretribusi.kode_jr')
+        ->where('id_target',$id_target)
+        ->get()
+        ->groupBy('kode_jr')
+        ->map(function($item, $key) {
+            return $item->groupBy('kode_sr')
+                ->map(function($item, $key) {
+                    return $item->groupBy('kode_ojk');
+                });
+        });
+        //
+
+        $jumlah = DB::table('tb_rtarget')
+        ->where('id_target',$id_target)
+        ->sum('pagu_rtarget');
+
+        $jumlahp = DB::table('tb_rtarget')
+        ->where('id_target',$id_target)
+        ->sum('pagu_prtarget');
+
+        return view('admin.target.apbdp.rview', compact('view', 'rincian', 'jumlah', 'jumlahp'));
+        }
+    }
+
     // //(------------------------End Target Hak Admin----------------------------//
 }

@@ -29,7 +29,7 @@ class LoginController extends Controller
             DB::table('users')->where('email', $username)->update($data);
             return redirect('/admin/dashboardAll');
         } else {
-            return redirect('/')->with(['warning' => 'Username / Password Salah']);
+            return redirect('/ctr_admin')->with(['warning' => 'Username / Password Salah']);
         }
 
     }

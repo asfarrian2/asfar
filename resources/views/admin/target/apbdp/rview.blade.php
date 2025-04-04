@@ -55,7 +55,7 @@
 				<div class="row page-titles">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item active"><a href="/admin/dashboardAll">SI-RETDA</a></li>
-                        <li class="breadcrumb-item active"><a href="/admin/targetapbd">Target APBD</a></li>
+                        <li class="breadcrumb-item active"><a href="/admin/targetapbdp">Target APBD P</a></li>
 						<li class="breadcrumb-item"><a href="#">Rincian Target</a></li>
 					</ol>
                 </div>
@@ -64,48 +64,15 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title"style="color: purple;">{{ $view->nama_agency }}</h4>
+                                <h4 class="card-title" style="color: purple;">{{ $view->nama_agency }}</h4>
                             </div>
-                            <!-- Start Modal -->
-                            <div class="modal fade" id="tambahdata">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h3 class="modal-title">Tetapkan Target</h3>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="basic-form">
-                                            <form action="/opt/targetapbd/store" method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                                <div class="mb-3">
-                                                    <label class="form-label">Pagu Target (Rp) :</label>
-                                                    <input type="text" placeholder="0" name="pagutarget" id="pagu" class="form-control input-default pagu" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Surat Usul Target :</label>
-                                                    <input type="file" accept="application/pdf" name="dokumen" maxsize="1024" class="form-control input-default" required>
-                                                </div>
-                                           </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-primary">Simpan</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End Modal -->
-
 
                              <!-- Main Balance -->
 				            <div class="card-header flex-wrap border-0 pb-0 align-items-end">
 				            	<div class="mb-3 me-3">
-				            		<h5 class="fs-20 text-black font-w500">Pagu Target APBD {{ Auth::guard('admin')->user()->id_tahun }}</h5>
+				            		<h5 class="fs-20 text-black font-w500">Pagu Target APBD P {{ Auth::guard('admin')->user()->id_tahun }}</h5>
                                     @if($view)
-                                    <span class="text-num text-black fs-36 font-w500">Rp<?php echo number_format($view->pagu_target ,0,',','.')?></span>
+                                    <span class="text-num text-black fs-36 font-w500">Rp<?php echo number_format($view->pagu_ptarget ,0,',','.')?></span>
                                     @else
                                     <span class="text-num text-black fs-36 font-w500">Rp0</span>
                                     @endif
@@ -152,11 +119,17 @@
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-responsive-sm ">
-                                        <thead>
+                                    <thead>
                                             <tr>
-                                                <th style="color: black;">KODE AKUN</th>
-                                                <th style="color: black;">JENIS / SUB / OBJEK / RINCIAN</th>
-                                                <th style="color: black;">PAGU</th>
+                                                <th rowspan="2" style="color: black; text-align:center;">KODE AKUN</th>
+                                                <th rowspan="2" style="color: black; text-align:center;">JENIS / SUB / OBJEK / RINCIAN</th>
+                                                <th colspan="2" style="color: black; text-align:center;" >PAGU</th>
+                                                <th rowspan="2" style="color: black;">BERKURANG / <br>BERTAMBAH</th>
+
+                                            </tr>
+                                            <tr>
+                                                <th style="color: black;">SEBELUM</th>
+                                                <th style="color: black;">SESUDAH</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -165,24 +138,32 @@
                                             <td style="color: black;"><b>{{$kode_jr}}</b></td>
                                             <td style="color: black;"><b>{{$jr->first()->first()->first()->nama_jr}}</b></td>
                                             <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_rtarget'), 0, ',', '.') }}</b></td>
+                                            <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_prtarget'), 0, ',', '.') }}</b></td>
+                                            <td style="color: black;"><b>Rp{{ number_format(($jr->flatten()->sum('pagu_prtarget'))-($jr->flatten()->sum('pagu_rtarget')), 0, ',', '.') }}</b></td>
                                         </tr>
                                         @foreach ($jr as $kode_sr => $sr)
                                             <tr>
                                                 <td style="color: black;"><b>{{$kode_sr}}</b></td>
                                                 <td style="color: black;"><b>{{$sr->first()->first()->nama_sr}}</b></td>
                                                 <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_rtarget'), 0, ',', '.') }}</b></td>
+                                                <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_prtarget'), 0, ',', '.') }}</b></td>
+                                                <td style="color: black;"><b>Rp{{ number_format(($sr->flatten()->sum('pagu_prtarget'))-($sr->flatten()->sum('pagu_rtarget')), 0, ',', '.') }}</b></td>
                                             </tr>
                                             @foreach ($sr as $kode_ojk => $ojk)
                                             <tr>
                                                 <td style="color: black;"><b>{{$kode_ojk}}</b></td>
                                                 <td style="color: black;"><b>{{$ojk->first()->nama_ojk}}</td>
                                                 <td style="color: black;"><b>Rp{{ number_format($ojk->sum('pagu_rtarget'), 0, ',', '.') }}</b></td>
+                                                <td style="color: black;"><b>Rp{{ number_format($ojk->sum('pagu_prtarget'), 0, ',', '.') }}</b></td>
+                                                <td style="color: black;"><b>Rp{{ number_format(($ojk->sum('pagu_prtarget'))-($ojk->sum('pagu_rtarget')), 0, ',', '.') }}</b></td>
                                             </tr>
                                             @foreach ($ojk as $d)
                                             <tr>
                                                 <td style="color: black;"></td>
                                                 <td style="color: black;">- {{$d->uraian_rtarget}}</td>
                                                 <td style="color: black;">Rp<?php echo number_format($d->pagu_rtarget ,0,',','.')?></td>
+                                                <td style="color: black;">Rp<?php echo number_format($d->pagu_prtarget ,0,',','.')?></td>
+                                                <td style="color: black;">Rp<?php echo number_format(($d->pagu_prtarget)-($d->pagu_rtarget) ,0,',','.')?></td>
                                             @endforeach
                                             @endforeach
                                             @endforeach
@@ -192,7 +173,9 @@
                                         <tfoot>
                                             <tr>
                                                 <th colspan="2" style="text-align:center; color:black;" >TOTAL PAGU</th>
-                                                <th colspan="2" style="text-align:center; color:black;">Rp<?php echo number_format($jumlah ,0,',','.')?></th>
+                                                <th style="text-align:center; color:black;">Rp<?php echo number_format($jumlah ,0,',','.')?></th>
+                                                <th style="text-align:center; color:black;">Rp<?php echo number_format($jumlahp ,0,',','.')?></th>
+                                                <th style="text-align:center; color:black;">Rp<?php echo number_format($jumlahp-$jumlah ,0,',','.')?></th>
                                             </tr>
                                         </tfoot>
                                     </table>

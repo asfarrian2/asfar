@@ -11,7 +11,7 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
 							<div class="dashboard_bar">
-                                Target APBD
+                                Target APBD Perubahan
                             </div>
                         </div>
                     </div>
@@ -55,7 +55,7 @@
 				<div class="row page-titles">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item active"><a href="/admin/dashboardAll">SI-RETDA</a></li>
-						<li class="breadcrumb-item"><a href="#">Target APBD</a></li>
+						<li class="breadcrumb-item"><a href="#">Target APBD P</a></li>
 					</ol>
                 </div>
                 <!-- row -->
@@ -63,40 +63,8 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Data Target Retribusi APBD T.A. {{ Auth::guard('admin')->user()->id_tahun }} </h4>
+                                <h4 class="card-title">Data Target Retribusi APBD P T.A. {{ Auth::guard('admin')->user()->id_tahun }} </h4>
                             </div>
-                            <!-- Start Modal -->
-                            <div class="modal fade" id="tambahdata">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h3 class="modal-title">Tambah Data</h3>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="basic-form">
-                                            <form action="/admin/jenisretribusi/store" method="POST">
-                                            @csrf
-                                                <div class="mb-3">
-                                                    <label class="form-label">Kode Akun :</label>
-                                                    <input type="text" pattern="[0-9\.]+" name="kode_jr" class="form-control input-default" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Nama Akun :</label>
-                                                    <input type="text" name="nama_jr" class="form-control input-default" required>
-                                                </div>
-                                           </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-primary">Simpan</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End Modal -->
 
                             <!-- Tabel -->
                             <div class="card-body">
@@ -120,8 +88,8 @@
                                                     $targetData = $target->where('id_agency', $d->id_agency)->first();
                                                 @endphp
                                                 @if ($targetData)
-                                                    <td style="color: black;">Rp{{ number_format($targetData->pagu_target, 0, ',', '.') }}</td>
-                                                    @if ($targetData->status_target == '0')
+                                                    <td style="color: black;">Rp{{ number_format($targetData->pagu_ptarget, 0, ',', '.') }}</td>
+                                                    @if ($targetData->status_target < '2')
                                                         <td><span class="badge light badge-warning">Proses</span></td>
                                                     @else
                                                         <td><span class="badge light badge-success">Terposting</span></td>
@@ -133,14 +101,14 @@
                                                             </button>
                                                             @csrf
                                                             <div class="dropdown-menu">
-                                                                    <a class="dropdown-item" href="/admin/rtargetapbd/{{Crypt::encrypt($targetData->id_target)}}">
+                                                                    <a class="dropdown-item" href="/admin/rtargetapbdp/{{Crypt::encrypt($targetData->id_target)}}">
                                                                         <i class="fa fa-eye color-muted"></i> Rincian
                                                                     </a>
-                                                                @if ($targetData->status_target == '1')
+                                                                @if ($targetData->status_target == '2')
                                                                     <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($targetData->id_target)}}">
                                                                         <i class="fa fa-ban color-muted"></i> Batalkan
                                                                     </a>
-                                                                @elseif ($targetData->status_target == '0')
+                                                                @elseif ($targetData->status_target == '1')
                                                                     <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($targetData->id_target)}}">
                                                                         <i class="fa fa-check color-muted"></i> Posting
                                                                     </a>
