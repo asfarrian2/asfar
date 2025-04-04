@@ -278,7 +278,7 @@ class TargetController extends Controller
         ->first();
         //
         if (empty($view)){
-            return view('operator.target.murni.blank', compact('view'));
+            return view('operator.target.perubahan.blank', compact('view'));
         }else{
         //Menampilkan Data Rincian Target
         $id_target = $view->id_target;
@@ -300,11 +300,114 @@ class TargetController extends Controller
 
         $jumlah = DB::table('tb_rtarget')
         ->where('id_target',$id_target)
-        ->sum('pagu_rtarget');
+        ->sum('pagu_prtarget');
 
-        return view('operator.target.murni.view', compact('view', 'rincian', 'jumlah', 'objek', 'sub', 'jenis'));
+        return view('operator.target.perubahan.view', compact('view', 'rincian', 'jumlah', 'objek', 'sub', 'jenis'));
         }
     }
+
+    //Tampilkan Halaman Edit Data APBDP
+     public function edit_p(Request $request){
+
+        $id_target    = $request->id_target;
+        $id_target    = Crypt::decrypt($id_target);
+        $target       = DB::table('tb_target')
+                        ->where('id_target', $id_target)
+                        ->first();
+
+        return view('operator.target.perubahan.edittarget', compact('target'));
+    }
+
+    //Update Data
+    public function update_p($id_target, Request $request){
+
+            $id_target      = Crypt::decrypt($id_target);
+            $id_agency      = Auth::guard('operator')->user()->id_agency;
+            $id_tahun       = Auth::guard('operator')->user()->id_tahun;
+            $pagu_target    = $request->pagutarget;
+            $dokumen        = $request->file('dokumen');
+            $pagu           = str_replace('.','', $pagu_target);
+
+        //Pemprosesan Dokumen
+        $dinas = DB::table('tb_agency')
+                ->where('id_agency', $id_agency)
+                ->first();
+        $nama_dinas = $dinas->nama_agency;
+
+        if ($dokumen) {
+            // Proses file
+            $validator = Validator::make($request->all(),[
+                'dokumen' => 'required|mimes:pdf|max:1024',
+            ], [
+                'dokumen.max' => 'Upload gagal karena ukuran file terlalu besar. Maksimal ukuran file adalah 1MB',
+            ]);
+            if ($validator->fails()) {
+                return Redirect::back()->with(['warning' => $validator->messages()->first()]);
+            }
+
+            $nama_dokumen = 'Surat Usulan Target Retribusi APBD Perubahan '. $id_tahun.' '.$nama_dinas.'.'. $dokumen->getClientOriginalExtension();
+        } else {
+            return Redirect::back()->with(['warning' => 'Dokumen Belum Diupload']);
+        }
+
+        //Save Dokumen
+        $dokumen->move('upload/dokumen/targetapbdp/', $nama_dokumen);
+
+
+            $data = [
+                'pagu_ptarget'  => $pagu,
+                'surat_apbdp'    => $nama_dokumen
+            ];
+
+        //Cek Total Antara Pagu Ketetapan dan Rincian
+        $jumlah_rincian = DB::table('tb_rtarget')
+        ->where('id_target',$id_target)
+        ->sum('pagu_rtarget');
+        //
+
+        //validasi pagu rincian
+        if ($jumlah_rincian > $pagu) {
+            return Redirect::back()->with(['warning' => 'Total Pagu Lebih Kecil Dari Pada Total Rincian Yang Telah Diinputkan']);
+        }else{
+            $update = DB::table('tb_target')->where('id_target', $id_target)->update($data);
+            if ($update) {
+                return Redirect('/opt/targetapbdp')->with(['success' => 'Data Berhasil Dirubah']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Data Gagal Dirubah']);
+            }
+          }
+         }
+
+     //Posting Target Data
+     public function post_p($id_target){
+
+        $id_target    = Crypt::decrypt($id_target);
+        $target       = DB::table('tb_target')
+                        ->where('id_target', $id_target)
+                        ->first();
+        $jtarget      = $target->pagu_ptarget;
+
+        $rtarget       = DB::table('tb_rtarget')
+                        ->where('id_target', $id_target)
+                        ->sum('pagu_prtarget');
+
+        $data = [
+            'status_target' => '2'
+        ];
+
+        //validasi pagu rincian
+         if ($rtarget == $jtarget && $target->surat_apbdp ==! NULL) {
+            $update = DB::table('tb_target')->where('id_target', $id_target)->update($data);
+            if ($update) {
+                return Redirect::back()->with(['success' => 'Target Berhasil Diposting']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Target Gagal Diposting']);
+            }
+        }else{
+            return Redirect::back()->with(['warning' => 'Antara Nominal Pagu Target dengan Nominal pada Rincian Masih Memiliki Jumlah Nominal yang Berbeda']);
+        }
+    }
+
 
 
     // //(------------------------End Target Hak User----------------------------//

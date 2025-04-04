@@ -1,4 +1,4 @@
-<form action="/opt/rtargetapbd/{{Crypt::encrypt($data->id_rtarget)}}/update"  method="POST" enctype="multipart/form-data">
+<form action="/opt/rtargetapbdp/{{Crypt::encrypt($data->id_rtarget)}}/update"  method="POST" enctype="multipart/form-data">
          @csrf
             <div class="mb-3">
                 <label class="form-label">Uraian Target :</label>
@@ -6,8 +6,9 @@
              </div>
              <div class="mb-3">
                 <label class="form-label">Pagu Target (Rp) :</label>
-                <input type="text" placeholder="0" name="pagutarget" id="edit1pagu" value="{{ $data->pagu_rtarget}}" class="form-control input-default pagu" required>
+                <input type="text" placeholder="0" name="pagutarget" id="edit1pagu" value="{{ $data->pagu_prtarget}}" class="form-control input-default pagu" required>
              </div>
+             @if ($data->status_rtarget == 1)
              <div class="mb-3">
                 <label class="form-label">Jenis Retribusi :</label>
                 <select class="input-default  form-control" name="jenis" id="SelectJre">
@@ -38,6 +39,11 @@
                 @endforeach
                 </select>
             </div>
+            @else
+            <div class="mb-3">
+                <input type="hidden" name="objek" value="{{ $data->id_ojk}}" class="form-control input-default" required>
+             </div>
+             @endif
         </div>
      </div>
      <div class="modal-footer">

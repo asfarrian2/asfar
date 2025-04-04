@@ -68,8 +68,8 @@
                                  @if($view->status_target == 0)
                                  @csrf
                                  <button type="button" class="btn btn-warning mb-2 edit1" data-id="{{Crypt::encrypt($view->id_target)}}">✎ Edit Pagu Target</button>
+                                @elseif($view->status_target > 0)
                                 <!-- Blank -->
-                                @elseif($view->status_target == 1)
                                  @else
                                  <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#tambahdata">+ Tetapkan Pagu Target</button>
                                  @endif
@@ -180,7 +180,7 @@
                                     @endif
 				            	</div>
 				            	<div class="me-3 mb-3">
-                                    @if($view->status_target == 1)
+                                    @if($view->status_target > 0)
                                     <!-- Blank -->
                                     @elseif($view->status_target == 0)
                                     <p class="fs-14 mb-1">RINCIAN</p>
@@ -211,7 +211,7 @@
                                 <a type="button" class="btn btn-success posting" data-id="{{Crypt::encrypt($view->id_target)}}" >POSTING <span class="btn-icon-end">
                                         <i class="fa fa-check"></i></span>
                                 </a>
-                                @elseif($view->status_target == 1)
+                                @elseif($view->status_target > 0)
                                 <a type="button" class="btn btn-success terposting">Terposting <span class="btn-icon-end">
                                         <i class="fa fa-check"></i></span>
                                 </a>

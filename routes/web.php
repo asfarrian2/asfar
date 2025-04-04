@@ -101,6 +101,14 @@ Route::get('/opt/rtargetapbd/{id_rtarget}/hapus', [RtargetController::class, 'de
 
 // Crud Target APBD Perubahan Operator
 Route::get('/opt/targetapbdp', [TargetController::class, 'apbdp']);
+Route::post('/opt/targetapbdp/edit', [TargetController::class, 'edit_p']);
+Route::post('/opt/targetapbdp/{id_target}/update', [TargetController::class, 'update_p']);
+Route::get('/opt/targetapbdp/{id_target}/posting', [TargetController::class, 'post_p']);
 
+// Crud Rincian Target APBD Perubahan Operator
+Route::post('/opt/rtargetapbdp/store', [RtargetController::class, 'store_p']);
+Route::post('/opt/rtargetapbdp/edit', [RtargetController::class, 'edit_p']);
+Route::post('/opt/rtargetapbdp/{id_rtarget}/update', [RtargetController::class, 'update_p']);
+Route::get('/opt/rtargetapbdp/{id_rtarget}/hapus', [RtargetController::class, 'delate_p']);
 
 });

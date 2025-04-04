@@ -11,7 +11,7 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
 							<div class="dashboard_bar">
-                                Target APBD
+                                Target APBD Perubahan
                             </div>
                         </div>
                     </div>
@@ -55,7 +55,7 @@
 				<div class="row page-titles">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item active"><a href="/opt/dashboard">SI-RETDA</a></li>
-						<li class="breadcrumb-item"><a href="#">Target APBD</a></li>
+						<li class="breadcrumb-item"><a href="#">Target APBD P</a></li>
 					</ol>
                 </div>
                 <!-- row -->
@@ -63,15 +63,13 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Data Target APBD {{ Auth::guard('operator')->user()->id_tahun }}</h4>
+                                <h4 class="card-title">Data Target APBD Perubahan {{ Auth::guard('operator')->user()->id_tahun }}</h4>
                                 <!-- Button trigger modal -->
-                                 @if($view->status_target == 0)
+                                 @if($view->status_target == 1)
                                  @csrf
                                  <button type="button" class="btn btn-warning mb-2 edit1" data-id="{{Crypt::encrypt($view->id_target)}}">✎ Edit Pagu Target</button>
+                                @elseif($view->status_target == 2)
                                 <!-- Blank -->
-                                @elseif($view->status_target == 1)
-                                 @else
-                                 <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#tambahdata">+ Tetapkan Pagu Target</button>
                                  @endif
                             </div>
                             <!-- Start Modal -->
@@ -118,7 +116,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="basic-form">
-                                            <form action="/opt/rtargetapbd/store" method="POST">
+                                            <form action="/opt/rtargetapbdp/store" method="POST">
                                             @csrf
                                                 @if($view)
                                                 <input type="hidden" placeholder="0" name="target" id="target" value="{{ $view->id_target }}"  class="form-control input-default" required>
@@ -174,15 +172,15 @@
 				            	<div class="mb-3 me-3">
 				            		<h5 class="fs-20 text-black font-w500">Pagu Target</h5>
                                     @if($view)
-                                    <span class="text-num text-black fs-36 font-w500">Rp<?php echo number_format($view->pagu_target ,0,',','.')?></span>
+                                    <span class="text-num text-black fs-36 font-w500">Rp<?php echo number_format($view->pagu_ptarget ,0,',','.')?></span>
                                     @else
                                     <span class="text-num text-black fs-36 font-w500">Rp0</span>
                                     @endif
 				            	</div>
 				            	<div class="me-3 mb-3">
-                                    @if($view->status_target == 1)
+                                    @if($view->status_target == 2)
                                     <!-- Blank -->
-                                    @elseif($view->status_target == 0)
+                                    @elseif($view->status_target == 1)
                                     <p class="fs-14 mb-1">RINCIAN</p>
                                     <button type="button" class="btn btn-rounded btn-primary" data-bs-toggle="modal" data-bs-target="#tambahrincian"><span
                                         class="btn-icon-start text-primary"><i class="fa fa-plus color-primary"></i>
@@ -196,8 +194,8 @@
 				            	</div>
 				            	<div class="me-3 mb-3">
 				            		<p class="fs-14 mb-1">SURAT USUL TARGET</p>
-                                    @if($view)
-                                    <a type="button" class="btn btn-rounded btn-info" href="{{ asset('upload/dokumen/targetapbd/'.$view->surat_apbd) }}" target="_blank"><span
+                                    @if($view->surat_apbdp !== NULL)
+                                    <a type="button" class="btn btn-rounded btn-info" href="{{ asset('upload/dokumen/targetapbdp/'.$view->surat_apbdp) }}" target="_blank"><span
                                         class="btn-icon-start text-info"><i class="fa fa-download color-info"></i>
                                     </span>Download Dokumen</a>
                                     @else
@@ -207,11 +205,11 @@
                                     @endif
 				            	</div>
 				            	<span class="fs-20 text-black font-w500 me-3 mb-3">
-                                @if($view->status_target == 0)
+                                @if($view->status_target == 1)
                                 <a type="button" class="btn btn-success posting" data-id="{{Crypt::encrypt($view->id_target)}}" >POSTING <span class="btn-icon-end">
                                         <i class="fa fa-check"></i></span>
                                 </a>
-                                @elseif($view->status_target == 1)
+                                @elseif($view->status_target == 2)
                                 <a type="button" class="btn btn-success terposting">Terposting <span class="btn-icon-end">
                                         <i class="fa fa-check"></i></span>
                                 </a>
@@ -295,10 +293,15 @@
                                     <table class="table table-bordered table-responsive-sm ">
                                         <thead>
                                             <tr>
-                                                <th style="color: black;">KODE AKUN</th>
-                                                <th style="color: black;">JENIS / SUB / OBJEK / RINCIAN</th>
-                                                <th style="color: black;">PAGU</th>
-                                                <th style="color: black;">AKSI</th>
+                                                <th rowspan="2" style="color: black; text-align:center;">KODE AKUN</th>
+                                                <th rowspan="2" style="color: black; text-align:center;">JENIS / SUB / OBJEK / RINCIAN</th>
+                                                <th colspan="2" style="color: black; text-align:center;" >PAGU</th>
+                                                <th rowspan="2" style="color: black;">BERKURANG / <br>BERTAMBAH</th>
+                                                <th rowspan="2" style="color: black; text-align:center;">AKSI</th>
+                                            </tr>
+                                            <tr>
+                                                <th style="color: black;">SEBELUM</th>
+                                                <th style="color: black;">SESUDAH</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -307,6 +310,8 @@
                                             <td style="color: black;"><b>{{$kode_jr}}</b></td>
                                             <td style="color: black;"><b>{{$jr->first()->first()->first()->nama_jr}}</b></td>
                                             <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_rtarget'), 0, ',', '.') }}</b></td>
+                                            <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_prtarget'), 0, ',', '.') }}</b></td>
+                                            <td style="color: black;"><b>Rp{{ number_format(($jr->flatten()->sum('pagu_prtarget'))-($jr->flatten()->sum('pagu_rtarget')), 0, ',', '.') }}</b></td>
                                             <td></td>
                                         </tr>
                                         @foreach ($jr as $kode_sr => $sr)
@@ -314,6 +319,8 @@
                                                 <td style="color: black;"><b>{{$kode_sr}}</b></td>
                                                 <td style="color: black;"><b>{{$sr->first()->first()->nama_sr}}</b></td>
                                                 <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_rtarget'), 0, ',', '.') }}</b></td>
+                                                <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_prtarget'), 0, ',', '.') }}</b></td>
+                                                <td style="color: black;"><b>Rp{{ number_format(($sr->flatten()->sum('pagu_prtarget'))-($sr->flatten()->sum('pagu_rtarget')), 0, ',', '.') }}</b></td>
                                                 <td style="color: black;"></td>
                                             </tr>
                                             @foreach ($sr as $kode_ojk => $ojk)
@@ -321,6 +328,8 @@
                                                 <td style="color: black;"><b>{{$kode_ojk}}</b></td>
                                                 <td style="color: black;"><b>{{$ojk->first()->nama_ojk}}</td>
                                                 <td style="color: black;"><b>Rp{{ number_format($ojk->sum('pagu_rtarget'), 0, ',', '.') }}</b></td>
+                                                <td style="color: black;"><b>Rp{{ number_format($ojk->sum('pagu_prtarget'), 0, ',', '.') }}</b></td>
+                                                <td style="color: black;"><b>Rp{{ number_format(($ojk->sum('pagu_prtarget'))-($ojk->sum('pagu_rtarget')), 0, ',', '.') }}</b></td>
                                                 <td style="color: black;"></td>
                                             </tr>
                                             @foreach ($ojk as $d)
@@ -328,8 +337,10 @@
                                                 <td style="color: black;"></td>
                                                 <td style="color: black;">- {{$d->uraian_rtarget}}</td>
                                                 <td style="color: black;">Rp<?php echo number_format($d->pagu_rtarget ,0,',','.')?></td>
+                                                <td style="color: black;">Rp<?php echo number_format($d->pagu_prtarget ,0,',','.')?></td>
+                                                <td style="color: black;">Rp<?php echo number_format(($d->pagu_prtarget)-($d->pagu_rtarget) ,0,',','.')?></td>
                                                 <td>
-                                                @if($view->status_target == 1)
+                                                @if($view->status_target == 2)
                                                         <!-- Blank -->
                                                  @else
 
@@ -340,7 +351,10 @@
                                                         @csrf
 														<div class="dropdown-menu">
 															<a class="dropdown-item edit" href="#" data-id="{{Crypt::encrypt($d->id_rtarget)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
+                                                            @if ($d->status_rtarget == 1)
 															<a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_rtarget)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
+                                                            @else
+                                                            @endif
 														</div>
 													</div>
                                                     @endif
@@ -384,7 +398,7 @@ $('.edit').click(function(){
     var id_rtarget = $(this).attr('data-id');
     $.ajax({
                     type: 'POST',
-                    url: '/opt/rtargetapbd/edit',
+                    url: '/opt/rtargetapbdp/edit',
                     cache: false,
                     data: {
                         _token: "{{ csrf_token() }}",
@@ -477,7 +491,7 @@ $('.edit1').click(function(){
     var id_target = $(this).attr('data-id');
     $.ajax({
                     type: 'POST',
-                    url: '/opt/targetapbd/edit',
+                    url: '/opt/targetapbdp/edit',
                     cache: false,
                     data: {
                         _token: "{{ csrf_token() }}",
@@ -510,7 +524,7 @@ Swal.fire({
   confirmButtonText: "Ya, Hapus Saja!"
 }).then((result) => {
   if (result.isConfirmed) {
-    window.location = "/opt/rtargetapbd/"+id_rtarget+"/hapus"
+    window.location = "/opt/rtargetapbdp/"+id_rtarget+"/hapus"
   }
 });
 });
@@ -669,7 +683,7 @@ Swal.fire({
   confirmButtonText: "Ya, Posting Saja!"
 }).then((result) => {
   if (result.isConfirmed) {
-    window.location = "/opt/targetapbd/"+id_target+"/posting"
+    window.location = "/opt/targetapbdp/"+id_target+"/posting"
   }
 });
 });

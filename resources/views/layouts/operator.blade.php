@@ -118,9 +118,14 @@
 						</a>
                         <ul aria-expanded="false">
                             <li><a href="/opt/targetapbd">APBD</a></li>
-                            <li><a href="./form-wizard.html">APBD Perubahan</a></li>
+                            <li><a href="/opt/targetapbdp">APBD Perubahan</a></li>
                             <li><a href="./form-wizard.html">RPJMD</a></li>
                         </ul>
+                    </li>
+                    <li><a href="javascript:void()" aria-expanded="false">
+							<i class="flaticon-022-copy"></i>
+							<span class="nav-text">Capaian</span>
+						</a>
                     </li>
                     <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
 							<i class="flaticon-072-printer"></i>
