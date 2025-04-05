@@ -113,7 +113,7 @@
 						</a>
 					</li>
                     <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-							<i class="flaticon-381-calculator"></i>
+							<i class="flaticon-055-minimize"></i>
 							<span class="nav-text">Target</span>
 						</a>
                         <ul aria-expanded="false">
@@ -123,8 +123,8 @@
                         </ul>
                     </li>
                     <li><a href="javascript:void()" aria-expanded="false">
-							<i class="flaticon-022-copy"></i>
-							<span class="nav-text">Capaian</span>
+							<i class="flaticon-041-graph"></i>
+							<span class="nav-text">Realisasi</span>
 						</a>
                     </li>
                     <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">

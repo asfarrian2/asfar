@@ -5,6 +5,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JenisretribusiController;
+use App\Http\Controllers\MenuanggaranController;
 use App\Http\Controllers\ObjekretribusiController;
 use App\Http\Controllers\RtargetController;
 use App\Http\Controllers\SubretribusiController;
@@ -72,6 +73,10 @@ Route::get('/admin/rtargetapbd/{id_target}', [TargetController::class, 'adm_rvie
 //Crud Monitoring Target APBD Perubahan
 Route::get('/admin/targetapbdp', [TargetController::class, 'adm_view_p']);
 Route::get('/admin/rtargetapbdp/{id_target}', [TargetController::class, 'adm_rview_p']);
+
+//Crud Menu Anggaran
+Route::get('/admin/menuanggaran', [MenuanggaranController::class, 'view']);
+Route::post('/admin/menuanggaran/store', [MenuanggaranController::class, 'store']);
 
 
 });

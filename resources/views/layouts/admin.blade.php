@@ -136,7 +136,6 @@
                             <li><a href="/admin/jenisretribusi">Jenis Retribusi</a></li>
                             <li><a href="/admin/subretribusi">Sub Retribusi</a></li>
                             <li><a href="/admin/objekretribusi">Objek Retribusi</a></li>
-                            <li><a href="table-datatable-basic.html">Konfigurasi</a></li>
                         </ul>
                     </li>
                     <li><a href="/admin/agency" class="ai-icon" aria-expanded="false">
@@ -151,6 +150,15 @@
                         <ul aria-expanded="false">
                             <li><a href="/admin/operator">Operator</a></li>
 							<li><a href="./post-details.html">User</a></li>
+                        </ul>
+                    </li>
+                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+						<i class="flaticon-060-on"></i>
+							<span class="nav-text">Konfigurasi Menu</span>
+						</a>
+                        <ul aria-expanded="false">
+                            <li><a href="/admin/menuanggaran">Anggaran</a></li>
+							<li><a href="./post-details.html">Bulanan</a></li>
                         </ul>
                     </li>
                     <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
