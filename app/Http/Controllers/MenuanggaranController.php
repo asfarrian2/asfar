@@ -38,6 +38,7 @@ class MenuanggaranController extends Controller
                 'uraian_menu'     => $uraian_menu,
                 'tipe_menu'       => '1',
                 'keterangan_menu' => '1',
+                'nilai_menu'      => '0',
                 'status_menu'     => '1'
 
             ];
@@ -46,6 +47,7 @@ class MenuanggaranController extends Controller
                 'uraian_menu'     => $uraian_menu,
                 'tipe_menu'       => '1',
                 'keterangan_menu' => '2',
+                'nilai_menu'      => '0',
                 'status_menu'     => '0'
 
             ];
@@ -55,6 +57,7 @@ class MenuanggaranController extends Controller
                 'uraian_menu'     => 'Januari',
                 'tipe_menu'       => '2',
                 'keterangan_menu' => $uraian_menu,
+                'nilai_menu'      => '1',
                 'status_menu'     => '0'
 
             ];
@@ -63,6 +66,7 @@ class MenuanggaranController extends Controller
                 'uraian_menu'     => 'Februari',
                 'tipe_menu'       => '2',
                 'keterangan_menu' => $uraian_menu,
+                'nilai_menu'      => '1',
                 'status_menu'     => '0'
             ];
             $maret = [
@@ -70,6 +74,7 @@ class MenuanggaranController extends Controller
                 'uraian_menu'     => 'Maret',
                 'tipe_menu'       => '2',
                 'keterangan_menu' => $uraian_menu,
+                'nilai_menu'      => '1',
                 'status_menu'     => '0'
             ];
             $april = [
@@ -77,6 +82,7 @@ class MenuanggaranController extends Controller
                 'uraian_menu'     => 'April',
                 'tipe_menu'       => '2',
                 'keterangan_menu' => $uraian_menu,
+                'nilai_menu'      => '2',
                 'status_menu'     => '0'
             ];
             $mei = [
@@ -84,6 +90,7 @@ class MenuanggaranController extends Controller
                 'uraian_menu'     => 'Mei',
                 'tipe_menu'       => '2',
                 'keterangan_menu' => $uraian_menu,
+                'nilai_menu'      => '2',
                 'status_menu'     => '0'
             ];
             $juni = [
@@ -91,6 +98,7 @@ class MenuanggaranController extends Controller
                 'uraian_menu'     => 'Juni',
                 'tipe_menu'       => '2',
                 'keterangan_menu' => $uraian_menu,
+                'nilai_menu'      => '2',
                 'status_menu'     => '0'
             ];
             $juli = [
@@ -98,6 +106,7 @@ class MenuanggaranController extends Controller
                 'uraian_menu'     => 'Juli',
                 'tipe_menu'       => '2',
                 'keterangan_menu' => $uraian_menu,
+                'nilai_menu'      => '3',
                 'status_menu'     => '0'
             ];
             $agustus = [
@@ -105,6 +114,7 @@ class MenuanggaranController extends Controller
                 'uraian_menu'     => 'Agustus',
                 'tipe_menu'       => '2',
                 'keterangan_menu' => $uraian_menu,
+                'nilai_menu'      => '3',
                 'status_menu'     => '0'
             ];
             $september = [
@@ -112,6 +122,7 @@ class MenuanggaranController extends Controller
                 'uraian_menu'     => 'September',
                 'tipe_menu'       => '2',
                 'keterangan_menu' => $uraian_menu,
+                'nilai_menu'      => '3',
                 'status_menu'     => '0'
             ];
             $oktober = [
@@ -119,6 +130,7 @@ class MenuanggaranController extends Controller
                 'uraian_menu'     => 'Oktober',
                 'tipe_menu'       => '3',
                 'keterangan_menu' => $uraian_menu,
+                'nilai_menu'      => '4',
                 'status_menu'     => '0'
             ];
             $november = [
@@ -126,6 +138,7 @@ class MenuanggaranController extends Controller
                 'uraian_menu'     => 'November',
                 'tipe_menu'       => '3',
                 'keterangan_menu' => $uraian_menu,
+                'nilai_menu'      => '4',
                 'status_menu'     => '0'
             ];
             $desember = [
@@ -133,6 +146,7 @@ class MenuanggaranController extends Controller
                 'uraian_menu'     => 'Desember',
                 'tipe_menu'       => '3',
                 'keterangan_menu' => $uraian_menu,
+                'nilai_menu'      => '4',
                 'status_menu'     => '0'
             ];
             $data = [

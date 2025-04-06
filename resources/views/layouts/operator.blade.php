@@ -122,7 +122,7 @@
                             <li><a href="./form-wizard.html">RPJMD</a></li>
                         </ul>
                     </li>
-                    <li><a href="javascript:void()" aria-expanded="false">
+                    <li><a href="/opt/realisasi" aria-expanded="false">
 							<i class="flaticon-041-graph"></i>
 							<span class="nav-text">Realisasi</span>
 						</a>

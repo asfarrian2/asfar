@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JenisretribusiController;
 use App\Http\Controllers\MenuanggaranController;
 use App\Http\Controllers\ObjekretribusiController;
+use App\Http\Controllers\RealisasiController;
 use App\Http\Controllers\RtargetController;
 use App\Http\Controllers\SubretribusiController;
 use App\Http\Controllers\TahunController;
@@ -121,5 +122,8 @@ Route::post('/opt/rtargetapbdp/store', [RtargetController::class, 'store_p']);
 Route::post('/opt/rtargetapbdp/edit', [RtargetController::class, 'edit_p']);
 Route::post('/opt/rtargetapbdp/{id_rtarget}/update', [RtargetController::class, 'update_p']);
 Route::get('/opt/rtargetapbdp/{id_rtarget}/hapus', [RtargetController::class, 'delate_p']);
+
+// Crud Target APBD Operator
+Route::get('/opt/realisasi', [RealisasiController::class, 'apbd']);
 
 });
