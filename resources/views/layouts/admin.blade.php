@@ -65,7 +65,7 @@
             Nav header start
         ***********************************-->
         <div class="nav-header">
-            <a href="/" class="brand-logo">
+            <a href="/admin/dashboardAll" class="brand-logo">
                 <img src="{{asset ('./images/logo-utama.png') }}">
                 <img src="{{asset ('./images/logo-text-2.png') }}" class="brand-title" width="124px" height="33px">
             </a>

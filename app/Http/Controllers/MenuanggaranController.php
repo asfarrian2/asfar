@@ -15,6 +15,7 @@ class MenuanggaranController extends Controller
     public function view(){
         $menu = DB::table('tb_menu')
         ->where('tipe_menu', '1')
+        ->orderBy('uraian_menu', 'ASC')
         ->get();
 
         return view('admin.menu.anggaran.view', compact('menu'));
@@ -159,5 +160,89 @@ class MenuanggaranController extends Controller
 
           }
     }
+
+    //Status Data
+    public function status($id_menu)
+    {
+        $id_menu   = Crypt::decrypt($id_menu);
+
+        $data = DB::table('tb_menu')
+        ->where('id_menu', $id_menu)
+        ->first();
+
+        $status_menu = $data->status_menu;
+
+        $aktif = [
+            'status_menu' => '1',
+        ];
+
+        $nonaktif = [
+            'status_menu' => '0',
+        ];
+
+        if($status_menu == '0'){
+            $update = DB::table('tb_menu')->where('id_menu', $id_menu)->update($aktif);
+            if ($update) {
+                return Redirect::back()->with(['success' => 'Data Berhasil Diaktifkan.']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Data Gagal Diaktifkan.']);
+            }
+
+        }else{
+            $update = DB::table('tb_menu')->where('id_menu', $id_menu)->update($nonaktif);
+            if ($update) {
+                return Redirect::back()->with(['success' => 'Data Berhasil Dinonaktifkan.']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Data Gagal Dinonaktifkan.']);
+            }
+            }
+
+    }
+
+    //Hapus Data
+     public function delate($id_menu)
+     {
+        $id = Crypt::decrypt($id_menu);
+
+        $id_tahun = DB::table('tb_menu')
+        ->where('id_menu',$id)
+        ->first();
+
+        $tahun = $id_tahun->uraian_menu;
+
+        $cek = DB::table('tb_target')
+        ->where('id_tahun', $tahun)
+        ->count();
+
+        if ($cek > 0) {
+            return Redirect::back()->with(['warning' => 'Tahun Anggaran Telah Digunakan, Data Tidak Dapat Dihapus']);
+        }else{
+            $delete = DB::table('tb_menu')->where('uraian_menu', $tahun)->delete();
+            if ($delete) {
+                DB::table('tb_menu')->where('keterangan_menu', $tahun)->delete();
+                return Redirect::back()->with(['success' => 'Data Berhasil Dihapus']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Data Gagal Dihapus']);
+            }
+        }
+     }
+
+     public function view_r($id_menu){
+        $id = Crypt::decrypt($id_menu);
+
+        $id_tahun = DB::table('tb_menu')
+        ->where('id_menu', $id)
+        ->first();
+
+        $tahun=$id_tahun->uraian_menu;
+
+        $menu = DB::table('tb_menu')
+        ->where('keterangan_menu', $tahun)
+        ->get();
+
+        return view('admin.menu.bulan.view', compact('id_tahun', 'menu'));
+    }
+
+
 
 }

@@ -11,7 +11,7 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
 							<div class="dashboard_bar">
-                                Menu Tahun Anggaran
+                                Menu Bulan T.A. {{$id_tahun->uraian_menu}}
                             </div>
                         </div>
                     </div>
@@ -55,7 +55,8 @@
 				<div class="row page-titles">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item active"><a href="/admin/dashboardAll">SI-RETDA</a></li>
-						<li class="breadcrumb-item"><a href="#">Menu Anggaran</a></li>
+                        <li class="breadcrumb-item active"><a href="/admin/menuanggaran">Menu Anggaran</a></li>
+						<li class="breadcrumb-item"><a href="#">Bulan</a></li>
 					</ol>
                 </div>
                 <!-- row -->
@@ -64,45 +65,14 @@
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title">Tabel Data</h4>
-                                <!-- Button trigger modal -->
-                                <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#tambahdata">+Tambah</button>
                             </div>
-                            <!-- Start Modal -->
-                            <div class="modal fade" id="tambahdata">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h3 class="modal-title">Tambah Data</h3>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="basic-form">
-                                            <form action="/admin/menuanggaran/store" method="POST">
-                                            @csrf
-                                                <div class="mb-3">
-                                                    <label class="form-label">Tahun Anggaran :</label>
-                                                    <input type="number" name="tahun" placeholder="Masukkan Tahun Anggaran" class="form-control input-default" required>
-                                                </div>
-                                           </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-primary">Simpan</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End Modal -->
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table id="example" class="display" style="min-width: 845px">
                                         <thead>
                                             <tr>
                                                 <th style="text-align:center;">NO.</th>
-                                                <th style="text-align:center;">TAHUN ANGGARAN</th>
-                                                <th style="text-align:center;">KETERANGAN</th>
+                                                <th style="text-align:center;">BULAN</th>
                                                 <th style="text-align:center;">STATUS</th>
                                                 <th style="text-align:center;">AKSI</th>
                                             </tr>
@@ -112,11 +82,6 @@
                                             <tr>
                                                 <td style="color: black; text-align:center;">{{ $loop->iteration }}</td>
                                                 <td style="color: black;">{{$d->uraian_menu}}</td>
-                                                @if ($d->keterangan_menu == '2')
-                                                <td style="color: black;">APBD Perubahan</td>
-                                                @elseif ($d->keterangan_menu == '1')
-                                                <td style="color: black;">APBD Murni</td>
-                                                @endif
                                                 @if ($d->status_menu == '0')
                                                 <td><span class="badge light badge-warning">Nonaktif</span></td>
                                                 @else
@@ -129,14 +94,6 @@
 														</button>
                                                         @csrf
 														<div class="dropdown-menu">
-                                                             @if ($d->keterangan_menu == '1')
-                                                             <a class="dropdown-item" href="/admin/menuanggaran/{{Crypt::encrypt($d->id_menu)}}">
-                                                                        <i class="fa fa-eye color-muted"></i> Rincian
-                                                                    </a>
-															<a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_menu)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
-                                                            @else
-                                                            <!-- Blank -->
-                                                            @endif
                                                             @if ($d->status_menu == '0')
                                                             <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_menu)}}"> <i class="fa fa-check color-muted"></i> Aktifkan</a>
                                                             @else
@@ -151,8 +108,7 @@
                                         <tfoot>
                                             <tr>
                                                 <th style="text-align:center;">NO.</th>
-                                                <th style="text-align:center;">TAHUN ANGGARAN</th>
-                                                <th style="text-align:center;">KETERANGAN</th>
+                                                <th style="text-align:center;">BULAN</th>
                                                 <th style="text-align:center;">STATUS</th>
                                                 <th style="text-align:center;">AKSI</th>
                                             </tr>

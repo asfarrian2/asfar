@@ -77,7 +77,9 @@ Route::get('/admin/rtargetapbdp/{id_target}', [TargetController::class, 'adm_rvi
 //Crud Menu Anggaran
 Route::get('/admin/menuanggaran', [MenuanggaranController::class, 'view']);
 Route::post('/admin/menuanggaran/store', [MenuanggaranController::class, 'store']);
-
+Route::get('/admin/menuanggaran/{id_menu}/status', [MenuanggaranController::class, 'status']);
+Route::get('/admin/menuanggaran/{id_menu}/hapus', [MenuanggaranController::class, 'delate']);
+Route::get('/admin/menuanggaran/{id_menu}', [MenuanggaranController::class, 'view_r']);
 
 });
 
