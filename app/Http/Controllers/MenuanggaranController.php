@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\Hash;
 class MenuanggaranController extends Controller
 {
     public function view(){
-        $menu = DB::table('tb_menu')
-        ->where('tipe_menu', '1')
-        ->orderBy('uraian_menu', 'ASC')
+        $menu = DB::table('tb_tahun')
         ->get();
 
         return view('admin.menu.anggaran.view', compact('menu'));
@@ -23,135 +21,135 @@ class MenuanggaranController extends Controller
 
     public function store(Request $request){
 
-        $uraian_menu = $request->tahun;
+        $id_tahun = $request->tahun;
 
          //Validasi Tahun
-         $cekkode = DB::table('tb_menu')
-         ->where('uraian_menu', '=', $uraian_menu)
+         $cekkode = DB::table('tb_tahun')
+         ->where('id_tahun', '=', $id_tahun)
          ->count();
 
           if ($cekkode > 0) {
          return Redirect::back()->with(['warning' => 'Tahun Anggaran Sudah Digunakan']);
           }else{
-            $apbd = [
-                'id_menu'         => 'tm'.$uraian_menu,
-                'uraian_menu'     => $uraian_menu,
-                'tipe_menu'       => '1',
-                'keterangan_menu' => '1',
-                'nilai_menu'      => '0',
-                'status_menu'     => '1'
-
-            ];
-            $apbdp = [
-                'id_menu'         => 'tp'.$uraian_menu,
-                'uraian_menu'     => $uraian_menu,
-                'tipe_menu'       => '1',
-                'keterangan_menu' => '2',
-                'nilai_menu'      => '0',
-                'status_menu'     => '0'
+            $tahun = [
+                'id_tahun'         => $id_tahun,
+                'apbd_tahun'       => '1',
+                'apbdp_tahun'      => '0',
+                'status_tahun'      => '1'
 
             ];
 
             $januari = [
-                'id_menu'         => 'b01'.$uraian_menu,
-                'uraian_menu'     => 'Januari',
-                'tipe_menu'       => '2',
-                'keterangan_menu' => $uraian_menu,
-                'nilai_menu'      => '1',
-                'status_menu'     => '0'
+                'id_bulan'      => 'b01'.$id_tahun,
+                'id_tahun'         => $id_tahun,
+                'nama_bulan'   => 'Januari',
+                'tipe_bulan'   => '1',
+                'status_bulan' => '0',
+                'nilaix_bulan'      => '1',
+                'nilaiy_bulan'      => '1'
 
             ];
             $februari = [
-                'id_menu'         => 'b02'.$uraian_menu,
-                'uraian_menu'     => 'Februari',
-                'tipe_menu'       => '2',
-                'keterangan_menu' => $uraian_menu,
-                'nilai_menu'      => '1',
-                'status_menu'     => '0'
+                'id_bulan'         => 'b02'.$id_tahun,
+                'id_tahun'         => $id_tahun,
+                'nama_bulan'     => 'Februari',
+                'tipe_bulan'   => '1',
+                'status_bulan' => '0',
+                'nilaix_bulan'      => '2',
+                'nilaiy_bulan'      => '1'
+
             ];
             $maret = [
-                'id_menu'         => 'b03'.$uraian_menu,
-                'uraian_menu'     => 'Maret',
-                'tipe_menu'       => '2',
-                'keterangan_menu' => $uraian_menu,
-                'nilai_menu'      => '1',
-                'status_menu'     => '0'
+                'id_bulan'         => 'b03'.$id_tahun,
+                'id_tahun'         => $id_tahun,
+                'nama_bulan'     => 'Maret',
+                'tipe_bulan'   => '1',
+                'status_bulan' => '0',
+                'nilaix_bulan'      => '3',
+                'nilaiy_bulan'      => '1'
             ];
             $april = [
-                'id_menu'         => 'b04'.$uraian_menu,
-                'uraian_menu'     => 'April',
-                'tipe_menu'       => '2',
-                'keterangan_menu' => $uraian_menu,
-                'nilai_menu'      => '2',
-                'status_menu'     => '0'
+                'id_bulan'         => 'b04'.$id_tahun,
+                'id_tahun'         => $id_tahun,
+                'nama_bulan'     => 'April',
+                'tipe_bulan'   => '1',
+                'status_bulan' => '0',
+                'nilaix_bulan'      => '4',
+                'nilaiy_bulan'      => '2'
             ];
             $mei = [
-                'id_menu'         => 'b05'.$uraian_menu,
-                'uraian_menu'     => 'Mei',
-                'tipe_menu'       => '2',
-                'keterangan_menu' => $uraian_menu,
-                'nilai_menu'      => '2',
-                'status_menu'     => '0'
+                'id_bulan'         => 'b05'.$id_tahun,
+                'id_tahun'         => $id_tahun,
+                'nama_bulan'     => 'Mei',
+                'tipe_bulan'   => '1',
+                'status_bulan' => '0',
+                'nilaix_bulan'      => '5',
+                'nilaiy_bulan'      => '2'
             ];
             $juni = [
-                'id_menu'         => 'b06'.$uraian_menu,
-                'uraian_menu'     => 'Juni',
-                'tipe_menu'       => '2',
-                'keterangan_menu' => $uraian_menu,
-                'nilai_menu'      => '2',
-                'status_menu'     => '0'
+                'id_bulan'         => 'b06'.$id_tahun,
+                'id_tahun'         => $id_tahun,
+                'nama_bulan'     => 'Juni',
+                'tipe_bulan'   => '1',
+                'status_bulan' => '0',
+                'nilaix_bulan'      => '6',
+                'nilaiy_bulan'      => '2'
             ];
             $juli = [
-                'id_menu'         => 'b07'.$uraian_menu,
-                'uraian_menu'     => 'Juli',
-                'tipe_menu'       => '2',
-                'keterangan_menu' => $uraian_menu,
-                'nilai_menu'      => '3',
-                'status_menu'     => '0'
+                'id_bulan'         => 'b07'.$id_tahun,
+                'id_tahun'         => $id_tahun,
+                'nama_bulan'     => 'Juli',
+                'tipe_bulan'   => '1',
+                'status_bulan' => '0',
+                'nilaix_bulan'      => '7',
+                'nilaiy_bulan'      => '3'
             ];
             $agustus = [
-                'id_menu'         => 'b08'.$uraian_menu,
-                'uraian_menu'     => 'Agustus',
-                'tipe_menu'       => '2',
-                'keterangan_menu' => $uraian_menu,
-                'nilai_menu'      => '3',
-                'status_menu'     => '0'
+                'id_bulan'         => 'b08'.$id_tahun,
+                'id_tahun'         => $id_tahun,
+                'nama_bulan'     => 'Agustus',
+                'tipe_bulan'   => '1',
+                'status_bulan' => '0',
+                'nilaix_bulan'      => '8',
+                'nilaiy_bulan'      => '3'
             ];
             $september = [
-                'id_menu'         => 'b09'.$uraian_menu,
-                'uraian_menu'     => 'September',
-                'tipe_menu'       => '2',
-                'keterangan_menu' => $uraian_menu,
-                'nilai_menu'      => '3',
-                'status_menu'     => '0'
+                'id_bulan'         => 'b09'.$id_tahun,
+                'id_tahun'         => $id_tahun,
+                'nama_bulan'     => 'September',
+                'tipe_bulan'   => '1',
+                'status_bulan' => '0',
+                'nilaix_bulan'      => '9',
+                'nilaiy_bulan'      => '3'
             ];
             $oktober = [
-                'id_menu'         => 'b10'.$uraian_menu,
-                'uraian_menu'     => 'Oktober',
-                'tipe_menu'       => '3',
-                'keterangan_menu' => $uraian_menu,
-                'nilai_menu'      => '4',
-                'status_menu'     => '0'
+                'id_bulan'         => 'b10'.$id_tahun,
+                'id_tahun'         => $id_tahun,
+                'nama_bulan'     => 'Oktober',
+                'tipe_bulan'   => '2',
+                'status_bulan' => '0',
+                'nilaix_bulan'      => '10',
+                'nilaiy_bulan'      => '4'
             ];
             $november = [
-                'id_menu'         => 'b11'.$uraian_menu,
-                'uraian_menu'     => 'November',
-                'tipe_menu'       => '3',
-                'keterangan_menu' => $uraian_menu,
-                'nilai_menu'      => '4',
-                'status_menu'     => '0'
+                'id_bulan'         => 'b11'.$id_tahun,
+                'id_tahun'         => $id_tahun,
+                'nama_bulan'     => 'November',
+                'tipe_bulan'   => '2',
+                'status_bulan' => '0',
+                'nilaix_bulan'      => '11',
+                'nilaiy_bulan'      => '4'
             ];
             $desember = [
-                'id_menu'         => 'b12'.$uraian_menu,
-                'uraian_menu'     => 'Desember',
-                'tipe_menu'       => '3',
-                'keterangan_menu' => $uraian_menu,
-                'nilai_menu'      => '4',
-                'status_menu'     => '0'
+                'id_bulan'         => 'b12'.$id_tahun,
+                'id_tahun'         => $id_tahun,
+                'nama_bulan'     => 'Desember',
+                'tipe_bulan'   => '2',
+                'status_bulan' => '0',
+                'nilaix_bulan'      => '12',
+                'nilaiy_bulan'      => '4'
             ];
             $data = [
-                $apbd,
-                $apbdp,
                 $januari,
                 $februari,
                 $maret,
@@ -165,8 +163,9 @@ class MenuanggaranController extends Controller
                 $november,
                 $desember,
             ];
-            $simpan = DB::table('tb_menu')->insert($data);
+            $simpan = DB::table('tb_tahun')->insert($tahun);
             if ($simpan) {
+                DB::table('tb_bulan')->insert($data);
                 return Redirect('/admin/menuanggaran')->with(['success' => 'Data Berhasil Disimpan']);
             } else {
                 return Redirect::back()->with(['warning' => 'Data Gagal Disimpan']);
@@ -214,26 +213,24 @@ class MenuanggaranController extends Controller
     }
 
     //Hapus Data
-     public function delate($id_menu)
+     public function delate($id_tahun)
      {
-        $id = Crypt::decrypt($id_menu);
+        $id = Crypt::decrypt($id_tahun);
 
-        $id_tahun = DB::table('tb_menu')
-        ->where('id_menu',$id)
+        $id_tahun = DB::table('tb_tahun')
+        ->where('id_tahun',$id)
         ->first();
 
-        $tahun = $id_tahun->uraian_menu;
-
         $cek = DB::table('tb_target')
-        ->where('id_tahun', $tahun)
+        ->where('id_tahun', $id)
         ->count();
 
         if ($cek > 0) {
             return Redirect::back()->with(['warning' => 'Tahun Anggaran Telah Digunakan, Data Tidak Dapat Dihapus']);
         }else{
-            $delete = DB::table('tb_menu')->where('uraian_menu', $tahun)->delete();
+            $delete = DB::table('tb_tahun')->where('id_tahun', $id)->delete();
             if ($delete) {
-                DB::table('tb_menu')->where('keterangan_menu', $tahun)->delete();
+                DB::table('tb_bulan')->where('id_tahun', $id)->delete();
                 return Redirect::back()->with(['success' => 'Data Berhasil Dihapus']);
             } else {
                 return Redirect::back()->with(['warning' => 'Data Gagal Dihapus']);
@@ -241,20 +238,52 @@ class MenuanggaranController extends Controller
         }
      }
 
-     public function view_r($id_menu){
-        $id = Crypt::decrypt($id_menu);
+     public function view_r($id_tahun){
+        $id = Crypt::decrypt($id_tahun);
 
-        $id_tahun = DB::table('tb_menu')
-        ->where('id_menu', $id)
-        ->first();
-
-        $tahun=$id_tahun->uraian_menu;
-
-        $menu = DB::table('tb_menu')
-        ->where('keterangan_menu', $tahun)
+        $menu = DB::table('tb_bulan')
+        ->where('id_tahun', $id)
         ->get();
 
-        return view('admin.menu.bulan.view', compact('id_tahun', 'menu'));
+        return view('admin.menu.bulan.view', compact('id', 'menu'));
+    }
+
+        //Status Data
+    public function bulan($id_bulan)
+    {
+        $id_bulan   = Crypt::decrypt($id_bulan);
+
+        $data = DB::table('tb_bulan')
+        ->where('id_bulan', $id_bulan)
+        ->first();
+
+        $status_bulan = $data->status_bulan;
+
+        $aktif = [
+            'status_bulan' => '1',
+        ];
+
+        $nonaktif = [
+            'status_bulan' => '0',
+        ];
+
+        if($status_bulan == '0'){
+            $update = DB::table('tb_bulan')->where('id_bulan', $id_bulan)->update($aktif);
+            if ($update) {
+                return Redirect::back()->with(['success' => 'Data Berhasil Diaktifkan.']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Data Gagal Diaktifkan.']);
+            }
+
+        }else{
+            $update = DB::table('tb_bulan')->where('id_bulan', $id_bulan)->update($nonaktif);
+            if ($update) {
+                return Redirect::back()->with(['success' => 'Data Berhasil Dinonaktifkan.']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Data Gagal Dinonaktifkan.']);
+            }
+            }
+
     }
 
 

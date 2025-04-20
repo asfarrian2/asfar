@@ -81,6 +81,7 @@ Route::post('/admin/menuanggaran/store', [MenuanggaranController::class, 'store'
 Route::get('/admin/menuanggaran/{id_menu}/status', [MenuanggaranController::class, 'status']);
 Route::get('/admin/menuanggaran/{id_menu}/hapus', [MenuanggaranController::class, 'delate']);
 Route::get('/admin/menuanggaran/{id_menu}', [MenuanggaranController::class, 'view_r']);
+Route::get('/admin/menuanggaran/{id_bulan}/bulan', [MenuanggaranController::class, 'bulan']);
 
 });
 
@@ -123,7 +124,11 @@ Route::post('/opt/rtargetapbdp/edit', [RtargetController::class, 'edit_p']);
 Route::post('/opt/rtargetapbdp/{id_rtarget}/update', [RtargetController::class, 'update_p']);
 Route::get('/opt/rtargetapbdp/{id_rtarget}/hapus', [RtargetController::class, 'delate_p']);
 
-// Crud Target APBD Operator
+// Crud Realisasi APBD Operator
 Route::get('/opt/realisasi', [RealisasiController::class, 'apbd']);
+Route::post('/opt/realisasi/tambah', [RealisasiController::class, 'tambah']);
+Route::post('/opt/realisasi/store', [RealisasiController::class, 'store']);
+Route::post('/opt/realisasi/edit', [RealisasiController::class, 'edit']);
+Route::post('/opt/realisasi/{id_realisasi}/update', [RealisasiController::class, 'update']);
 
 });

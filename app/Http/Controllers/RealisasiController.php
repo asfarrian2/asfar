@@ -19,13 +19,17 @@ class RealisasiController extends Controller
         //Menampilkan Data Utama Target
         $id_agency  = Auth::guard('operator')->user()->id_agency;
         $id_tahun   = Auth::guard('operator')->user()->id_tahun;
+        $pilih_bulan= $request->bulan;
 
-        $bulan = DB::table('tb_menu')
+        $bulan = DB::table('tb_bulan')
+        ->where('id_tahun', $id_tahun)
         ->get();
 
-        $filter = DB::table('tb_menu')
-        ->where('id_menu', $request->bulan)
-        ->get();
+        $filter = DB::table('tb_bulan')
+        ->where('id_bulan', $pilih_bulan)
+        ->first();
+
+        $id_bulan = $filter->id_bulan;
 
 
         $view = DB::table('tb_target')
@@ -41,7 +45,7 @@ class RealisasiController extends Controller
         ->leftJoin('tb_subretribusi', 'tb_ojkretribusi.id_sr', '=', 'tb_subretribusi.id_sr')
         ->leftJoin('tb_jenretribusi', 'tb_subretribusi.id_jr', '=', 'tb_jenretribusi.id_jr')
         ->leftJoin('tb_realisasi', 'tb_rtarget.id_rtarget', '=', 'tb_realisasi.id_rtarget')
-        ->select('tb_rtarget.*', 'tb_realisasi.pagu_realisasi','tb_realisasi.bulan_realisasi','tb_ojkretribusi.nama_ojk', 'tb_ojkretribusi.kode_ojk', 'tb_subretribusi.nama_sr', 'tb_subretribusi.kode_sr', 'tb_jenretribusi.nama_jr', 'tb_jenretribusi.kode_jr')
+        ->select('tb_rtarget.*', 'tb_realisasi.pagu_realisasi', 'tb_realisasi.id_realisasi', 'tb_realisasi.id_bulan','tb_ojkretribusi.nama_ojk', 'tb_ojkretribusi.kode_ojk', 'tb_subretribusi.nama_sr', 'tb_subretribusi.kode_sr', 'tb_jenretribusi.nama_jr', 'tb_jenretribusi.kode_jr')
         ->where('id_target',$id_target)
         ->orderBy('kode_ojk', 'ASC')
         ->get()
@@ -55,7 +59,9 @@ class RealisasiController extends Controller
         //
 
         $realisasi = DB::table('tb_realisasi')
-        ->where('bulan_realisasi', $request->bulan)
+        ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+        ->select('tb_realisasi.*', 'tb_rtarget.*')
+        ->where('id_bulan', $request->bulan)
         ->get();
 
         //
@@ -64,8 +70,14 @@ class RealisasiController extends Controller
         ->where('id_target',$id_target)
         ->sum('pagu_rtarget');
 
+        $total = DB::table('tb_realisasi')
+        ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_target')
+        ->where('id_target',$id_target)
+        ->where('id_bulan', $request->bulan)
+        ->sum('pagu_realisasi');
 
-        return view('operator.realisasi.view', compact('view', 'rincian', 'jumlah', 'bulan', 'realisasi'));
+        return view('operator.realisasi.view', compact('view', 'rincian', 'jumlah', 'bulan', 'total', 'filter', 'realisasi'));
         }else{
         //Menampilkan Data Rincian Target
         $id_target = $view->id_target;
@@ -92,9 +104,102 @@ class RealisasiController extends Controller
         ->where('id_target',$id_target)
         ->sum('pagu_rtarget');
 
+        $total = [];
 
-        return view('operator.realisasi.view', compact('view', 'rincian', 'jumlah', 'bulan', 'realisasi'));
+        return view('operator.realisasi.view', compact('view', 'rincian', 'jumlah', 'bulan', 'realisasi', 'total'));
         }
     }
+
+    public function tambah(Request $request){
+
+        $id_rtarget = $request->id_rtarget;
+        $rtarget = Crypt::decrypt($id_rtarget);
+        $id_bulan = $request->id_bulan;
+        $bulan = Crypt::decrypt($id_bulan);
+
+        $data = DB::table('tb_rtarget')
+        ->where('id_rtarget', $rtarget)
+        ->first();
+
+        return view('operator.realisasi.tambah', compact('id_rtarget', 'id_bulan', 'data'));
+    }
+
+     //Simpan Data
+     public function store(Request $request){
+
+        $bulan    = $request->bulan;
+        $id_bulan = Crypt::decrypt($bulan);
+
+        $id_rtarget = $request->rtarget;
+        $id_rtarget = Crypt::decrypt($id_rtarget);
+
+        $id_realisasi =DB::table('tb_realisasi')
+        ->where('id_bulan', $id_bulan)
+        ->orderBy('id_realisasi', 'DESC')
+        ->first();
+
+        $kodeobjek =".R-";
+
+        if($id_realisasi == null){
+            $nomorurut = "00001";
+        }else{
+            $nomorurut = substr($id_realisasi->id_realisasi, 10, 5) + 1;
+            $nomorurut = str_pad($nomorurut, 5, "0", STR_PAD_LEFT);
+        }
+        $id=$id_bulan.$kodeobjek.$nomorurut;
+
+        $realisasi = $request->realisasi;
+        $pagu = str_replace('.','', $realisasi);
+
+
+        $data = [
+            'id_realisasi'     => $id,
+            'pagu_realisasi'   => $pagu,
+            'status_realisasi' => '0',
+            'id_rtarget'       => $id_rtarget,
+            'id_bulan'         => $id_bulan,
+        ];
+
+        $simpan = DB::table('tb_realisasi')->insert($data);
+        if ($simpan) {
+            return Redirect::back()->with(['success' => 'Data Berhasil Disimpan']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Data Gagal Disimpan']);
+        }
+     }
+
+    //Tampilkan Halaman Edit Data
+     public function edit(Request $request){
+
+        $id_realisasi    = $request->id_realisasi;
+        $id_realisasi    = Crypt::decrypt($id_realisasi);
+        $data            = DB::table('tb_realisasi')
+                           ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+                           ->select('tb_realisasi.*', 'tb_rtarget.id_rtarget', 'tb_rtarget.uraian_rtarget')
+                           ->where('id_realisasi', $id_realisasi)
+                           ->first();
+
+        return view('operator.realisasi.edit', compact('data'));
+    }
+
+     //Update Data
+    public function update($id_realisasi, Request $request){
+
+        $id_realisasi   = Crypt::decrypt($id_realisasi);
+        $realisasi      = $request->realisasi;
+        $pagu           = str_replace('.','', $realisasi);
+
+        $data = [
+            'pagu_realisasi'   => $pagu
+        ];
+
+        $update = DB::table('tb_realisasi')->where('id_realisasi', $id_realisasi)->update($data);
+        if ($update) {
+            return Redirect::back()->with(['success' => 'Data Berhasil Dirubah']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Data Gagal Dirubah']);
+        }
+     }
+
 
 }

@@ -71,8 +71,8 @@
                                         <select class="input-default  form-control" name="bulan" id="SelectJr">
                                         <option value="">Pilih Bulan</option>
                                         @foreach ($bulan as $d)
-                                        <option  {{ Request('bulan') == $d->id_menu ? 'selected' : '' }}
-                                        value="{{ $d->id_menu }}">{{$d->uraian_menu }}</option>
+                                        <option  {{ Request('bulan') == $d->id_bulan ? 'selected' : '' }}
+                                        value="{{ $d->id_bulan }}">{{$d->nama_bulan }}</option>
                                         @endforeach
                                         </select>
                                     </div>
@@ -85,95 +85,71 @@
                         </div>
                     </div>
 
+
+                    @if(Request::get('bulan'))
                      <div class="col-xl-6 col-lg-6">
                         <div class="card">
                             <div class="card-body">
                                 <div class="profile-news">
-                                <i src="images/profile/5.jpg" alt="image" class="fa fa-pencil" style="font-size: 30px;"> </i> <h5 class="text-info d-inline"> | Lakukan Penginputan Realisasi Bulanan</h5>
+                                @if ($filter->status_bulan == 1)
+                                <i class="fa fa-pencil" style="font-size: 30px;"> </i>
+                                <h5 class="text-info d-inline"> | Lakukan Penginputan Realisasi Bulanan</h5>
 									<div class="media pt-3 pb-3">
 										<div class="media-body">
 											<p class="mb-0"> Apabila Penginputan Telah Selesai, Klik Tombol Posting Untuk Melakukan Proses Penyimpanan Data.</p>
 										</div>
-
 									</div>
                                     <div class="mb-3 row">
                                         <button type="submit" class="btn btn-primary">POSTING</button>
-                                        </div>
-                                </div>
-                            </div>
-                            <!-- Start Modal -->
-                            <div class="modal fade" id="tambahdata">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h3 class="modal-title">Tetapkan Target</h3>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="basic-form">
-                                            <form action="/opt/targetapbd/store" method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                                <div class="mb-3">
-                                                    <label class="form-label">Pagu Target (Rp) :</label>
-                                                    <input type="text" placeholder="0" name="pagutarget" id="pagu" class="form-control input-default pagu" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Surat Usul Target :</label>
-                                                    <input type="file" accept="application/pdf" name="dokumen" maxsize="1024" class="form-control input-default" required>
-                                                </div>
-                                           </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-primary">Simpan</button>
-                                            </form>
-                                        </div>
                                     </div>
+                                @else
+                                <i class="fa fa-warning" style="font-size: 30px;"> </i>
+                                <h5 class="text-info d-inline"> | Input Realisasi Ditutup</h5>
+									<div class="media pt-3 pb-3">
+										<div class="media-body">
+											<p class="mb-0"> Silahkan hubungi Admin untuk bisa kembali melakukan proses input data Realisasi pada bulan ini.</p>
+										</div>
+									</div>
+                                @endif
                                 </div>
                             </div>
-                            <!-- End Modal -->
-
-                            <!-- Start Modal Create Rincian-->
-                            <div class="modal fade" id="tambahrincian">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h3 class="modal-title">Tambahkan Rincian</h3>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="basic-form">
-                                            <form action="/opt/rtargetapbd/store" method="POST">
-                                            @csrf
-                                                @if($view)
-                                                <input type="hidden" placeholder="0" name="target" id="target" value="{{ $view->id_target }}"  class="form-control input-default" required>
-                                                @else
-                                                @endif
-                                                <!-- ... -->
-                                                <div class="mb-3">
-                                                    <label class="form-label">Uraian Target :</label>
-                                                    <input type="text" placeholder="Masukkan Uraian" name="uraianrincian" class="form-control input-default" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Pagu Target (Rp) :</label>
-                                                    <input type="text" placeholder="0" name="pagurtarget" class="form-control input-default pagu" required>
-                                                </div>
-                                           </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-primary">Simpan</button>
-                                            </form>
-                                        </div>
-                                    </div>
+                    @else
+                    <div class="col-xl-6 col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="profile-news">
+                                <i src="images/profile/5.jpg" alt="image" class="fa fa-pencil" style="font-size: 30px;"> </i> <h5 class="text-info d-inline"> | Realisasi Penerimaan Retribusi Daerah</h5>
+									<div class="media pt-3 pb-3">
+										<div class="media-body">
+											<p class="mb-0"> Pilih bulan terlebih dahulu untuk melakukan proses input data Realisasi Penerimaan Retribusi Daerah. </p>
+										</div>
+									</div>
                                 </div>
                             </div>
-                            <!-- End Modal Create Rincian -->
+                    @endif
 
                             <!-- Start EditModal -->
-                            <div class="modal fade" id="modal-editobjek">
+                            <div class="modal fade" id="modal-tambah">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3 class="modal-title">Input Realisasi</h3>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                            </button>
+                                        </div>
+                                        <div class="modal-body" id="loadtambah">
+                                            <div class="basic-form">
+                                            <!-- Form
+                                                        Tambah -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Edit Modal -->
+
+                             <!-- Start EditModal -->
+                             <div class="modal fade" id="modal-edit">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -181,7 +157,7 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal">
                                             </button>
                                         </div>
-                                        <div class="modal-body" id="loadeditform">
+                                        <div class="modal-body" id="loadedit">
                                             <div class="basic-form">
                                             <!-- Form
                                                         Edit -->
@@ -260,7 +236,7 @@
                                             <td style="color: black;"><b>{{$kode_jr}}</b></td>
                                             <td style="color: black;"><b>{{$jr->first()->first()->first()->nama_jr}}</b></td>
                                             <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_rtarget'), 0, ',', '.') }}</b></td>
-                                            @if ($jr->first()->first()->first()->bulan_realisasi == Request('bulan'))
+                                            @if ($jr->first()->first()->first()->id_bulan == Request('bulan'))
                                             <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_realisasi'), 0, ',', '.') }}</b></td>
                                             @else
                                             <td style="color: black;"><b>Rp0</b></td>
@@ -272,7 +248,7 @@
                                                 <td style="color: black;"><b>{{$kode_sr}}</b></td>
                                                 <td style="color: black;"><b>{{$sr->first()->first()->nama_sr}}</b></td>
                                                 <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_rtarget'), 0, ',', '.') }}</b></td>
-                                                @if ($sr->first()->first()->bulan_realisasi == Request('bulan'))
+                                                @if ($sr->first()->first()->id_bulan == Request('bulan'))
                                                 <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_realisasi'), 0, ',', '.') }}</b></td>
                                                 @else
                                                 <td style="color: black;"><b>Rp0</b></td>
@@ -284,7 +260,7 @@
                                                 <td style="color: black;"><b>{{$kode_ojk}}</b></td>
                                                 <td style="color: black;"><b>{{$ojk->first()->nama_ojk}}</td>
                                                 <td style="color: black;"><b>Rp{{ number_format($ojk->sum('pagu_rtarget'), 0, ',', '.') }}</b></td>
-                                                @if ($ojk->first()->bulan_realisasi == Request('bulan'))
+                                                @if ($ojk->first()->id_bulan == Request('bulan'))
                                                 <td style="color: black;"><b>Rp{{ number_format($ojk->flatten()->sum('pagu_realisasi'), 0, ',', '.') }}</b></td>
                                                 @else
                                                 <td style="color: black;"><b>Rp0</b></td>
@@ -296,13 +272,13 @@
                                                 <td style="color: black;"></td>
                                                 <td style="color: black;">- {{$d->uraian_rtarget}}</td>
                                                 <td style="color: black;">Rp<?php echo number_format($d->pagu_rtarget ,0,',','.')?></td>
-                                                @if ($d->bulan_realisasi == Request('bulan'))
+                                                @if ($d->id_bulan == Request('bulan'))
                                                 <td style="color: green;">Rp<?php echo number_format($d->pagu_realisasi ,0,',','.')?></td>
                                                 @else
                                                 <td style="color: black;">Belum Ada Realisasi</td>
                                                 @endif
                                                 <td>
-                                                @if($view->status_target == 1)
+                                                @if($view->status_target < 1 or $filter->status_bulan == 0)
                                                         <!-- Blank -->
                                                  @else
 
@@ -312,8 +288,15 @@
 														</button>
                                                         @csrf
 														<div class="dropdown-menu">
-															<a class="dropdown-item edit" href="#" data-id="{{Crypt::encrypt($d->id_rtarget)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
-															<a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_rtarget)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
+                                                        @if($d->pagu_realisasi !== NULL && $d->id_bulan == Request('bulan'))
+                                                            <a class="dropdown-item edit" href="#" data-id="{{Crypt::encrypt($d->id_realisasi)}}">
+                                                                <i class="fa fa-pencil color-muted"></i> Edit
+                                                            </a>
+                                                        @else
+                                                            <a class="dropdown-item tambah" href="#" data-id="{{Crypt::encrypt($d->id_rtarget)}}" data-bulan="{{Crypt::encrypt(Request('bulan'))}}">
+                                                                <i class="fa fa-plus color-muted"></i> Tambah
+                                                            </a>
+                                                        @endif
 														</div>
 													</div>
                                                     @endif
@@ -326,8 +309,9 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <th colspan="2" style="text-align:center; color:black;" >TOTAL PAGU</th>
-                                                <th colspan="2" style="text-align:center; color:black;">Rp<?php echo number_format($jumlah ,0,',','.')?></th>
+                                                <th colspan="2" style="text-align:center; color:black;" >TOTAL</th>
+                                                <th style="text-align:center; color:black;">Rp<?php echo number_format($jumlah ,0,',','.')?></th>
+                                                <th style="text-align:center; color:black;">Rp<?php echo number_format($total ,0,',','.')?></th>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -351,119 +335,51 @@
 <script src="{{asset ('./vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{asset ('./js/plugins-init/datatables.init.js') }}"></script>
 
-<!-- Button Edit -->
+<!-- Button Tambah Realisasi -->
 <script>
-$('.edit').click(function(){
-    var id_rtarget = $(this).attr('data-id');
-    $.ajax({
-                    type: 'POST',
-                    url: '/opt/rtargetapbd/edit',
-                    cache: false,
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        id_rtarget: id_rtarget
-                    },
-                    success: function(respond) {
-                        $("#loadeditrincian").html(respond);
-                        $('.pagu').mask("#.##0", {
-                            reverse:true
-                        });
-                        $("#SelectJre").on('change', function(){
-                            var id_jr = $(this).val();
-                           //console.log(id_wajibpajak);
-                           if (id_jr) {
-                            $.ajax({
-                                url: '/opt/filtersub/'+id_jr,
-                                type: 'GET',
-                                data: {
-                                    '_token': '{{ csrf_token() }}'
-                                },
-                                dataType: 'json',
-                                success: function (data){
-                                    //console.log(data);
-                                     if (data) {
-                                        $("#SelectSre").empty();
-                                        $("#ojke").empty();
-                                        $('#ojke').append('<option value=""> Pilih Objek Retribusi </option>');
-                                        $('#SelectSre').append('<option value=""> Pilih Sub Retribusi </option>');
-                                        $.each(data, function(key, sub){
-                                            $('select[name="sub"]').append(
-                                                '<Option value="'+sub.id_sr+'">'+sub.kode_sr+' '+sub.nama_sr+'</Option>'
-                                            )
-                                        });
-                                     }else{
-                                        $("#SelectSre").empty();
-                                        $("#ojke").empty();
-                                     }
-                                }
-                            });
-                           } else {
-                            $("#SelectSre").empty();
-                            $('#SelectSre').append('<option value=""> Pilih Sub Retribusi </option>');
-                            $("#ojke").empty();
-                            $('#ojke').append('<option value=""> Pilih Objek Retribusi </option>');
-                           }
-                        });
-                        $("#SelectSre").on('change', function(){
-        var id_sr = $(this).val();
-       //console.log(id_wajibpajak);
-       if (id_sr) {
+    $('.tambah').click(function(){
+        var id_rtarget = $(this).attr('data-id');
+        var id_bulan = $(this).attr('data-bulan'); // perubahan disini
         $.ajax({
-            url: '/opt/filterojk/'+id_sr,
-            type: 'GET',
+            type: 'POST',
+            url: '/opt/realisasi/tambah',
+            cache: false,
             data: {
-                '_token': '{{ csrf_token() }}'
+                _token: "{{ csrf_token() }}",
+                id_rtarget: id_rtarget,
+                id_bulan: id_bulan // tambahan disini
             },
-            dataType: 'json',
-            success: function (data){
-                //console.log(data);
-                 if (data) {
-                    $("#ojke").empty();
-                    $('#ojke').append('<option value=""> Pilih Objek Retribusi </option>');
-                    $.each(data, function(key, ojk){
-                        $('select[name="objek"]').append(
-                            '<Option value="'+ojk.id_ojk+'">'+ojk.kode_ojk+' '+ojk.nama_ojk+'</Option>'
-                        )
-                    });
-                 }else{
-                    $("#ojke").empty();
-                 }
+            success: function(respond) {
+                $("#loadtambah").html(respond);
+                $('.pagu').mask("#.##0", { reverse:true });
             }
         });
-       } else {
-        $("#ojke").empty();
-        $('#ojke').append('<option value=""> Pilih Objek Retribusi </option>');
-       }
+        $("#modal-tambah").modal("show");
     });
-                        ////////////////////////////
-                    }
-                });
-     $("#modal-editrincian").modal("show");
-});
-var span = document.getElementsByClassName("close")[0];
+    var span = document.getElementsByClassName("close")[0];
 </script>
-<!-- END Button Edit -->
+<!-- END Button Edit Pagu Target -->
 
 <!-- Button Edit Pagu Target -->
 <script>
-$('.edit1').click(function(){
-    var id_target = $(this).attr('data-id');
+$('.edit').click(function(){
+    var id_realisasi = $(this).attr('data-id');
     $.ajax({
                     type: 'POST',
-                    url: '/opt/targetapbd/edit',
+                    url: '/opt/realisasi/edit',
                     cache: false,
                     data: {
                         _token: "{{ csrf_token() }}",
-                        id_target: id_target
+                        id_realisasi: id_realisasi
                     },
                     success: function(respond) {
-                        $("#loadedittarget").html(respond);
+                        $("#loadedit").html(respond);
                         $('.pagu').mask("#.##0", {
                             reverse:true
                         });
                     }
                 });
-     $("#modal-edittarget").modal("show");
+     $("#modal-edit").modal("show");
 });
 var span = document.getElementsByClassName("close")[0];
 </script>

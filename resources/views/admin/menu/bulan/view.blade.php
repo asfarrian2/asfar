@@ -11,7 +11,7 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
 							<div class="dashboard_bar">
-                                Menu Bulan T.A. {{$id_tahun->uraian_menu}}
+                                Menu Bulan T.A. {{$id}}
                             </div>
                         </div>
                     </div>
@@ -81,8 +81,8 @@
                                         @foreach ($menu as $d)
                                             <tr>
                                                 <td style="color: black; text-align:center;">{{ $loop->iteration }}</td>
-                                                <td style="color: black;">{{$d->uraian_menu}}</td>
-                                                @if ($d->status_menu == '0')
+                                                <td style="color: black;">{{$d->nama_bulan}}</td>
+                                                @if ($d->status_bulan == '0')
                                                 <td><span class="badge light badge-warning">Nonaktif</span></td>
                                                 @else
                                                 <td><span class="badge light badge-success">Aktif</span></td>
@@ -94,10 +94,10 @@
 														</button>
                                                         @csrf
 														<div class="dropdown-menu">
-                                                            @if ($d->status_menu == '0')
-                                                            <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_menu)}}"> <i class="fa fa-check color-muted"></i> Aktifkan</a>
+                                                            @if ($d->status_bulan == '0')
+                                                            <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_bulan)}}"> <i class="fa fa-check color-muted"></i> Aktifkan</a>
                                                             @else
-                                                            <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_menu)}}"> <i class="fa fa-ban color-muted"></i> Nonaktifkan</a>
+                                                            <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_bulan)}}"> <i class="fa fa-ban color-muted"></i> Nonaktifkan</a>
                                                             @endif
 														</div>
 													</div>
@@ -177,7 +177,7 @@
     <!-- Start Button Hapus -->
     <script>
     $('.hapus').click(function(){
-        var id_menu = $(this).attr('data-id');
+        var id_bulan = $(this).attr('data-id');
     Swal.fire({
       title: "Apakah Anda Yakin Data Ini Ingin Di Hapus ?",
       text: "Jika Ya Maka Data Seluruh Menu Dengan Tahun Ini Akan Terhapus Permanen",
@@ -188,7 +188,7 @@
       confirmButtonText: "Ya, Hapus Saja!"
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location = "/admin/menuanggaran/"+id_menu+"/hapus"
+        window.location = "/admin/menuanggaran/"+id_bulan+"/hapus"
         Swal.fire({
           title: "Data Berhasil Dihapus !",
           icon: "success"
@@ -202,7 +202,7 @@
     <!-- Start Button Status -->
     <script>
     $('.status').click(function(){
-        var id_sr = $(this).attr('data-id');
+        var id_bulan = $(this).attr('data-id');
     Swal.fire({
       title: "Apakah Anda Yakin Mengubah Status Data Ini ?",
       text: "Jika Ya Maka Status Data Akan Berubah",
@@ -213,7 +213,7 @@
       confirmButtonText: "Ya, Ubah Status!"
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location = "/admin/menuanggaran/"+id_sr+"/status"
+        window.location = "/admin/menuanggaran/"+id_bulan+"/bulan"
       }
     });
     });

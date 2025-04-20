@@ -329,7 +329,7 @@
                                                 <td style="color: black;">- {{$d->uraian_rtarget}}</td>
                                                 <td style="color: black;">Rp<?php echo number_format($d->pagu_rtarget ,0,',','.')?></td>
                                                 <td>
-                                                @if($view->status_target == 1)
+                                                @if($view->status_target > 0)
                                                         <!-- Blank -->
                                                  @else
 

@@ -11,7 +11,7 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
 							<div class="dashboard_bar">
-                                Menu Tahun Anggaran
+                                Menu
                             </div>
                         </div>
                     </div>
@@ -82,7 +82,7 @@
                                             @csrf
                                                 <div class="mb-3">
                                                     <label class="form-label">Tahun Anggaran :</label>
-                                                    <input type="number" name="tahun" placeholder="Masukkan Tahun Anggaran" class="form-control input-default" required>
+                                                    <input type="number" maxlength="4" name="tahun" placeholder="Masukkan Tahun Anggaran" class="form-control input-default" required>
                                                 </div>
                                            </div>
                                         </div>
@@ -102,7 +102,8 @@
                                             <tr>
                                                 <th style="text-align:center;">NO.</th>
                                                 <th style="text-align:center;">TAHUN ANGGARAN</th>
-                                                <th style="text-align:center;">KETERANGAN</th>
+                                                <th style="text-align:center;">TARGET APBD</th>
+                                                <th style="text-align:center;">TARGET APBD P</th>
                                                 <th style="text-align:center;">STATUS</th>
                                                 <th style="text-align:center;">AKSI</th>
                                             </tr>
@@ -111,13 +112,18 @@
                                         @foreach ($menu as $d)
                                             <tr>
                                                 <td style="color: black; text-align:center;">{{ $loop->iteration }}</td>
-                                                <td style="color: black;">{{$d->uraian_menu}}</td>
-                                                @if ($d->keterangan_menu == '2')
-                                                <td style="color: black;">APBD Perubahan</td>
-                                                @elseif ($d->keterangan_menu == '1')
-                                                <td style="color: black;">APBD Murni</td>
+                                                <td style="color: black;">{{$d->id_tahun}}</td>
+                                                @if ($d->apbd_tahun == '0')
+                                                <td style="color: black;">Nonaktif</td>
+                                                @else
+                                                <td style="color: black;">Aktif</td>
                                                 @endif
-                                                @if ($d->status_menu == '0')
+                                                @if ($d->apbdp_tahun == '0')
+                                                <td style="color: black;">Nonaktif</td>
+                                                @else
+                                                <td style="color: black;">Aktif</td>
+                                                @endif
+                                                @if ($d->status_tahun == '0')
                                                 <td><span class="badge light badge-warning">Nonaktif</span></td>
                                                 @else
                                                 <td><span class="badge light badge-success">Aktif</span></td>
@@ -129,18 +135,14 @@
 														</button>
                                                         @csrf
 														<div class="dropdown-menu">
-                                                             @if ($d->keterangan_menu == '1')
-                                                             <a class="dropdown-item" href="/admin/menuanggaran/{{Crypt::encrypt($d->id_menu)}}">
-                                                                        <i class="fa fa-eye color-muted"></i> Rincian
-                                                                    </a>
-															<a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_menu)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
+                                                             <a class="dropdown-item" href="/admin/menuanggaran/{{Crypt::encrypt($d->id_tahun)}}">
+                                                                        <i class="fa fa-calendar color-muted"></i> Bulan
+                                                            </a>
+                                                            @if ($d->status_tahun == '0')
+                                                            <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_tahun)}}"> <i class="fa fa-check color-muted"></i> Aktifkan</a>
                                                             @else
-                                                            <!-- Blank -->
-                                                            @endif
-                                                            @if ($d->status_menu == '0')
-                                                            <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_menu)}}"> <i class="fa fa-check color-muted"></i> Aktifkan</a>
-                                                            @else
-                                                            <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_menu)}}"> <i class="fa fa-ban color-muted"></i> Nonaktifkan</a>
+                                                            <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_tahun)}}"> <i class="fa fa-ban color-muted"></i> Nonaktifkan</a>
+                                                            <a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_tahun)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
                                                             @endif
 														</div>
 													</div>
@@ -152,7 +154,8 @@
                                             <tr>
                                                 <th style="text-align:center;">NO.</th>
                                                 <th style="text-align:center;">TAHUN ANGGARAN</th>
-                                                <th style="text-align:center;">KETERANGAN</th>
+                                                <th style="text-align:center;">TARGET APBD</th>
+                                                <th style="text-align:center;">TARGET APBD P</th>
                                                 <th style="text-align:center;">STATUS</th>
                                                 <th style="text-align:center;">AKSI</th>
                                             </tr>
@@ -221,7 +224,7 @@
     <!-- Start Button Hapus -->
     <script>
     $('.hapus').click(function(){
-        var id_menu = $(this).attr('data-id');
+        var id_tahun = $(this).attr('data-id');
     Swal.fire({
       title: "Apakah Anda Yakin Data Ini Ingin Di Hapus ?",
       text: "Jika Ya Maka Data Seluruh Menu Dengan Tahun Ini Akan Terhapus Permanen",
@@ -232,7 +235,7 @@
       confirmButtonText: "Ya, Hapus Saja!"
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location = "/admin/menuanggaran/"+id_menu+"/hapus"
+        window.location = "/admin/menuanggaran/"+id_tahun+"/hapus"
         Swal.fire({
           title: "Data Berhasil Dihapus !",
           icon: "success"
