@@ -100,7 +100,15 @@
 										</div>
 									</div>
                                     <div class="mb-3 row">
-                                        <button type="submit" class="btn btn-primary">POSTING</button>
+                                    @if($count == 0)
+                                    <a type="button" class="btn btn-primary posting" data-id="{{Crypt::encrypt($filter->id_bulan)}}" >
+                                        POSTING
+                                     </a>
+                                     @else
+                                     <a type="button" class="btn btn-success terposting" >
+                                        TELAH DIPOSTING <i class="fa fa-check"></i>
+                                     </a>
+                                     @endif
                                     </div>
                                 @else
                                 <i class="fa fa-warning" style="font-size: 30px;"> </i>
@@ -278,7 +286,7 @@
                                                 <td style="color: black;">Belum Ada Realisasi</td>
                                                 @endif
                                                 <td>
-                                                @if($view->status_target < 1 or $filter->status_bulan == 0)
+                                                @if($view->status_target < 1 or $filter->status_bulan == 0 or $count > 0)
                                                         <!-- Blank -->
                                                  @else
 
@@ -547,9 +555,9 @@ $(document).ready(function(){
 <!-- Start Button posting -->
 <script>
 $('.posting').click(function(){
-    var id_target = $(this).attr('data-id');
+    var id_bulan = $(this).attr('data-id');
 Swal.fire({
-  title: "Apakah Anda Yakin Ingin Memposting Data Target Ini ?",
+  title: "Apakah Anda Yakin Ingin Memposting Data Realisasi Bulan Ini ?",
   text: "Jika Ya Maka Data Akan Diposting dan Tidak Bisa Lagi Melakukan Pengeditan Data",
   icon: "warning",
   showCancelButton: true,
@@ -558,11 +566,11 @@ Swal.fire({
   confirmButtonText: "Ya, Posting Saja!"
 }).then((result) => {
   if (result.isConfirmed) {
-    window.location = "/opt/targetapbd/"+id_target+"/posting"
+    window.location = "/opt/realisasi/"+id_bulan+"/posting"
   }
 });
 });
 </script>
-<!-- End Button Hapus -->
+<!-- End Button Posting -->
 
 @endpush

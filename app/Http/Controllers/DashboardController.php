@@ -52,7 +52,8 @@ class DashboardController extends Controller
         ->first();
         //
         if (empty($view)){
-            return view('operator.dashboard.view', compact('view'));
+            $realisasi=[];
+            return view('operator.dashboard.view', compact('view', 'realisasi'));
         }else{
         //Menampilkan Data Rincian Target
         $id_target = $view->id_target;
@@ -76,7 +77,16 @@ class DashboardController extends Controller
         ->where('id_target',$id_target)
         ->sum('pagu_rtarget');
 
-        return view('operator.dashboard.view', compact('view'));
+        $realisasi = DB::table('tb_realisasi')
+        ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+        ->leftJoin('tb_target', 'tb_rtarget.id_target', '=', 'tb_target.id_target')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_rtarget', 'tb_target.id_target')
+        ->where('status_realisasi', '1')
+        ->where('tb_target.id_target', $id_target)
+        ->sum('pagu_realisasi');
+
+
+        return view('operator.dashboard.view', compact('view', 'realisasi'));
     }
     }
 

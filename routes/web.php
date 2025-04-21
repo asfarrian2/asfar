@@ -94,6 +94,7 @@ Route::get('/adminlogout', [LoginController::class, 'logout_admin']);
 
 //
 Route::middleware('auth:operator')->group(function () {
+
 // Dashboard Operator
 Route::get('/opt/dashboard', [DashboardController::class, 'operator']);
 
@@ -130,5 +131,7 @@ Route::post('/opt/realisasi/tambah', [RealisasiController::class, 'tambah']);
 Route::post('/opt/realisasi/store', [RealisasiController::class, 'store']);
 Route::post('/opt/realisasi/edit', [RealisasiController::class, 'edit']);
 Route::post('/opt/realisasi/{id_realisasi}/update', [RealisasiController::class, 'update']);
+Route::get('/opt/realisasi/{id_bulan}/posting', [RealisasiController::class, 'posting']);
+
 
 });

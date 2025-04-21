@@ -64,7 +64,11 @@
 									</svg>
 								</div>
 								<div>
-									<h2 class="text-white invoice-num">Rp2.000.000</h2>
+                                    @if($realisasi)
+									<h2 class="text-white invoice-num">Rp<?php echo number_format($realisasi ,0,',','.')?></h2>
+                                    @else
+                                    <h2 class="text-white invoice-num">Rp0</h2>
+                                    @endif
 									<span class="text-white fs-18">Realisasi s/d Sekarang</span>
 								</div>
 							</div>
@@ -81,7 +85,7 @@
 									<div class="card-header flex-wrap border-0 pb-0 align-items-end">
 										<div class="mb-3 me-3">
 											<h5 class="fs-20 text-black font-w500">Total Realisasi</h5>
-											<span class="text-num text-black fs-36 font-w500">Rp2.000.000</span>
+											<span class="text-num text-black fs-36 font-w500">Rp<?php echo number_format($realisasi ,0,',','.')?></span>
 										</div>
 										<div class="me-3 mb-3">
 											<p class="fs-14 mb-1">TARGET</p>
@@ -95,15 +99,32 @@
 											<p class="fs-14 mb-1">TAHUN ANGGARAN</p>
 											<span class="text-black fs-16">{{ Auth::guard('operator')->user()->id_tahun }}</span>
 										</div>
-										<span class="fs-20 text-black font-w500 me-3 mb-3">REALISASI 25%</span>
+                                        @if($view)
+                                        @php
+                                            $nilai_target = $view->pagu_target;
+                                            $nilai_realisasi = $realisasi;
+                                            $persentasi = ($nilai_target > 0) ? round(($nilai_realisasi * 100) / $nilai_target, 2) : 0;
+                                        @endphp
+										<span class="fs-20 text-black font-w500 me-3 mb-3">REALISASI {{$persentasi}}%</span>
 									</div>
 									<div class="card-body">
 										<div class="progress default-progress">
-											<div class="progress-bar bg-gradient-5 progress-animated" style="width: 25%; height:20px;" role="progressbar">
-												<span class="sr-only">50% Complete</span>
+											<div class="progress-bar bg-gradient-5 progress-animated" style="width: <?php echo $persentasi ?>%; height:20px;" role="progressbar">
+												<span class="sr-only">{{$persentasi}}% Complete</span>
 											</div>
 										</div>
 									</div>
+                                    @else
+                                    <span class="fs-20 text-black font-w500 me-3 mb-3">REALISASI 0%</span>
+									</div>
+									<div class="card-body">
+										<div class="progress default-progress">
+											<div class="progress-bar bg-gradient-5 progress-animated" style="width: 0%; height:20px;" role="progressbar">
+												<span class="sr-only">0% Complete</span>
+											</div>
+										</div>
+									</div>
+                                    @endif
 								</div>
 							</div>
                         </div>
