@@ -243,7 +243,12 @@
                                         <tr>
                                             <td style="color: black;"><b>{{$kode_jr}}</b></td>
                                             <td style="color: black;"><b>{{$jr->first()->first()->first()->nama_jr}}</b></td>
+                                            @if($filter->tipe_bulan == 1) <!-- Jika Menampilkan APBD Murni -->
                                             <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_rtarget'), 0, ',', '.') }}</b></td>
+                                            @else <!-- Jika Menampilkan APBD Perubahan -->
+                                            <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_prtarget'), 0, ',', '.') }}</b></td>
+                                            @endif
+                                            <!-- End -->
                                             @if ($jr->first()->first()->first()->id_bulan == Request('bulan'))
                                             <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_realisasi'), 0, ',', '.') }}</b></td>
                                             @else
@@ -255,7 +260,12 @@
                                             <tr>
                                                 <td style="color: black;"><b>{{$kode_sr}}</b></td>
                                                 <td style="color: black;"><b>{{$sr->first()->first()->nama_sr}}</b></td>
+                                                @if($filter->tipe_bulan == 1) <!-- Jika Menampilkan APBD Murni -->
                                                 <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_rtarget'), 0, ',', '.') }}</b></td>
+                                                @else  <!-- Jika Menampilkan APBD Perubahan -->
+                                                <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_prtarget'), 0, ',', '.') }}</b></td>
+                                                @endif  <!-- END -->
+
                                                 @if ($sr->first()->first()->id_bulan == Request('bulan'))
                                                 <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_realisasi'), 0, ',', '.') }}</b></td>
                                                 @else
@@ -267,7 +277,12 @@
                                             <tr>
                                                 <td style="color: black;"><b>{{$kode_ojk}}</b></td>
                                                 <td style="color: black;"><b>{{$ojk->first()->nama_ojk}}</td>
+                                                @if($filter->tipe_bulan == 1) <!-- Jika Menampilkan APBD Murni -->
                                                 <td style="color: black;"><b>Rp{{ number_format($ojk->sum('pagu_rtarget'), 0, ',', '.') }}</b></td>
+                                                @else <!-- Jika Menampilkan APBD Perubahan -->
+                                                <td style="color: black;"><b>Rp{{ number_format($ojk->sum('pagu_prtarget'), 0, ',', '.') }}</b></td>
+                                                @endif
+
                                                 @if ($ojk->first()->id_bulan == Request('bulan'))
                                                 <td style="color: black;"><b>Rp{{ number_format($ojk->flatten()->sum('pagu_realisasi'), 0, ',', '.') }}</b></td>
                                                 @else
@@ -279,7 +294,12 @@
                                             <tr>
                                                 <td style="color: black;"></td>
                                                 <td style="color: black;">- {{$d->uraian_rtarget}}</td>
+                                                @if($filter->tipe_bulan == 1) <!-- Jika Menampilkan APBD Murni -->
                                                 <td style="color: black;">Rp<?php echo number_format($d->pagu_rtarget ,0,',','.')?></td>
+                                                @else <!-- Jika Menampilkan APBD Perubahan -->
+                                                <td style="color: black;">Rp<?php echo number_format($d->pagu_prtarget ,0,',','.')?></td>
+                                                @endif
+
                                                 @if ($d->id_bulan == Request('bulan'))
                                                 <td style="color: green;">Rp<?php echo number_format($d->pagu_realisasi ,0,',','.')?></td>
                                                 @else

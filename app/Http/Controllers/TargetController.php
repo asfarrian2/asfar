@@ -298,11 +298,17 @@ class TargetController extends Controller
         });
         //
 
-        $jumlah = DB::table('tb_rtarget')
+        $murni = DB::table('tb_rtarget')
+        ->where('id_target',$id_target)
+        ->sum('pagu_rtarget');
+
+        $perubahan = DB::table('tb_rtarget')
         ->where('id_target',$id_target)
         ->sum('pagu_prtarget');
 
-        return view('operator.target.perubahan.view', compact('view', 'rincian', 'jumlah', 'objek', 'sub', 'jenis'));
+        $jumlah = $perubahan-$murni;
+
+        return view('operator.target.perubahan.view', compact('view', 'rincian', 'jumlah', 'objek', 'sub', 'jenis', 'murni', 'perubahan'));
         }
     }
 

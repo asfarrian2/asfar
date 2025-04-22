@@ -368,7 +368,9 @@
                                         <tfoot>
                                             <tr>
                                                 <th colspan="2" style="text-align:center; color:black;" >TOTAL PAGU</th>
-                                                <th colspan="2" style="text-align:center; color:black;">Rp<?php echo number_format($jumlah ,0,',','.')?></th>
+                                                <th style="text-align:center; color:black;">Rp<?php echo number_format($murni ,0,',','.')?></th>
+                                                <th style="text-align:center; color:black;">Rp<?php echo number_format($perubahan ,0,',','.')?></th>
+                                                <th style="text-align:center; color:black;">Rp<?php echo number_format($jumlah ,0,',','.')?></th>
                                             </tr>
                                         </tfoot>
                                     </table>
