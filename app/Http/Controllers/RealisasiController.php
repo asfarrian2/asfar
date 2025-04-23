@@ -29,37 +29,59 @@ class RealisasiController extends Controller
         ->where('id_bulan', $pilih_bulan)
         ->first();
 
+        // $sekarang = DB::table('tb_bulan')
+        // ->where('id_bulan',$pilih_bulan)
+        // ->first();
+
+        // $sebelumnya = DB::table('tb_bulan')
+        // ->where('nilaix_bulan',$sekarang->nilaix_bulan - 1)
+        // ->first();
+
 
         $view = DB::table('tb_target')
         ->where('id_agency',$id_agency)
         ->where('id_tahun',$id_tahun)
         ->first();
         //
-        if ($filter){
-            $id_target = $view->id_target;
-            if($filter->tipe_bulan == 1){
-            //Menampilkan Data Rincian Realisasi Anggaran Murni
+        if ($filter) {
+    $id_target = $view->id_target;
+    if ($filter->tipe_bulan == 1) {
+        // Menampilkan Data Rincian Realisasi Anggaran Murni
         $rincian = DB::table('tb_rtarget')
-        ->leftJoin('tb_ojkretribusi', 'tb_rtarget.id_ojk', '=', 'tb_ojkretribusi.id_ojk')
-        ->leftJoin('tb_subretribusi', 'tb_ojkretribusi.id_sr', '=', 'tb_subretribusi.id_sr')
-        ->leftJoin('tb_jenretribusi', 'tb_subretribusi.id_jr', '=', 'tb_jenretribusi.id_jr')
-        ->leftJoin('tb_realisasi', function ($join) use ($pilih_bulan) {
-            $join->on('tb_rtarget.id_rtarget', '=', 'tb_realisasi.id_rtarget')
-                ->where('tb_realisasi.id_bulan', $pilih_bulan);
-        })
-        ->select('tb_rtarget.*', 'tb_realisasi.pagu_realisasi', 'tb_realisasi.id_realisasi', 'tb_realisasi.id_bulan', 'tb_realisasi.status_realisasi','tb_ojkretribusi.nama_ojk', 'tb_ojkretribusi.kode_ojk', 'tb_subretribusi.nama_sr', 'tb_subretribusi.kode_sr', 'tb_jenretribusi.nama_jr', 'tb_jenretribusi.kode_jr')
-        ->where('id_target',$id_target)
-        ->where('status_rtarget', '0')
-        ->orderBy('kode_ojk', 'ASC')
-        ->get()
-        ->groupBy('kode_jr')
-        ->map(function($item, $key) {
-            return $item->groupBy('kode_sr')
-                ->map(function($item, $key) {
-                    return $item->groupBy('kode_ojk');
-                });
-        });
+            ->leftJoin('tb_ojkretribusi', 'tb_rtarget.id_ojk', '=', 'tb_ojkretribusi.id_ojk')
+            ->leftJoin('tb_subretribusi', 'tb_ojkretribusi.id_sr', '=', 'tb_subretribusi.id_sr')
+            ->leftJoin('tb_jenretribusi', 'tb_subretribusi.id_jr', '=', 'tb_jenretribusi.id_jr')
+            ->leftJoin('tb_realisasi', function ($join) use ($pilih_bulan) {
+                $join->on('tb_rtarget.id_rtarget', '=', 'tb_realisasi.id_rtarget')
+                    ->where('tb_realisasi.id_bulan', $pilih_bulan);
+            })
+            ->select('tb_rtarget.*',
+                'tb_realisasi.pagu_realisasi',
+                'tb_realisasi.id_realisasi',
+                'tb_realisasi.id_bulan',
+                'tb_realisasi.status_realisasi',
+                'tb_ojkretribusi.nama_ojk',
+                'tb_ojkretribusi.kode_ojk',
+                'tb_subretribusi.nama_sr',
+                'tb_subretribusi.kode_sr',
+                'tb_jenretribusi.nama_jr',
+                'tb_jenretribusi.kode_jr',
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi WHERE id_rtarget = tb_rtarget.id_rtarget AND id_bulan < ' . $pilih_bulan . ') as pagu_realisasi_sebelumnya'),
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi WHERE id_rtarget = tb_rtarget.id_rtarget AND id_bulan <= ' . $pilih_bulan . ') as pagu_realisasi_sekarang')
+            )
+            ->where('id_target', $id_target)
+            ->where('status_rtarget', '0')
+            ->orderBy('kode_ojk', 'ASC')
+            ->get()
+            ->groupBy('kode_jr')
+            ->map(function($item, $key) {
+                return $item->groupBy('kode_sr')
+                    ->map(function($item, $key) {
+                        return $item->groupBy('kode_ojk');
+                    });
+            });
         //
+
 
         $count = DB::table('tb_realisasi')
         ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
@@ -83,27 +105,55 @@ class RealisasiController extends Controller
         ->where('id_bulan', $request->bulan)
         ->sum('pagu_realisasi');
 
-        return view('operator.realisasi.view', compact('view', 'rincian', 'jumlah', 'bulan', 'total', 'filter', 'count'));
-        }else{ //Menampilkan Data Rincian Realisasi Anggaran Perubahan
-            $rincian = DB::table('tb_rtarget')
-        ->leftJoin('tb_ojkretribusi', 'tb_rtarget.id_ojk', '=', 'tb_ojkretribusi.id_ojk')
-        ->leftJoin('tb_subretribusi', 'tb_ojkretribusi.id_sr', '=', 'tb_subretribusi.id_sr')
-        ->leftJoin('tb_jenretribusi', 'tb_subretribusi.id_jr', '=', 'tb_jenretribusi.id_jr')
-        ->leftJoin('tb_realisasi', function ($join) use ($pilih_bulan) {
-            $join->on('tb_rtarget.id_rtarget', '=', 'tb_realisasi.id_rtarget')
-                ->where('tb_realisasi.id_bulan', $pilih_bulan);
-        })
-        ->select('tb_rtarget.*', 'tb_realisasi.pagu_realisasi', 'tb_realisasi.id_realisasi', 'tb_realisasi.id_bulan', 'tb_realisasi.status_realisasi','tb_ojkretribusi.nama_ojk', 'tb_ojkretribusi.kode_ojk', 'tb_subretribusi.nama_sr', 'tb_subretribusi.kode_sr', 'tb_jenretribusi.nama_jr', 'tb_jenretribusi.kode_jr')
+        $total_sebelumnya = DB::table('tb_realisasi')
+        ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_target')
         ->where('id_target',$id_target)
-        ->orderBy('kode_ojk', 'ASC')
-        ->get()
-        ->groupBy('kode_jr')
-        ->map(function($item, $key) {
-            return $item->groupBy('kode_sr')
-                ->map(function($item, $key) {
-                    return $item->groupBy('kode_ojk');
-                });
-        });
+        ->where('id_bulan', '<' , $request->bulan)
+        ->sum('pagu_realisasi');
+
+        $total_sekarang = DB::table('tb_realisasi')
+        ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_target')
+        ->where('id_target',$id_target)
+        ->where('id_bulan', '<=' , $request->bulan)
+        ->sum('pagu_realisasi');
+
+        return view('operator.realisasi.view', compact('view', 'rincian', 'jumlah', 'bulan', 'total', 'filter', 'count', 'total_sebelumnya', 'total_sekarang'));
+        }else{ //Menampilkan Data Rincian Realisasi Anggaran Perubahan
+
+            $rincian = DB::table('tb_rtarget')
+            ->leftJoin('tb_ojkretribusi', 'tb_rtarget.id_ojk', '=', 'tb_ojkretribusi.id_ojk')
+            ->leftJoin('tb_subretribusi', 'tb_ojkretribusi.id_sr', '=', 'tb_subretribusi.id_sr')
+            ->leftJoin('tb_jenretribusi', 'tb_subretribusi.id_jr', '=', 'tb_jenretribusi.id_jr')
+            ->leftJoin('tb_realisasi', function ($join) use ($pilih_bulan) {
+                $join->on('tb_rtarget.id_rtarget', '=', 'tb_realisasi.id_rtarget')
+                    ->where('tb_realisasi.id_bulan', $pilih_bulan);
+            })
+            ->select('tb_rtarget.*',
+                'tb_realisasi.pagu_realisasi',
+                'tb_realisasi.id_realisasi',
+                'tb_realisasi.id_bulan',
+                'tb_realisasi.status_realisasi',
+                'tb_ojkretribusi.nama_ojk',
+                'tb_ojkretribusi.kode_ojk',
+                'tb_subretribusi.nama_sr',
+                'tb_subretribusi.kode_sr',
+                'tb_jenretribusi.nama_jr',
+                'tb_jenretribusi.kode_jr',
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi WHERE id_rtarget = tb_rtarget.id_rtarget AND id_bulan < ' . $pilih_bulan . ') as pagu_realisasi_sebelumnya'),
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi WHERE id_rtarget = tb_rtarget.id_rtarget AND id_bulan <= ' . $pilih_bulan . ') as pagu_realisasi_sekarang')
+            )
+            ->where('id_target', $id_target)
+            ->orderBy('kode_ojk', 'ASC')
+            ->get()
+            ->groupBy('kode_jr')
+            ->map(function($item, $key) {
+                return $item->groupBy('kode_sr')
+                    ->map(function($item, $key) {
+                        return $item->groupBy('kode_ojk');
+                    });
+            });
         //
 
         $count = DB::table('tb_realisasi')
@@ -128,7 +178,21 @@ class RealisasiController extends Controller
         ->where('id_bulan', $request->bulan)
         ->sum('pagu_realisasi');
 
-        return view('operator.realisasi.view', compact('view', 'rincian', 'jumlah', 'bulan', 'total', 'filter', 'count'));
+        $total_sebelumnya = DB::table('tb_realisasi')
+        ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_target')
+        ->where('id_target',$id_target)
+        ->where('id_bulan', '<' , $request->bulan)
+        ->sum('pagu_realisasi');
+
+        $total_sekarang = DB::table('tb_realisasi')
+        ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_target')
+        ->where('id_target',$id_target)
+        ->where('id_bulan', '<=' , $request->bulan)
+        ->sum('pagu_realisasi');
+
+        return view('operator.realisasi.view', compact('view', 'rincian', 'jumlah', 'bulan', 'total', 'filter', 'count', 'total_sebelumnya', 'total_sekarang'));
         }
         }else{
         //Menampilkan Data Rincian Target

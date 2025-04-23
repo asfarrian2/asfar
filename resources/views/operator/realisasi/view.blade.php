@@ -231,11 +231,16 @@
                                     <table class="table table-bordered table-responsive-sm ">
                                         <thead>
                                             <tr>
-                                                <th style="color: black;">KODE AKUN</th>
-                                                <th style="color: black;">JENIS / SUB / OBJEK / RINCIAN</th>
-                                                <th style="color: black;">PAGU</th>
-                                                <th style="color: black;">REALISASI</th>
-                                                <th style="color: black;">AKSI</th>
+                                                <th style="color: black;" rowspan="2">KODE AKUN</th>
+                                                <th style="color: black;" rowspan="2">JENIS / SUB / OBJEK / RINCIAN</th>
+                                                <th style="color: black;" rowspan="2">TARGET</th>
+                                                <th style="color: black; text-align: center;" rowspan="1" colspan="3">REALISASI</th>
+                                                <th style="color: black;" rowspan="2">AKSI</th>
+                                            </tr>
+                                            <tr>
+                                            <th style="color: black; text-align: center;" rowspan="1">s.d. BULAN <br>SEBELUMNYA</th>
+                                            <th style="color: black; text-align: center;" rowspan="1">BULAN INI</th>
+                                            <th style="color: black; text-align: center;" rowspan="1">s.d. BULAN<br>SEKARANG</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -250,9 +255,13 @@
                                             @endif
                                             <!-- End -->
                                             @if ($jr->first()->first()->first()->id_bulan == Request('bulan'))
+                                            <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_realisasi_sebelumnya'), 0, ',', '.') }}</b></td>
                                             <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_realisasi'), 0, ',', '.') }}</b></td>
+                                            <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_realisasi_sekarang'), 0, ',', '.') }}</b></td>
                                             @else
+                                            <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_realisasi_sebelumnya'), 0, ',', '.') }}</b></td>
                                             <td style="color: black;"><b>Rp0</b></td>
+                                            <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_realisasi_sekarang'), 0, ',', '.') }}</b></td>
                                             @endif
                                             <td></td>
                                         </tr>
@@ -267,9 +276,13 @@
                                                 @endif  <!-- END -->
 
                                                 @if ($sr->first()->first()->id_bulan == Request('bulan'))
+                                                <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_realisasi_sebelumnya'), 0, ',', '.') }}</b></td>
                                                 <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_realisasi'), 0, ',', '.') }}</b></td>
+                                                <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_realisasi_sekarang'), 0, ',', '.') }}</b></td>
                                                 @else
+                                                <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_realisasi_sebelumnya'), 0, ',', '.') }}</b></td>
                                                 <td style="color: black;"><b>Rp0</b></td>
+                                                <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_realisasi_sekarang'), 0, ',', '.') }}</b></td>
                                                 @endif
                                                 <td style="color: black;"></td>
                                             </tr>
@@ -284,9 +297,13 @@
                                                 @endif
 
                                                 @if ($ojk->first()->id_bulan == Request('bulan'))
+                                                <td style="color: black;"><b>Rp{{ number_format($ojk->flatten()->sum('pagu_realisasi_sebelumnya'), 0, ',', '.') }}</b></td>
                                                 <td style="color: black;"><b>Rp{{ number_format($ojk->flatten()->sum('pagu_realisasi'), 0, ',', '.') }}</b></td>
+                                                <td style="color: black;"><b>Rp{{ number_format($ojk->flatten()->sum('pagu_realisasi_sekarang'), 0, ',', '.') }}</b></td>
                                                 @else
+                                                <td style="color: black;"><b>Rp{{ number_format($ojk->flatten()->sum('pagu_realisasi_sebelumnya'), 0, ',', '.') }}</b></td>
                                                 <td style="color: black;"><b>Rp0</b></td>
+                                                <td style="color: black;"><b>Rp{{ number_format($ojk->flatten()->sum('pagu_realisasi_sekarang'), 0, ',', '.') }}</b></td>
                                                 @endif
                                                 <td style="color: black;"></td>
                                             </tr>
@@ -301,9 +318,13 @@
                                                 @endif
 
                                                 @if ($d->id_bulan == Request('bulan'))
+                                                <td style="color: black;">Rp<?php echo number_format($d->pagu_realisasi_sebelumnya ,0,',','.')?></td>
                                                 <td style="color: green;">Rp<?php echo number_format($d->pagu_realisasi ,0,',','.')?></td>
+                                                <td style="color: black;">Rp<?php echo number_format($d->pagu_realisasi_sekarang ,0,',','.')?></td>
                                                 @else
+                                                <td style="color: black;">Rp<?php echo number_format($d->pagu_realisasi_sebelumnya ,0,',','.')?></td>
                                                 <td style="color: black;">Belum Ada Realisasi</td>
+                                                <td style="color: black;">Rp<?php echo number_format($d->pagu_realisasi_sekarang ,0,',','.')?></td>
                                                 @endif
                                                 <td>
                                                 @if($view->status_target < 1 or $filter->status_bulan == 0 or $count > 0)
@@ -339,7 +360,9 @@
                                             <tr>
                                                 <th colspan="2" style="text-align:center; color:black;" >TOTAL</th>
                                                 <th style="text-align:center; color:black;">Rp<?php echo number_format($jumlah ,0,',','.')?></th>
+                                                <th style="text-align:center; color:black;">Rp<?php echo number_format($total_sebelumnya ,0,',','.')?></th>
                                                 <th style="text-align:center; color:black;">Rp<?php echo number_format($total ,0,',','.')?></th>
+                                                <th style="text-align:center; color:black;">Rp<?php echo number_format($total_sekarang ,0,',','.')?></th>
                                             </tr>
                                         </tfoot>
                                     </table>
