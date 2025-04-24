@@ -64,8 +64,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="basic-form">
-                                    <form action="/opt/realisasi" method="GET" data-parsley-validate>
-                                    @csrf
+                                    <form action="/opt/realisasi/" method="GET" data-parsley-validate>
                                     <div class="mb-3 row">
                                         <label class="form-label">Bulan :</label>
                                         <select class="input-default  form-control" name="bulan" id="SelectJr">
@@ -119,6 +118,14 @@
 										</div>
 									</div>
                                 @endif
+                                <div class="mb-3 row">
+                                    @if($count ==! 0 AND $filter->status_bulan == 0)
+                                    <a type="button" class="btn btn-success terposting" >
+                                        TELAH DIPOSTING <i class="fa fa-check"></i>
+                                     </a>
+                                     @else
+                                     @endif
+                                    </div>
                                 </div>
                             </div>
                     @else
@@ -578,7 +585,7 @@ $(document).ready(function(){
   Swal.fire({
     icon: 'success',
     title: 'Data Telah Terposting',
-    text: 'Pagu Target Telah Ditetapkan',
+    text: 'Pagu Realisasi Telah Disimpan',
     confirmButtonText: 'OK'
   })
 })

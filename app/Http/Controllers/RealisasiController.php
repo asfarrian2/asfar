@@ -323,29 +323,104 @@ class RealisasiController extends Controller
         $id_bulan   = Crypt::decrypt($id_bulan);
         $id_agency  = Auth::guard('operator')->user()->id_agency;
         $id_tahun   = Auth::guard('operator')->user()->id_tahun;
+
+        //Mencari Nilai ID Target
         $id_target = DB::table('tb_target')
         ->where('id_agency',$id_agency)
         ->where('id_tahun',$id_tahun)
         ->first();
+        //----------------------------
 
-        $data = [
-            'status_realisasi'   => '1'
-        ];
+        //Mencari Data Bulan
+        $bulan = DB::table('tb_bulan')
+        ->where('id_bulan',$id_bulan)
+        ->first();
 
-        $update = DB::table('tb_realisasi')
+        $tipe_bulan = $bulan->tipe_bulan;
+        //----------------------------
+
+        //Cek Data Sebelum Posting
+        $countrapbd = DB::table('tb_realisasi')
         ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
         ->leftJoin('tb_target', 'tb_rtarget.id_target', '=', 'tb_target.id_target')
-        ->select('tb_realisasi.*', 'tb_rtarget.id_rtarget', 'tb_target.id_target')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_rtarget', 'tb_rtarget.status_rtarget', 'tb_target.id_target')
         ->where('status_realisasi', '0')
         ->where('tb_target.id_target', $id_target->id_target)
         ->where('id_bulan', $id_bulan)
-        ->update($data);
-        if ($update) {
-            return Redirect::back()->with(['success' => 'Data Berhasil Diposting']);
-        } else {
-            return Redirect::back()->with(['warning' => 'Data Gagal Diposting']);
+        ->where('status_rtarget', '0')
+        ->count();
+
+        $counttapbd = DB::table('tb_rtarget')
+        ->leftJoin('tb_target', 'tb_rtarget.id_target', '=', 'tb_target.id_target')
+        ->select('tb_rtarget.*', 'tb_target.id_target')
+        ->where('tb_target.id_target', $id_target->id_target)
+        ->where('status_rtarget', '0')
+        ->count();
+
+        $countrapbdp = DB::table('tb_realisasi')
+        ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+        ->leftJoin('tb_target', 'tb_rtarget.id_target', '=', 'tb_target.id_target')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_rtarget', 'tb_rtarget.status_rtarget', 'tb_target.id_target')
+        ->where('status_realisasi', '0')
+        ->where('tb_target.id_target', $id_target->id_target)
+        ->where('id_bulan', $id_bulan)
+        ->count();
+
+        $counttapbdp = DB::table('tb_rtarget')
+        ->leftJoin('tb_target', 'tb_rtarget.id_target', '=', 'tb_target.id_target')
+        ->select('tb_rtarget.*', 'tb_target.id_target')
+        ->where('tb_target.id_target', $id_target->id_target)
+        ->count();
+        //----------------------------
+
+            if($tipe_bulan == 1){
+                if($counttapbd == $countrapbd){
+                $data = [
+                    'status_realisasi'   => '1'
+                ];
+
+                $update = DB::table('tb_realisasi')
+                ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+                ->leftJoin('tb_target', 'tb_rtarget.id_target', '=', 'tb_target.id_target')
+                ->select('tb_realisasi.*', 'tb_rtarget.id_rtarget', 'tb_target.id_target')
+                ->where('status_realisasi', '0')
+                ->where('tb_target.id_target', $id_target->id_target)
+                ->where('id_bulan', $id_bulan)
+                ->update($data);
+                if ($update) {
+                    return Redirect::back()->with(['success' => 'Data Berhasil Diposting']);
+                } else {
+                    return Redirect::back()->with(['warning' => 'Data Gagal Diposting']);
+                }
+            }else{
+                return Redirect::back()->with(['warning' => 'Data Gagal Diposting, Terdapat Data Realisasi yang Masih Belum Diinput']);
+            }
+
+        }else{
+            if($counttapbdp == $countrapbdp){
+                $data = [
+                    'status_realisasi'   => '1'
+                ];
+
+                $update = DB::table('tb_realisasi')
+                ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+                ->leftJoin('tb_target', 'tb_rtarget.id_target', '=', 'tb_target.id_target')
+                ->select('tb_realisasi.*', 'tb_rtarget.id_rtarget', 'tb_target.id_target')
+                ->where('status_realisasi', '0')
+                ->where('tb_target.id_target', $id_target->id_target)
+                ->where('id_bulan', $id_bulan)
+                ->update($data);
+                if ($update) {
+                    return Redirect::back()->with(['success' => 'Data Berhasil Diposting']);
+                } else {
+                    return Redirect::back()->with(['warning' => 'Data Gagal Diposting']);
+                }
+            }else{
+                return Redirect::back()->with(['warning' => 'Data Gagal Diposting, Terdapat Data Realisasi yang Masih Belum Diinput']);
+            }
+
         }
-     }
+    }
 
 
 }

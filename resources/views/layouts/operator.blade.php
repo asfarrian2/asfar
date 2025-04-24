@@ -122,9 +122,9 @@
                             <li><a href="./form-wizard.html">RPJMD</a></li>
                         </ul>
                     </li>
-                    <li><a href="/opt/realisasi" aria-expanded="false">
-							<i class="flaticon-041-graph"></i>
-							<span class="nav-text">Realisasi</span>
+                    <li><a href="/opt/realisasi" aria-expanded="false" @if(Request::is('opt/realisasi*')) style="background-color: #eefaf9;" @endif>
+							<i class="flaticon-041-graph" @if(Request::is('opt/realisasi*')) style="color: #5bcfc5;" @endif></i>
+							<span class="nav-text" @if(Request::is('opt/realisasi*')) style="color: #5bcfc5;" @endif>Realisasi</span>
 						</a>
                     </li>
                     <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
@@ -132,8 +132,8 @@
 							<span class="nav-text">Laporan</span>
 						</a>
                         <ul aria-expanded="false">
-                            <li><a href="./form-element.html">Semua</a></li>
-                            <li><a href="./form-wizard.html">SKPD/UPTD</a></li>
+                            <li><a href="./form-element.html">Realisasi</a></li>
+                            <li><a href="./form-wizard.html">Faktor Pendapatan</a></li>
                         </ul>
                     </li>
                 </ul>
