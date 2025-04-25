@@ -208,8 +208,7 @@
 				            	</div>
 				            	<span class="fs-20 text-black font-w500 me-3 mb-3">
                                 @if($view->status_target == 0)
-                                <a type="button" class="btn btn-success posting" data-id="{{Crypt::encrypt($view->id_target)}}" >POSTING <span class="btn-icon-end">
-                                        <i class="fa fa-check"></i></span>
+                                <a type="button" class="btn btn-success posting" data-id="{{Crypt::encrypt($view->id_target)}}" >POSTING
                                 </a>
                                 @elseif($view->status_target > 0)
                                 <a type="button" class="btn btn-success terposting">Terposting <span class="btn-icon-end">

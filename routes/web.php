@@ -4,6 +4,7 @@ use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HalvalidController;
 use App\Http\Controllers\JenisretribusiController;
 use App\Http\Controllers\MenuanggaranController;
 use App\Http\Controllers\ObjekretribusiController;
@@ -18,6 +19,10 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 
+//Cek Login
+Route::get('/4f4adcbf8c6f66dcfc8a3282ac2bf10ac35a9fc52bb556c79f8fa540df587a2bf465b940
+ae70dccf89d925c422978ba0022dc9084d59291ac6950702d30b9cdf
+d259b2a4fbd8e8eeae70dccf89d925c422978ba0022dc908', [HalvalidController::class, 'ceklogin'])->name('login');
 
 //Crud Login Admin
 Route::get('/ctr_admin', [LoginController::class, 'admin']);

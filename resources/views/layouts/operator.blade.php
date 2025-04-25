@@ -133,7 +133,7 @@
 						</a>
                         <ul aria-expanded="false">
                             <li><a href="./form-element.html">Realisasi</a></li>
-                            <li><a href="./form-wizard.html">Faktor Pendapatan</a></li>
+                            <li><a href="./form-wizard.html">Evaluasi</a></li>
                         </ul>
                     </li>
                 </ul>

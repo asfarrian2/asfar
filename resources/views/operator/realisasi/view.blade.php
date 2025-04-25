@@ -67,12 +67,19 @@
                                     <form action="/opt/realisasi/" method="GET" data-parsley-validate>
                                     <div class="mb-3 row">
                                         <label class="form-label">Bulan :</label>
-                                        <select class="input-default  form-control" name="bulan" id="SelectJr">
+                                        <select class="input-default  form-control" name="bulan" id="bulan">
+                                        @if(Request::has('bulan'))
                                         <option value="">Pilih Bulan</option>
-                                        @foreach ($bulan as $d)
-                                        <option  {{ Request('bulan') == $d->id_bulan ? 'selected' : '' }}
-                                        value="{{ $d->id_bulan }}">{{$d->nama_bulan }}</option>
+                                        @foreach ($select_bulan as $d)
+                                        <option  {{  Crypt::decrypt(Request('bulan')) == $d->id_bulan ? 'selected' : '' }}
+                                        value="{{ Crypt::encrypt($d->id_bulan) }}">{{$d->nama_bulan }}</option>
                                         @endforeach
+                                        @else
+                                        <option value="">Pilih Bulan</option>
+                                        @foreach ($select_bulan as $d)
+                                            <option value="{{ Crypt::encrypt($d->id_bulan) }}">{{$d->nama_bulan }}</option>
+                                        @endforeach
+                                        @endif
                                         </select>
                                     </div>
                                     <div class="mb-3 row">
@@ -261,7 +268,7 @@
                                             <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_prtarget'), 0, ',', '.') }}</b></td>
                                             @endif
                                             <!-- End -->
-                                            @if ($jr->first()->first()->first()->id_bulan == Request('bulan'))
+                                            @if ($jr->first()->first()->first()->id_bulan == Crypt::decrypt(Request('bulan')))
                                             <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_realisasi_sebelumnya'), 0, ',', '.') }}</b></td>
                                             <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_realisasi'), 0, ',', '.') }}</b></td>
                                             <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_realisasi_sekarang'), 0, ',', '.') }}</b></td>
@@ -282,7 +289,7 @@
                                                 <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_prtarget'), 0, ',', '.') }}</b></td>
                                                 @endif  <!-- END -->
 
-                                                @if ($sr->first()->first()->id_bulan == Request('bulan'))
+                                                @if ($sr->first()->first()->id_bulan == Crypt::decrypt(Request('bulan')))
                                                 <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_realisasi_sebelumnya'), 0, ',', '.') }}</b></td>
                                                 <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_realisasi'), 0, ',', '.') }}</b></td>
                                                 <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_realisasi_sekarang'), 0, ',', '.') }}</b></td>
@@ -303,7 +310,7 @@
                                                 <td style="color: black;"><b>Rp{{ number_format($ojk->sum('pagu_prtarget'), 0, ',', '.') }}</b></td>
                                                 @endif
 
-                                                @if ($ojk->first()->id_bulan == Request('bulan'))
+                                                @if ($ojk->first()->id_bulan == Crypt::decrypt(Request('bulan')))
                                                 <td style="color: black;"><b>Rp{{ number_format($ojk->flatten()->sum('pagu_realisasi_sebelumnya'), 0, ',', '.') }}</b></td>
                                                 <td style="color: black;"><b>Rp{{ number_format($ojk->flatten()->sum('pagu_realisasi'), 0, ',', '.') }}</b></td>
                                                 <td style="color: black;"><b>Rp{{ number_format($ojk->flatten()->sum('pagu_realisasi_sekarang'), 0, ',', '.') }}</b></td>
@@ -324,7 +331,7 @@
                                                 <td style="color: black;">Rp<?php echo number_format($d->pagu_prtarget ,0,',','.')?></td>
                                                 @endif
 
-                                                @if ($d->id_bulan == Request('bulan'))
+                                                @if ($d->id_bulan == Crypt::decrypt(Request('bulan')))
                                                 <td style="color: black;">Rp<?php echo number_format($d->pagu_realisasi_sebelumnya ,0,',','.')?></td>
                                                 <td style="color: green;">Rp<?php echo number_format($d->pagu_realisasi ,0,',','.')?></td>
                                                 <td style="color: black;">Rp<?php echo number_format($d->pagu_realisasi_sekarang ,0,',','.')?></td>
@@ -344,12 +351,12 @@
 														</button>
                                                         @csrf
 														<div class="dropdown-menu">
-                                                        @if($d->pagu_realisasi !== NULL && $d->id_bulan == Request('bulan'))
+                                                        @if($d->pagu_realisasi !== NULL && $d->id_bulan == Crypt::decrypt(Request('bulan')))
                                                             <a class="dropdown-item edit" href="#" data-id="{{Crypt::encrypt($d->id_realisasi)}}">
                                                                 <i class="fa fa-pencil color-muted"></i> Edit
                                                             </a>
                                                         @else
-                                                            <a class="dropdown-item tambah" href="#" data-id="{{Crypt::encrypt($d->id_rtarget)}}" data-bulan="{{Crypt::encrypt(Request('bulan'))}}">
+                                                            <a class="dropdown-item tambah" href="#" data-id="{{Crypt::encrypt($d->id_rtarget)}}" data-bulan="{{Crypt::encrypt(Crypt::decrypt(Request('bulan')))}}">
                                                                 <i class="fa fa-plus color-muted"></i> Tambah
                                                             </a>
                                                         @endif

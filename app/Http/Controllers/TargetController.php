@@ -254,7 +254,12 @@ class TargetController extends Controller
 
     // View Data APBD Perubahan
     public function apbdp(){
-
+    //cek keberadaan aktif halaman
+    $cekhalaman = DB::table('tb_tahun')
+    ->where('id_tahun', Auth::guard('operator')->user()->id_tahun)
+    ->where('apbdp_tahun', '1')
+    ->count();
+    if($cekhalaman > 0){
         $jenis = DB::table('tb_jenretribusi')
         ->where('status_jr', '1')
         ->get();
@@ -310,7 +315,10 @@ class TargetController extends Controller
 
         return view('operator.target.perubahan.view', compact('view', 'rincian', 'jumlah', 'objek', 'sub', 'jenis', 'murni', 'perubahan'));
         }
+    }else{
+        return view('operator.halamanvalid.view');
     }
+}
 
     //Tampilkan Halaman Edit Data APBDP
      public function edit_p(Request $request){

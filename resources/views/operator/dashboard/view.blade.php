@@ -42,8 +42,8 @@
 									</svg>
 								</div>
 								<div>
-                                    @if($view)
-									<h2 class="text-white invoice-num">Rp<?php echo number_format($view->pagu_target ,0,',','.')?></h2>
+                                    @if($cektarget != 0)
+									<h2 class="text-white invoice-num">Rp<?php echo number_format($target->pagu_target ,0,',','.')?></h2>
                                     @else
                                     <h2 class="text-white invoice-num">Target Belum Ditetapkan</h2>
                                     @endif
@@ -64,7 +64,7 @@
 									</svg>
 								</div>
 								<div>
-                                    @if($realisasi)
+                                    @if($cekrealisasi ==! 0)
 									<h2 class="text-white invoice-num">Rp<?php echo number_format($realisasi ,0,',','.')?></h2>
                                     @else
                                     <h2 class="text-white invoice-num">Rp0</h2>
@@ -89,8 +89,8 @@
 										</div>
 										<div class="me-3 mb-3">
 											<p class="fs-14 mb-1">TARGET</p>
-                                            @if($view)
-											<span class="text-black fs-16">Rp<?php echo number_format($view->pagu_target ,0,',','.')?></span>
+                                            @if($cektarget != 0)
+											<span class="text-black fs-16">Rp<?php echo number_format($target->pagu_target ,0,',','.')?></span>
                                             @else
                                             <span class="text-black fs-16">Belum Ditetapkan</span>
                                             @endif
@@ -99,9 +99,9 @@
 											<p class="fs-14 mb-1">TAHUN ANGGARAN</p>
 											<span class="text-black fs-16">{{ Auth::guard('operator')->user()->id_tahun }}</span>
 										</div>
-                                        @if($view)
+                                        @if($cektarget != 0)
                                         @php
-                                            $nilai_target = $view->pagu_target;
+                                            $nilai_target = $target->pagu_target;
                                             $nilai_realisasi = $realisasi;
                                             $persentasi = ($nilai_target > 0) ? round(($nilai_realisasi * 100) / $nilai_target, 2) : 0;
                                         @endphp
