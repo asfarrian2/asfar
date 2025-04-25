@@ -33,7 +33,7 @@
                             <div class="col-xl-12">
                                 <div class="auth-form">
 									<div class="text-center mb-3">
-										<a href="index.html"><img src="{{asset ('images/logo-login-2.png') }}" alt=""></a>
+										<a href="index.html"><img src="{{asset ('images/logo-login-opt.png') }}" alt=""></a>
 									</div>
                                     <h4 class="text-center mb-4">Halaman Administrator</h4>
                                     <!-- Begin Alret -->
