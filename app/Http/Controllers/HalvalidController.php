@@ -15,7 +15,7 @@ class HalvalidController extends Controller
 {
     public function ceklogin(){
 
-        return view('errors.404');
+        return view('errors.login');
 
     }
 }
