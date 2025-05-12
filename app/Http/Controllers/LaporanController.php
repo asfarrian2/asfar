@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Barryvdh\DomPDF\PDF as DomPDFPDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\App;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class LaporanController extends Controller
 {
@@ -186,7 +188,7 @@ class LaporanController extends Controller
             return view('operator.laporan.realisasi.cetak', compact('rincian', 'target', 'jumlah', 'total', 'bulan', 'count', 'total_sebelumnya', 'total_sekarang', 'agency'));
         }
 
-        $pdf = App::make('dompdf.wrapper');
+        $pdf = PDF::loadview('dompdf.wrapper');
         $pdf->setPaper('F4', 'landscape', 'auto');
         $pdf->loadView('operator.laporan.realisasi.cetak', compact('rincian', 'target', 'jumlah', 'total', 'bulan', 'count', 'total_sebelumnya', 'total_sekarang', 'agency'));
 
