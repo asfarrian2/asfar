@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laravel 11 Generate PDF Example - ItSolutionStuff.com</title>
+    <title>SI-RETDA KALSEL {{ Auth::guard('operator')->user()->id_tahun }}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" >
     <style>
             body {
