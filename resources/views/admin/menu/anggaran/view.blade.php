@@ -138,6 +138,9 @@
                                                              <a class="dropdown-item" href="/admin/menuanggaran/{{Crypt::encrypt($d->id_tahun)}}">
                                                                         <i class="fa fa-calendar color-muted"></i> Bulan
                                                             </a>
+                                                            <a class="dropdown-item" href="/admin/menuevaluasi/{{Crypt::encrypt($d->id_tahun)}}">
+                                                                        <i class="fa fa-reply-all color-muted"></i> Evaluasi
+                                                            </a>
                                                             @if ($d->status_tahun == '0')
                                                             <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_tahun)}}"> <i class="fa fa-check color-muted"></i> Aktifkan</a>
                                                             @else

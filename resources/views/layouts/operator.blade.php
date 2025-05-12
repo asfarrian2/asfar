@@ -130,7 +130,7 @@
 							<span class="nav-text">Laporan</span>
 						</a>
                         <ul aria-expanded="false">
-                            <li><a href="./form-element.html">Realisasi</a></li>
+                            <li><a href="/opt/laporan/realisasi">Realisasi</a></li>
                             <li><a href="./form-wizard.html">Evaluasi</a></li>
                         </ul>
                     </li>

@@ -52,11 +52,11 @@ class MenuanggaranController extends Controller
             $februari = [
                 'id_bulan'         => 'b02'.$id_tahun,
                 'id_tahun'         => $id_tahun,
-                'nama_bulan'     => 'Februari',
-                'tipe_bulan'   => '1',
-                'status_bulan' => '0',
-                'nilaix_bulan'      => '2',
-                'nilaiy_bulan'      => '1'
+                'nama_bulan'       => 'Februari',
+                'tipe_bulan'       => '1',
+                'status_bulan'     => '0',
+                'nilaix_bulan'     => '2',
+                'nilaiy_bulan'     => '1'
 
             ];
             $maret = [
