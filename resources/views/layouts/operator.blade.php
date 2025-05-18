@@ -40,16 +40,14 @@
     ********************-->
     <div id="preloader">
         <div class="waviy">
-		   <span style="--i:1">L</span>
-		   <span style="--i:2">o</span>
-		   <span style="--i:3">a</span>
-		   <span style="--i:4">d</span>
-		   <span style="--i:5">i</span>
-		   <span style="--i:6">n</span>
-		   <span style="--i:7">g</span>
-		   <span style="--i:8">.</span>
-		   <span style="--i:9">.</span>
-		   <span style="--i:10">.</span>
+		   <span style="--i:1">S</span>
+		   <span style="--i:2">I</span>
+		   <span style="--i:3">-</span>
+		   <span style="--i:4">R</span>
+		   <span style="--i:5">E</span>
+		   <span style="--i:6">T</span>
+		   <span style="--i:7">D</span>
+		   <span style="--i:8">A</span>
 		</div>
     </div>
     <!--*******************
@@ -123,6 +121,11 @@
                     <li><a href="/opt/realisasi" aria-expanded="false" @if(Request::is('opt/realisasi*')) style="background-color: #eefaf9;" @endif>
 							<i class="flaticon-041-graph" @if(Request::is('opt/realisasi*')) style="color: #5bcfc5;" @endif></i>
 							<span class="nav-text" @if(Request::is('opt/realisasi*')) style="color: #5bcfc5;" @endif>Realisasi</span>
+						</a>
+                    </li>
+                    <li><a href="/opt/evaluasi" aria-expanded="false" @if(Request::is('opt/evaluasi*')) style="background-color: #eefaf9;" @endif>
+							<i class="flaticon-017-clipboard" @if(Request::is('opt/evaluasi*')) style="color: #5bcfc5;" @endif></i>
+							<span class="nav-text" @if(Request::is('opt/evaluasi*')) style="color: #5bcfc5;" @endif>Evaluasi</span>
 						</a>
                     </li>
                     <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">

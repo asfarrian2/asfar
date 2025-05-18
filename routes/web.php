@@ -4,6 +4,7 @@ use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EvaluasiController;
 use App\Http\Controllers\HalvalidController;
 use App\Http\Controllers\JenisretribusiController;
 use App\Http\Controllers\LaporanController;
@@ -138,6 +139,10 @@ Route::post('/opt/realisasi/store', [RealisasiController::class, 'store']);
 Route::post('/opt/realisasi/edit', [RealisasiController::class, 'edit']);
 Route::post('/opt/realisasi/{id_realisasi}/update', [RealisasiController::class, 'update']);
 Route::get('/opt/realisasi/{id_bulan}/posting', [RealisasiController::class, 'posting']);
+
+// Crud Evaluasi
+Route::get('/opt/evaluasi', [EvaluasiController::class, 'view']);
+Route::post('/opt/evaluasi/store', [EvaluasiController::class, 'store']);
 
 // Laporan Operator
 Route::get('/opt/laporan/realisasi', [LaporanController::class, 'laporan_realisasi']);
