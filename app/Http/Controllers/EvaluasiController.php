@@ -86,4 +86,57 @@ class EvaluasiController extends Controller
         }
      }
 
+         //Tampilkan Halaman Edit Data
+     public function edit(Request $request){
+
+        $id_evaluasi    = $request->id_evaluasi;
+        $id_evaluasi    = Crypt::decrypt($id_evaluasi);
+        $evaluasi        = DB::table('tb_evaluasi')
+                           ->where('id_evaluasi', $id_evaluasi)
+                           ->first();
+
+        return view('operator.evaluasi.edit', compact('evaluasi'));
+    }
+
+    //Update Data
+    public function update($id_evaluasi, Request $request){
+
+        $id_evaluasi   = Crypt::decrypt($id_evaluasi);
+        $fpendukung     = $request->fpendukung;
+        $fpenghambat    = $request->fpenghambat;
+        $tindaklanjut   = $request->tindaklanjut;
+
+        $data = [
+            'fpendukung'   => $fpendukung,
+            'fpenghambat'  => $fpenghambat,
+            'tindaklanjut' => $tindaklanjut
+        ];
+
+        $update = DB::table('tb_evaluasi')->where('id_evaluasi', $id_evaluasi)->update($data);
+        if ($update) {
+            return Redirect::back()->with(['success' => 'Data Berhasil Dirubah']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Data Gagal Dirubah']);
+        }
+     }
+
+     //Posting Target Data
+     public function post($id_evaluasi){
+
+        $id_evaluasi    = Crypt::decrypt($id_evaluasi);
+
+        $data = [
+            'status_evaluasi' => '1'
+        ];
+
+        //validasi pagu rincian
+        $update = DB::table('tb_evaluasi')->where('id_evaluasi', $id_evaluasi)->update($data);
+        if ($update) {
+            return Redirect::back()->with(['success' => 'Target Berhasil Diposting']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Target Gagal Diposting']);
+        }
+    }
+
+
 }

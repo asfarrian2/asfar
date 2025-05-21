@@ -97,6 +97,27 @@
                     </div>
                 </div>
                 <!-- End Modal -->
+
+                 <!-- Start EditModal -->
+                <div class="modal fade" id="modal-edit">
+                   <div class="modal-dialog modal-dialog-centered" role="document">
+                       <div class="modal-content">
+                           <div class="modal-header">
+                               <h3 class="modal-title">Edit Evaluasi</h3>
+                               <button type="button" class="btn-close" data-bs-dismiss="modal">
+                               </button>
+                           </div>
+                           <div class="modal-body" id="loadedit">
+                               <div class="basic-form">
+                               <!-- Form
+                                           Edit -->
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+                </div>
+                <!-- End Edit Modal -->
+
                 <!-- row -->
                  <div class="row">
                      <div class="col-xl-6 col-lg-6">
@@ -176,7 +197,7 @@
                                     @if ($status->status_triwulan == 1 && $evaluasi == NULL)
                                     <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#tambahdata">+ Input Evaluasi</button>
                                     @elseif ($status->status_triwulan == 1 && $evaluasi ==! NULL && $evaluasi->status_evaluasi ==! 1)
-                                    <a class="btn btn-warning mb-2 edit" ><i class="fa fa-pencil"></i> Edit Evaluasi</a>
+                                    <a class="btn btn-warning mb-2 edit" type="button" data-id="{{Crypt::encrypt($evaluasi->id_evaluasi)}}"><i class="fa fa-pencil"></i> Edit Evaluasi</a>
                                     @endif
                                 </div>
                             </div>
@@ -238,178 +259,28 @@
 <script src="{{asset ('./vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{asset ('./js/plugins-init/datatables.init.js') }}"></script>
 
-<!-- Button Tambah Realisasi -->
-<script>
-    $('.tambah').click(function(){
-        var id_rtarget = $(this).attr('data-id');
-        var id_bulan = $(this).attr('data-bulan'); // perubahan disini
-        $.ajax({
-            type: 'POST',
-            url: '/opt/realisasi/tambah',
-            cache: false,
-            data: {
-                _token: "{{ csrf_token() }}",
-                id_rtarget: id_rtarget,
-                id_bulan: id_bulan // tambahan disini
-            },
-            success: function(respond) {
-                $("#loadtambah").html(respond);
-                $('.pagu').mask("#.##0", { reverse:true });
-            }
-        });
-        $("#modal-tambah").modal("show");
-    });
-    var span = document.getElementsByClassName("close")[0];
-</script>
-<!-- END Button Edit Pagu Target -->
-
 <!-- Button Edit Pagu Target -->
 <script>
 $('.edit').click(function(){
-    var id_realisasi = $(this).attr('data-id');
+    var id_evaluasi = $(this).attr('data-id');
     $.ajax({
-                    type: 'POST',
-                    url: '/opt/realisasi/edit',
-                    cache: false,
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        id_realisasi: id_realisasi
-                    },
-                    success: function(respond) {
-                        $("#loadedit").html(respond);
-                        $('.pagu').mask("#.##0", {
-                            reverse:true
-                        });
-                    }
-                });
+            type: 'POST',
+            url: '/opt/evaluasi/edit',
+            cache: false,
+            data: {
+                _token: "{{ csrf_token() }}",
+                id_evaluasi: id_evaluasi
+                },
+                 success: function(respond) {
+                            $("#loadedit").html(respond);
+                }
+            });
      $("#modal-edit").modal("show");
 });
 var span = document.getElementsByClassName("close")[0];
 </script>
 <!-- END Button Edit Pagu Target -->
 
-<!-- Start Button Hapus -->
-<script>
-$('.hapus').click(function(){
-    var id_rtarget = $(this).attr('data-id');
-Swal.fire({
-  title: "Apakah Anda Yakin Data Ini Ingin Di Hapus ?",
-  text: "Jika Ya Maka Data Akan Terhapus Permanen",
-  icon: "warning",
-  showCancelButton: true,
-  confirmButtonColor: "#3085d6",
-  cancelButtonColor: "#d33",
-  confirmButtonText: "Ya, Hapus Saja!"
-}).then((result) => {
-  if (result.isConfirmed) {
-    window.location = "/opt/rtargetapbd/"+id_rtarget+"/hapus"
-  }
-});
-});
-</script>
-<!-- End Button Hapus -->
-
-<!-- Start Button Status -->
-<script>
-$('.status').click(function(){
-    var id_sr = $(this).attr('data-id');
-Swal.fire({
-  title: "Apakah Anda Yakin Mengubah Status Data Ini ?",
-  text: "Jika Ya Maka Status Data Akan Berubah",
-  icon: "warning",
-  showCancelButton: true,
-  confirmButtonColor: "#3085d6",
-  cancelButtonColor: "#d33",
-  confirmButtonText: "Ya, Ubah Status!"
-}).then((result) => {
-  if (result.isConfirmed) {
-    window.location = "/admin/subretribusi/"+id_sr+"/status"
-  }
-});
-});
-</script>
-<!-- End Button Status -->
-
-<!-- Select1 -->
-<script>
-$(document).ready(function(){
-    $("#SelectSr").on('change', function(){
-        var id_sr = $(this).val();
-       //console.log(id_wajibpajak);
-       if (id_sr) {
-        $.ajax({
-            url: '/opt/filterojk/'+id_sr,
-            type: 'GET',
-            data: {
-                '_token': '{{ csrf_token() }}'
-            },
-            dataType: 'json',
-            success: function (data){
-                //console.log(data);
-                 if (data) {
-                    $("#ojk").empty();
-                    $('#ojk').append('<option value=""> Pilih Objek Retribusi </option>');
-                    $.each(data, function(key, ojk){
-                        $('select[name="objek"]').append(
-                            '<Option value="'+ojk.id_ojk+'">'+ojk.kode_ojk+' '+ojk.nama_ojk+'</Option>'
-                        )
-                    });
-                 }else{
-                    $("#ojk").empty();
-                 }
-            }
-        });
-       } else {
-        $("#ojk").empty();
-        $('#ojk').append('<option value=""> Pilih Objek Retribusi </option>');
-       }
-    });
-});
-</script>
-<!-- End Select1 -->
-
-<!-- Select2 -->
-<script>
-$(document).ready(function(){
-    $("#SelectJr").on('change', function(){
-        var id_jr = $(this).val();
-       //console.log(id_wajibpajak);
-       if (id_jr) {
-        $.ajax({
-            url: '/opt/filtersub/'+id_jr,
-            type: 'GET',
-            data: {
-                '_token': '{{ csrf_token() }}'
-            },
-            dataType: 'json',
-            success: function (data){
-                //console.log(data);
-                 if (data) {
-                    $("#SelectSr").empty();
-                    $("#ojk").empty();
-                    $('#ojk').append('<option value=""> Pilih Objek Retribusi </option>');
-                    $('#SelectSr').append('<option value=""> Pilih Sub Retribusi </option>');
-                    $.each(data, function(key, sub){
-                        $('select[name="sub"]').append(
-                            '<Option value="'+sub.id_sr+'">'+sub.kode_sr+' '+sub.nama_sr+'</Option>'
-                        )
-                    });
-                 }else{
-                    $("#SelectSr").empty();
-                    $("#ojk").empty();
-                 }
-            }
-        });
-       } else {
-        $("#SelectSr").empty();
-        $('#SelectSr').append('<option value=""> Pilih Sub Retribusi </option>');
-        $("#ojk").empty();
-        $('#ojk').append('<option value=""> Pilih Objek Retribusi </option>');
-       }
-    });
-});
-</script>
-<!-- End Select2 -->
 
 <!-- Begin Alert Button Off -->
 <script>
@@ -430,29 +301,19 @@ $(document).ready(function(){
   Swal.fire({
     icon: 'success',
     title: 'Data Telah Terposting',
-    text: 'Pagu Realisasi Telah Disimpan',
+    text: 'Evaluasi Telah Disimpan',
     confirmButtonText: 'OK'
   })
 })
 </script>
 <!-- End Alert Button Terposting -->
 
-<!-- Begin Rupiah Pagu Target -->
-<script>
-    $(document).ready(function(){
-        $('.pagu').mask("#.##0", {
-            reverse:true
-        });
-    });
-</script>
-<!-- End Rupiah Pagu Target -->
-
 <!-- Start Button posting -->
 <script>
 $('.posting').click(function(){
-    var id_bulan = $(this).attr('data-id');
+    var id_evaluasi = $(this).attr('data-id');
 Swal.fire({
-  title: "Apakah Anda Yakin Ingin Memposting Data Realisasi Bulan Ini ?",
+  title: "Apakah Anda Yakin Ingin Memposting Evaluasi Triwulan Ini ?",
   text: "Jika Ya Maka Data Akan Diposting dan Tidak Bisa Lagi Melakukan Pengeditan Data",
   icon: "warning",
   showCancelButton: true,
@@ -461,7 +322,7 @@ Swal.fire({
   confirmButtonText: "Ya, Posting Saja!"
 }).then((result) => {
   if (result.isConfirmed) {
-    window.location = "/opt/realisasi/"+id_bulan+"/posting"
+    window.location = "/opt/evaluasi/"+id_evaluasi+"/posting"
   }
 });
 });

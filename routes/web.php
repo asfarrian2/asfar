@@ -143,6 +143,9 @@ Route::get('/opt/realisasi/{id_bulan}/posting', [RealisasiController::class, 'po
 // Crud Evaluasi
 Route::get('/opt/evaluasi', [EvaluasiController::class, 'view']);
 Route::post('/opt/evaluasi/store', [EvaluasiController::class, 'store']);
+Route::post('/opt/evaluasi/edit', [EvaluasiController::class, 'edit']);
+Route::post('/opt/evaluasi/{id_evaluasi}/update', [EvaluasiController::class, 'update']);
+Route::get('/opt/evaluasi/{id_evaluasi}/posting', [EvaluasiController::class, 'post']);
 
 // Laporan Operator
 Route::get('/opt/laporan/realisasi', [LaporanController::class, 'laporan_realisasi']);
