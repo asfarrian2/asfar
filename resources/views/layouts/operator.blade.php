@@ -134,7 +134,7 @@
 						</a>
                         <ul aria-expanded="false">
                             <li><a href="/opt/laporan/realisasi">Realisasi</a></li>
-                            <li><a href="./form-wizard.html">Evaluasi</a></li>
+                            <li><a href="/opt/laporan/evaluasi">Evaluasi</a></li>
                         </ul>
                     </li>
                 </ul>

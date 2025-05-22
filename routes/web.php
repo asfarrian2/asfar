@@ -147,9 +147,13 @@ Route::post('/opt/evaluasi/edit', [EvaluasiController::class, 'edit']);
 Route::post('/opt/evaluasi/{id_evaluasi}/update', [EvaluasiController::class, 'update']);
 Route::get('/opt/evaluasi/{id_evaluasi}/posting', [EvaluasiController::class, 'post']);
 
-// Laporan Operator
+// Laporan Realisasi Operator
 Route::get('/opt/laporan/realisasi', [LaporanController::class, 'laporan_realisasi']);
 Route::post('/opt/cetak/laporan/realisasi', [LaporanController::class, 'cetak_realisasi']);
+
+// Laporan Evaluasi Operator
+Route::get('/opt/laporan/evaluasi', [LaporanController::class, 'laporan_evaluasi']);
+Route::post('/opt/cetak/laporan/evaluasi', [LaporanController::class, 'cetak_evaluasi']);
 
 
 });
