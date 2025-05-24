@@ -466,6 +466,7 @@ class TargetController extends Controller
         ->leftJoin('tb_jenretribusi', 'tb_subretribusi.id_jr', '=', 'tb_jenretribusi.id_jr')
         ->select('tb_rtarget.*','tb_ojkretribusi.nama_ojk', 'tb_ojkretribusi.kode_ojk', 'tb_subretribusi.nama_sr', 'tb_subretribusi.kode_sr', 'tb_jenretribusi.nama_jr', 'tb_jenretribusi.kode_jr')
         ->where('id_target',$id_target)
+        ->where('tb_rtarget.status_rtarget','0')
         ->get()
         ->groupBy('kode_jr')
         ->map(function($item, $key) {

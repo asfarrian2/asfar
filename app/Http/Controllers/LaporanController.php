@@ -230,6 +230,11 @@ class LaporanController extends Controller
         ->where('id_agency', $id_agency)
         ->first();
 
+        $evaluasi = DB::table('tb_evaluasi')
+        ->where('id_agency', $id_agency)
+        ->where('id_triwulan', $id_triwulan)
+        ->first();
+
         $id_target = $target->id_target;
 
         if ($id_triwulan){
@@ -254,8 +259,7 @@ class LaporanController extends Controller
             ->leftJoin('tb_jenretribusi', 'tb_subretribusi.id_jr', '=', 'tb_jenretribusi.id_jr')
             ->leftJoin('tb_realisasi', 'tb_rtarget.id_rtarget', '=', 'tb_realisasi.id_rtarget')
             ->leftJoin('tb_bulan', 'tb_realisasi.id_bulan', '=', 'tb_bulan.id_bulan')
-            ->select(
-                'tb_rtarget.*',
+           ->select('tb_rtarget.*',
                 'tb_realisasi.pagu_realisasi',
                 'tb_realisasi.id_realisasi',
                 'tb_realisasi.id_bulan',
@@ -267,15 +271,30 @@ class LaporanController extends Controller
                 'tb_jenretribusi.nama_jr',
                 'tb_jenretribusi.kode_jr',
                 'tb_bulan.nilaiy_bulan',
-                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi WHERE id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan == 1) as pagu_realisasi_tw1'),
-                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi WHERE id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan == 2) as pagu_realisasi_tw2'),
-                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi WHERE id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan == 3) as pagu_realisasi_tw3'),
-                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi WHERE id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan == 4) as pagu_realisasi_tw4'),
-            )
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi
+                          INNER JOIN tb_bulan ON tb_realisasi.id_bulan = tb_bulan.id_bulan
+                          WHERE tb_realisasi.id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan = 1) as pagu_realisasi_tw1'),
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi
+                          INNER JOIN tb_bulan ON tb_realisasi.id_bulan = tb_bulan.id_bulan
+                          WHERE tb_realisasi.id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan = 2) as pagu_realisasi_tw2'),
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi
+                          INNER JOIN tb_bulan ON tb_realisasi.id_bulan = tb_bulan.id_bulan
+                          WHERE tb_realisasi.id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan = 3) as pagu_realisasi_tw3'),
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi
+                          INNER JOIN tb_bulan ON tb_realisasi.id_bulan = tb_bulan.id_bulan
+                          WHERE tb_realisasi.id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan = 4) as pagu_realisasi_tw4'),
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi
+                          INNER JOIN tb_bulan ON tb_realisasi.id_bulan = tb_bulan.id_bulan
+                          WHERE tb_realisasi.id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan <='.$nilai_triwulan.') as pagu_totaltw'),
+                DB::raw('( ROUND(( (SELECT SUM(pagu_realisasi) FROM tb_realisasi WHERE id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan <= ' . $nilai_triwulan . ') / pagu_rtarget ) * 100, 2) ) as persen_realisasi'),
+
+
+                )
 
             ->where('id_target', $id_target)
             ->where('status_rtarget', '0')
             ->orderBy('kode_ojk', 'ASC')
+            ->groupBy('id_rtarget')
             ->get()
             ->groupBy('kode_jr')
             ->map(function ($item, $key) {
@@ -324,6 +343,9 @@ class LaporanController extends Controller
                 DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi
                           INNER JOIN tb_bulan ON tb_realisasi.id_bulan = tb_bulan.id_bulan
                           WHERE tb_realisasi.id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan <='.$nilai_triwulan.') as pagu_totaltw'),
+                DB::raw('( ROUND(( (SELECT SUM(pagu_realisasi) FROM tb_realisasi WHERE id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan <= ' . $nilai_triwulan . ') / pagu_prtarget ) * 100, 2) ) as persen_realisasi'),
+
+
                 )
             ->where('id_target', $id_target)
             ->orderBy('kode_ojk', 'ASC')
@@ -361,18 +383,44 @@ class LaporanController extends Controller
         // ->where('id_bulan', $id_bulan)
         ->sum('pagu_realisasi');
 
-        $total_sebelumnya = DB::table('tb_realisasi')
+        $total_tw1 = DB::table('tb_realisasi')
         ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
-        ->select('tb_realisasi.*', 'tb_rtarget.id_target')
+        ->leftJoin('tb_bulan', 'tb_realisasi.id_bulan', '=', 'tb_bulan.id_bulan')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_target', 'tb_bulan.nilaiy_bulan')
         ->where('id_target',$id_target)
-        // ->where('id_bulan', '<' , $id_bulan)
+        ->where('tb_bulan.nilaiy_bulan', '1')
+        ->sum('pagu_realisasi');
+
+        $total_tw2 = DB::table('tb_realisasi')
+        ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+        ->leftJoin('tb_bulan', 'tb_realisasi.id_bulan', '=', 'tb_bulan.id_bulan')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_target', 'tb_bulan.nilaiy_bulan')
+        ->where('id_target',$id_target)
+        ->where('tb_bulan.nilaiy_bulan', '2')
+        ->sum('pagu_realisasi');
+
+        $total_tw3 = DB::table('tb_realisasi')
+        ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+        ->leftJoin('tb_bulan', 'tb_realisasi.id_bulan', '=', 'tb_bulan.id_bulan')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_target', 'tb_bulan.nilaiy_bulan')
+        ->where('id_target',$id_target)
+        ->where('tb_bulan.nilaiy_bulan', '3')
+        ->sum('pagu_realisasi');
+
+        $total_tw4 = DB::table('tb_realisasi')
+        ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+        ->leftJoin('tb_bulan', 'tb_realisasi.id_bulan', '=', 'tb_bulan.id_bulan')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_target', 'tb_bulan.nilaiy_bulan')
+        ->where('id_target',$id_target)
+        ->where('tb_bulan.nilaiy_bulan', '4')
         ->sum('pagu_realisasi');
 
         $total_sekarang = DB::table('tb_realisasi')
         ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
-        ->select('tb_realisasi.*', 'tb_rtarget.id_target')
+        ->leftJoin('tb_bulan', 'tb_realisasi.id_bulan', '=', 'tb_bulan.id_bulan')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_target', 'tb_bulan.nilaiy_bulan')
         ->where('id_target',$id_target)
-        // ->where('id_bulan', '<=' , $id_bulan)
+        ->where('tb_bulan.nilaiy_bulan', '<=' , $nilai_triwulan)
         ->sum('pagu_realisasi');
 
         if (isset($_POST['exportexcel'])) {
@@ -381,12 +429,12 @@ class LaporanController extends Controller
             header("Content-type: application/vnd-ms-excel");
             // Mendefinisikan nama file ekspor "hasil-export.xls"
             header("Content-Disposition: attachment; filename=Laporan Realisasi Peneriman Retribusi.xls");
-            return view('operator.laporan.evaluasi.cetak', compact('rincian', 'nilai_triwulan', 'target', 'jumlah', 'total', 'count', 'total_sebelumnya', 'total_sekarang', 'agency'));
+            return view('operator.laporan.evaluasi.cetak', compact('rincian', 'evaluasi', 'nilai_triwulan', 'target', 'jumlah', 'total', 'count', 'total_tw1', 'total_tw2', 'total_tw3', 'total_tw4', 'total_sekarang', 'agency', 'triwulan'));
         }
 
         $pdf = App::make('dompdf.wrapper');
         $pdf->setPaper('F4', 'landscape', 'auto');
-        $pdf->loadView('operator.laporan.evaluasi.cetak', compact('rincian', 'nilai_triwulan', 'target', 'jumlah', 'total', 'count', 'total_sebelumnya', 'total_sekarang', 'agency'));
+        $pdf->loadView('operator.laporan.evaluasi.cetak', compact('rincian', 'evaluasi', 'nilai_triwulan', 'target', 'jumlah', 'total', 'count', 'total_tw1', 'total_tw2', 'total_tw3', 'total_tw4', 'total_sekarang', 'agency', 'triwulan'));
 
         return $pdf->download('Laporan Realisasi Peneriman Retribusi.pdf');
 

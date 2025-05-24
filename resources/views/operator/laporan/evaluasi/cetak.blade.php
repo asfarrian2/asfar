@@ -52,9 +52,9 @@
 <body>
 <table style="width: 100%">
         <tr>
-            <td style="text-align: center;" colspan="7">
+            <td style="text-align: center;" colspan="10">
                 <span id="title">
-                      LAPORAN REALISASI PENERIMAAN RETRIBUSI DAEARAH <br> TAHUN ANGGARAN 2025
+                      LAPORAN EVALUASI PENERIMAAN RETRIBUSI DAEARAH <br> TAHUN ANGGARAN 2025 <br> {{ strtoupper($triwulan->nama_triwulan) }}
                 </span>
             </td>
         </tr>
@@ -71,17 +71,6 @@
             </td>
             <td>
                 {{ $agency->nama_agency }}
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Bulan
-            </td>
-            <td>
-                :
-            </td>
-            <td>
-                {{ $nilai_triwulan }}
             </td>
         </tr>
 </table>
@@ -128,9 +117,9 @@
                 @endif
                 <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_totaltw'), 0, ',', '.') }}</b></td>
                 @if($nilai_triwulan < 4) <!-- Jika Menampilkan APBD Murni -->
-                <td style="color: black;"><b>{{ round(($jr->flatten()->sum('pagu_realisasi_tw1') / ($jr->flatten()->sum('pagu_rtarget'))) * 100, 2) }}%</b></td>
+                <td style="color: black;"><b>{{ round(($jr->flatten()->sum('pagu_totaltw') / ($jr->flatten()->sum('pagu_rtarget'))) * 100, 2) }}%</b></td>
                 @else <!-- Jika Menampilkan APBD Perubahan -->
-                <td style="color: black;"><b>{{ round(($jr->flatten()->sum('pagu_realisasi_tw1') / ($jr->flatten()->sum('pagu_prtarget'))) * 100, 2) }}%</b></td>
+                <td style="color: black;"><b>{{ round(($jr->flatten()->sum('pagu_totaltw') / ($jr->flatten()->sum('pagu_prtarget'))) * 100, 2) }}%</b></td>
                 @endif
             </tr>
             @foreach ($jr as $kode_sr => $sr)
@@ -159,10 +148,10 @@
                 <td style="color: black;"><b>Rp0</b></td>
                 @endif
                 <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_totaltw'), 0, ',', '.') }}</b></td>
-                @if($nilai_triwulan < 4) <!-- Jika Menampilkan APBD Murni -->
-                <td style="color: black;"><b>{{ round(($sr->flatten()->sum('pagu_realisasi_tw1') / ($sr->flatten()->sum('pagu_rtarget'))) * 100, 2) }}%</b></td>
+                 @if($nilai_triwulan < 4) <!-- Jika Menampilkan APBD Murni -->
+                <td style="color: black;"><b>{{ round(($sr->flatten()->sum('pagu_totaltw') / ($sr->flatten()->sum('pagu_rtarget'))) * 100, 2) }}%</b></td>
                 @else <!-- Jika Menampilkan APBD Perubahan -->
-                <td style="color: black;"><b>{{ round(($sr->flatten()->sum('pagu_realisasi_tw1') / ($sr->flatten()->sum('pagu_prtarget'))) * 100, 2) }}%</b></td>
+                <td style="color: black;"><b>{{ round(($sr->flatten()->sum('pagu_totaltw') / ($sr->flatten()->sum('pagu_prtarget'))) * 100, 2) }}%</b></td>
                 @endif
             </tr>
             @foreach ($sr as $kode_ojk => $ojk)
@@ -191,10 +180,10 @@
                 <td style="color: black;"><b>Rp0</b></td>
                 @endif
                 <td style="color: black;"><b>Rp{{ number_format($ojk->flatten()->sum('pagu_totaltw'), 0, ',', '.') }}</b></td>
-                @if($nilai_triwulan <= 2) <!-- Jika Menampilkan APBD Murni -->
-                <td style="color: black;"><b>{{ round(($ojk->flatten()->sum('pagu_realisasi_tw1') / ($ojk->sum('pagu_rtarget'))) * 100, 2) }}%</b></td>
+                @if($nilai_triwulan < 4) <!-- Jika Menampilkan APBD Murni -->
+                <td style="color: black;"><b>{{ round(($ojk->flatten()->sum('pagu_totaltw') / ($ojk->flatten()->sum('pagu_rtarget'))) * 100, 2) }}%</b></td>
                 @else <!-- Jika Menampilkan APBD Perubahan -->
-                <td style="color: black;"><b>{{ round(($ojk->flatten()->sum('pagu_realisasi_tw1') / ($ojk->sum('pagu_prtarget'))) * 100, 2) }}%</b></td>
+                <td style="color: black;"><b>{{ round(($ojk->flatten()->sum('pagu_totaltw') / ($ojk->flatten()->sum('pagu_prtarget'))) * 100, 2) }}%</b></td>
                 @endif
             </tr>
             @foreach ($ojk as $d)
@@ -223,7 +212,7 @@
                 <td style="color: black;">Rp0</td>
                 @endif
                 <td style="color: black;">Rp<?php echo number_format($d->pagu_totaltw ,0,',','.')?></td>
-
+                <td style="color: black;">{{$d->persen_realisasi}}%</td>
             @endforeach
             @endforeach
             @endforeach
@@ -233,12 +222,52 @@
                 <tr>
                     <th colspan="3" style="text-align:center; color:black;" >TOTAL</th>
                     <th style="text-align:center; color:black;">Rp<?php echo number_format($jumlah ,0,',','.')?></th>
-                    <th style="text-align:center; color:black;">Rp<?php echo number_format($total_sebelumnya ,0,',','.')?></th>
-                    <th style="text-align:center; color:black;">Rp<?php echo number_format($total ,0,',','.')?></th>
+                    <th style="text-align:center; color:black;">Rp<?php echo number_format($total_tw1 ,0,',','.')?></th>
+                    @if ($nilai_triwulan > 1)
+                    <th style="text-align:center; color:black;">Rp<?php echo number_format($total_tw2 ,0,',','.')?></th>
+                    @else
+                    <th style="text-align:center; color:black;">Rp0</th>
+                    @endif
+                    @if ($nilai_triwulan > 2)
+                    <th style="text-align:center; color:black;">Rp<?php echo number_format($total_tw3 ,0,',','.')?></th>
+                    @else
+                    <th style="text-align:center; color:black;">Rp0</th>
+                    @endif
+                    @if ($nilai_triwulan > 3)
+                    <th style="text-align:center; color:black;">Rp<?php echo number_format($total_tw4 ,0,',','.')?></th>
+                    @else
+                    <th style="text-align:center; color:black;">Rp0</th>
+                    @endif
                     <th style="text-align:center; color:black;">Rp<?php echo number_format($total_sekarang ,0,',','.')?></th>
                     <th style="text-align:center; color:black;"><?php echo round(($total_sekarang / $jumlah) * 100, 2); ?>%</th>
                 </tr>
             </tfoot>
+            <tbody>
+                <tr>
+                    <td style="text-align:right" colspan="3">Faktor Pendukung :</td>
+                    @if ($evaluasi ==! NULL)
+                    <td colspan="7">{{ $evaluasi->fpendukung }}</td>
+                    @else
+                    <td colspan="7"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td style="text-align:right" colspan="3">Faktor Penghambat :</td>
+                     @if ($evaluasi ==! NULL)
+                    <td colspan="7">{{ $evaluasi->fpenghambat }}</td>
+                    @else
+                    <td colspan="7"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td style="text-align:right" colspan="3">Tindak Lanjut :</td>
+                     @if ($evaluasi ==! NULL)
+                    <td colspan="7">{{ $evaluasi->tindaklanjut }}</td>
+                    @else
+                    <td colspan="7"></td>
+                    @endif
+                </tr>
+            </tbody>
     </table>
     <table width="100%" style="margin-top:100px;">
             <tr>
