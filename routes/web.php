@@ -90,6 +90,11 @@ Route::get('/admin/menuanggaran/{id_menu}/hapus', [MenuanggaranController::class
 Route::get('/admin/menuanggaran/{id_menu}', [MenuanggaranController::class, 'view_r']);
 Route::get('/admin/menuanggaran/{id_bulan}/bulan', [MenuanggaranController::class, 'bulan']);
 
+//Crud Menu Realisasi
+Route::get('/admin/realisasi', [RealisasiController::class, 'adm_view']);
+Route::get('/admin/realisasi/{id_target}/{id_bulan}', [RealisasiController::class, 'adm_rview']);
+
+
 });
 
 
