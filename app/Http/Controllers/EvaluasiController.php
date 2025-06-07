@@ -138,5 +138,66 @@ class EvaluasiController extends Controller
         }
     }
 
+    // //(------------------------Begin Target Hak Admin----------------------------//
+        public function adm_view(Request $request){
+
+        //Menampilkan Data Utama Target
+        $tahun_sekarang   = Auth::guard('admin')->user()->id_tahun;
+
+        $triwulan = DB::table('tb_triwulan')
+        ->where('id_tahun', $tahun_sekarang)
+        ->get();
+
+        $select_triwulan      = $request->triwulan;
+
+        if ($select_triwulan) {
+        $select_triwulan = Crypt::decrypt($select_triwulan);
+
+        $pilih_triwulan  = DB::table('tb_triwulan')
+        ->where('id_triwulan', $select_triwulan)
+        ->first();
+
+
+        $target = DB::table('tb_target')
+        ->leftJoin('tb_agency', 'tb_target.id_agency', '=', 'tb_agency.id_agency')
+        ->where('id_tahun', $tahun_sekarang)
+        ->get();
+
+        $evaluasi= DB::table('tb_evaluasi')
+        ->where('id_triwulan', $select_triwulan)
+        ->get();
+
+        $realisasi = array();
+        foreach ($target as $t) {
+            $realisasi[$t->id_target] = DB::table('tb_realisasi')
+            ->leftJoin('tb_bulan', 'tb_realisasi.id_bulan', '=', 'tb_bulan.id_bulan')
+            ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+            ->where('tb_rtarget.id_target', $t->id_target)
+            ->where('tb_bulan.nilaiy_bulan', '<=', $pilih_triwulan->nilai_triwulan)
+            ->where('status_realisasi', '1')
+            ->sum('pagu_realisasi');
+        }
+
+        $totalrealisasi = DB::table('tb_realisasi')
+            ->leftJoin('tb_bulan', 'tb_realisasi.id_bulan', '=', 'tb_bulan.id_bulan')
+            ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+            ->where('tb_bulan.nilaiy_bulan', '<=', $pilih_triwulan->nilai_triwulan)
+            ->where('status_realisasi', '1')
+            ->sum('pagu_realisasi');
+
+        $totaltarget = DB::table('tb_target')
+        ->where('id_tahun', $tahun_sekarang)
+        ->sum('pagu_target');
+
+
+        } else {
+            $pilih_triwulan = [];
+            $target = [];
+            $evaluasi = [];
+            $realisasi = [];
+        }
+
+        return view('admin.evaluasi.view', compact('triwulan', 'pilih_triwulan', 'target', 'evaluasi', 'realisasi', 'totalrealisasi', 'totaltarget'));
+    }
 
 }

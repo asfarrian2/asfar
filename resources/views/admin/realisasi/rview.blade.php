@@ -37,8 +37,8 @@
         @endphp
         @if (Session::get('success'))
                 <div class="alert alert-success solid alert-dismissible fade show">
-					<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
 					<strong>Sukses!</strong> {{ $messagesuccess }}.
+					<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
 					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close">
                     </button>
                 </div>
@@ -56,14 +56,15 @@
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item active"><a href="/opt/dashboard">SI-RETDA</a></li>
 						<li class="breadcrumb-item active"><a href="#" onclick="history.back()">Realisasi</a></li>
-                        <li class="breadcrumb-item">Rincian</li>
+                        <li class="breadcrumb-item">{{ $agency->nama_agency }}</li>
 					</ol>
                 </div>
+
                  <!-- row -->
                  <div class="col-lg-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">{{ $agency->nama_agency }}</h4>
+                                <h4 class="card-title">Rincian Realisasi Penerimaan Retribusi</h4>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -73,12 +74,13 @@
                                                 <th style="color: black;" rowspan="2">KODE AKUN</th>
                                                 <th style="color: black;" rowspan="2">JENIS / SUB / OBJEK / RINCIAN</th>
                                                 <th style="color: black;" rowspan="2">TARGET</th>
-                                                <th style="color: black; text-align: center;" rowspan="1" colspan="3">REALISASI <br> BULAN {{ strtoupper($filter->nama_bulan) }}</th>
+                                                <th style="color: black; text-align: center;" rowspan="1" colspan="4">REALISASI <br> BULAN {{ strtoupper($filter->nama_bulan) }}</th>
                                             </tr>
                                             <tr>
                                             <th style="color: black; text-align: center;" rowspan="1">s.d. BULAN <br>SEBELUMNYA</th>
                                             <th style="color: black; text-align: center;" rowspan="1">BULAN INI</th>
                                             <th style="color: black; text-align: center;" rowspan="1">s.d. BULAN<br>SEKARANG</th>
+                                            <th style="color: black; text-align: center;" rowspan="1">%</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -95,6 +97,11 @@
                                             <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_realisasi_sebelumnya'), 0, ',', '.') }}</b></td>
                                             <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_realisasi'), 0, ',', '.') }}</b></td>
                                             <td style="color: black;"><b>Rp{{ number_format($jr->flatten()->sum('pagu_realisasi_sekarang'), 0, ',', '.') }}</b></td>
+                                             @if($filter->tipe_bulan == 1) <!-- Jika Menampilkan APBD Murni -->
+                                             <td style="color: black;"><b>{{ number_format($jr->flatten()->sum('pagu_realisasi_sekarang') / $jr->flatten()->sum('pagu_rtarget') * 100,2) }}% </b></td>
+                                             @else  <!-- Jika Menampilkan APBD Perubahan -->
+                                             <td style="color: black;"><b>{{ number_format($jr->flatten()->sum('pagu_realisasi_sekarang') / $jr->flatten()->sum('pagu_prtarget') * 100,2) }}% </b></td>
+                                             @endif
                                         </tr>
                                         @foreach ($jr as $kode_sr => $sr)
                                             <tr>
@@ -108,6 +115,11 @@
                                                 <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_realisasi_sebelumnya'), 0, ',', '.') }}</b></td>
                                                 <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_realisasi'), 0, ',', '.') }}</b></td>
                                                 <td style="color: black;"><b>Rp{{ number_format($sr->flatten()->sum('pagu_realisasi_sekarang'), 0, ',', '.') }}</b></td>
+                                                @if($filter->tipe_bulan == 1) <!-- Jika Menampilkan APBD Murni -->
+                                                <td style="color: black;"><b>{{ number_format($sr->flatten()->sum('pagu_realisasi_sekarang') / $sr->flatten()->sum('pagu_rtarget') * 100,2) }}% </b></td>
+                                                @else  <!-- Jika Menampilkan APBD Perubahan -->
+                                                <td style="color: black;"><b>{{ number_format($sr->flatten()->sum('pagu_realisasi_sekarang') / $sr->flatten()->sum('pagu_prtarget') * 100,2) }}% </b></td>
+                                                @endif
                                             </tr>
                                             @foreach ($sr as $kode_ojk => $ojk)
                                             <tr>
@@ -121,6 +133,11 @@
                                                 <td style="color: black;"><b>Rp{{ number_format($ojk->flatten()->sum('pagu_realisasi_sebelumnya'), 0, ',', '.') }}</b></td>
                                                 <td style="color: black;"><b>Rp{{ number_format($ojk->flatten()->sum('pagu_realisasi'), 0, ',', '.') }}</b></td>
                                                 <td style="color: black;"><b>Rp{{ number_format($ojk->flatten()->sum('pagu_realisasi_sekarang'), 0, ',', '.') }}</b></td>
+                                                @if($filter->tipe_bulan == 1) <!-- Jika Menampilkan APBD Murni -->
+                                                <td style="color: black;"><b>{{ number_format($ojk->flatten()->sum('pagu_realisasi_sekarang') / $ojk->flatten()->sum('pagu_rtarget') * 100,2) }}% </b></td>
+                                                @else  <!-- Jika Menampilkan APBD Perubahan -->
+                                                <td style="color: black;"><b>{{ number_format($ojk->flatten()->sum('pagu_realisasi_sekarang') / $ojk->flatten()->sum('pagu_prtarget') * 100,2) }}% </b></td>
+                                                @endif
                                             </tr>
                                             @foreach ($ojk as $d)
                                             <tr>
@@ -134,6 +151,11 @@
                                                 <td style="color: black;">Rp<?php echo number_format($d->pagu_realisasi_sebelumnya ,0,',','.')?></td>
                                                 <td style="color: green;">Rp<?php echo number_format($d->pagu_realisasi ,0,',','.')?></td>
                                                 <td style="color: black;">Rp<?php echo number_format($d->pagu_realisasi_sekarang ,0,',','.')?></td>
+                                                 @if($filter->tipe_bulan == 1) <!-- Jika Menampilkan APBD Murni -->
+                                                <td style="color: black;">{{ number_format($d->pagu_realisasi_sekarang / $d->pagu_rtarget * 100,2) }}%</td>
+                                                @else  <!-- Jika Menampilkan APBD Perubahan -->
+                                                <td style="color: black;">{{ number_format($d->pagu_realisasi_sekarang / $d->pagu_rtarget * 100,2) }}% </td>
+                                                @endif
                                             @endforeach
                                             @endforeach
                                             @endforeach
@@ -151,6 +173,11 @@
                                                 <td style="color: black;"><b>Rp{{ number_format($rincian->flatten()->sum('pagu_realisasi_sebelumnya'), 0, ',', '.') }}</b></td>
                                                 <td style="color: black;"><b>Rp{{ number_format($rincian->flatten()->sum('pagu_realisasi'), 0, ',', '.') }}</b></td>
                                                 <td style="color: black;"><b>Rp{{ number_format($rincian->flatten()->sum('pagu_realisasi_sekarang'), 0, ',', '.') }}</b></td>
+                                                @if($filter->tipe_bulan == 1) <!-- Jika Menampilkan APBD Murni -->
+                                                <td style="color: black;"><b>{{ number_format($rincian->flatten()->sum('pagu_realisasi_sekarang') / $rincian->flatten()->sum('pagu_rtarget') * 100,2) }}% </b></td>
+                                                @else  <!-- Jika Menampilkan APBD Perubahan -->
+                                                <td style="color: black;"><b>{{ number_format($rincian->flatten()->sum('pagu_realisasi_sekarang') / $rincian->flatten()->sum('pagu_prtarget') * 100,2) }}% </b></td>
+                                                @endif
                                             </tr>
                                         </tfoot>
                                     </table>

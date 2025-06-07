@@ -117,14 +117,14 @@
 							<li><a href="/admin/skpd">SKPD/UPTD</a></li>
 						</ul>
                     </li>
-                    <li><a href="javascript:void()" class="has-arrow ai-icon" aria-expanded="false">
-							<i class="flaticon-381-calculator"></i>
+                    <li><a href="javascript:void()" class="has-arrow ai-icon" aria-expanded="false"  @if(Request::is('admin/realisasi*')) style="background-color: #eefaf9;" @endif>
+							<i class="flaticon-381-calculator"  @if(Request::is('admin/realisasi*')) style="color: #5bcfc5;" @endif></i>
 							<span class="nav-text">Monitoring</span>
 						</a>
-                        <ul aria-expanded="false">
+                        <ul aria-expanded="false" @if(Request::is('admin/realisasi*')) class="mm-collapse mm-show" @endif>
                             <li><a href="/admin/targetapbd">Target APBD</a></li>
                             <li><a href="/admin/targetapbdp">Target APBD P</a></li>
-                            <li><a href="/admin/realisasi">Realisasi</a></li>
+                            <li @if(Request::is('admin/realisasi*')) class="mm-active" @endif><a href="/admin/realisasi" @if(Request::is('admin/realisasi*')) class="mm-active" @endif>Realisasi</a></li>
                             <li><a href="/admin/evaluasi">Evaluasi Retribusi</a></li>
                         </ul>
 					</li>

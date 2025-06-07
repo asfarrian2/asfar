@@ -94,6 +94,9 @@ Route::get('/admin/menuanggaran/{id_bulan}/bulan', [MenuanggaranController::clas
 Route::get('/admin/realisasi', [RealisasiController::class, 'adm_view']);
 Route::get('/admin/realisasi/{id_target}/{id_bulan}', [RealisasiController::class, 'adm_rview']);
 
+//Crud Menu Triwulan
+Route::get('/admin/evaluasi', [EvaluasiController::class, 'adm_view']);
+
 
 });
 
