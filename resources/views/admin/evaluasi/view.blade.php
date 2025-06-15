@@ -90,6 +90,7 @@
                             </div>
                         </div>
                     </div>
+                    @if(Request::get('triwulan'))
                     <div class="col-xl-6 col-lg-6">
                         <div class="widget-stat card bg-info">
 							<div class="card-body p-4">
@@ -113,6 +114,7 @@
 							</div>
 						</div>
                     </div>
+                    @endif
                 </div>
 
                 @if(Request::get('triwulan'))
@@ -169,8 +171,8 @@
 														</button>
                                                         @csrf
 														<div class="dropdown-menu">
-                                                            <a class="dropdown-item reset" href="#" data-id="{{Crypt::encrypt($evaluasiData->id_evaluasi)}}" ><i class="fa fa-eye color-muted"></i> Lihat</a>
-                                                            <a class="dropdown-item reset" href="#" data-id="{{Crypt::encrypt($evaluasiData->id_evaluasi)}}" ><i class="fa fa-ban color-muted"></i> Batalkan</a>
+                                                            <a class="dropdown-item" href="/admin/evaluasi/{{ Crypt::encrypt($evaluasiData->id_evaluasi) }}"><i class="fa fa-eye color-muted"></i> Lihat</a>
+                                                            <a class="dropdown-item batal" data-id="{{Crypt::encrypt($evaluasiData->id_evaluasi)}}" ><i class="fa fa-ban color-muted"></i> Batalkan</a>
 														</div>
 													</div>
                                                 @else
@@ -200,47 +202,22 @@
 <script src="{{asset ('./vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{asset ('./js/plugins-init/datatables.init.js') }}"></script>
 
-<!-- Button Edit Pagu Target -->
-<script>
-$('.edit').click(function(){
-    var id_realisasi = $(this).attr('data-id');
-    $.ajax({
-                    type: 'POST',
-                    url: '/opt/realisasi/edit',
-                    cache: false,
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        id_realisasi: id_realisasi
-                    },
-                    success: function(respond) {
-                        $("#loadedit").html(respond);
-                        $('.pagu').mask("#.##0", {
-                            reverse:true
-                        });
-                    }
-                });
-     $("#modal-edit").modal("show");
-});
-var span = document.getElementsByClassName("close")[0];
-</script>
-<!-- END Button Edit Pagu Target -->
-
 
 <!-- Start Button Status -->
 <script>
-$('.status').click(function(){
-    var id_sr = $(this).attr('data-id');
+$('.batal').click(function(){
+    var id_evaluasi = $(this).attr('data-id');
 Swal.fire({
-  title: "Apakah Anda Yakin Mengubah Status Data Ini ?",
+  title: "Apakah Anda Yakin Ingin Membatalkan Data Evaluasi Ini ?",
   text: "Jika Ya Maka Status Data Akan Berubah",
   icon: "warning",
   showCancelButton: true,
   confirmButtonColor: "#3085d6",
   cancelButtonColor: "#d33",
-  confirmButtonText: "Ya, Ubah Status!"
+  confirmButtonText: "Ya, Batalkan Evaluasi!"
 }).then((result) => {
   if (result.isConfirmed) {
-    window.location = "/admin/subretribusi/"+id_sr+"/status"
+    window.location = "/admin/evaluasi/"+id_evaluasi+"/batal"
   }
 });
 });

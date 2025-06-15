@@ -23,7 +23,35 @@ class DashboardController extends Controller
         ->where('id_tahun', $id_tahun)
         ->sum('pagu_target');
 
-        return view('admin.dashboard.semua', compact('jtarget'));
+        //Bar-Chart Target
+        $penerimaan = DB::table('tb_realisasi')
+        ->leftJoin('tb_bulan', 'tb_realisasi.id_bulan', '=', 'tb_bulan.id_bulan')
+         ->select(
+        'tb_realisasi.id_bulan',
+        'tb_bulan.nama_bulan',
+        DB::raw('SUM(tb_realisasi.pagu_realisasi) as total_realisasi'),
+        DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi AS t2 WHERE t2.id_bulan <= tb_realisasi.id_bulan) as jumlah_realisasi_kumulatif')
+        )
+        ->where('status_realisasi', '1')
+        ->where('id_tahun', $id_tahun)
+        ->groupBy('tb_realisasi.id_bulan', 'tb_bulan.nama_bulan') // ← Penting: MySQL 5.7 ke atas perlu ini!
+        ->orderBy('tb_realisasi.id_bulan')
+        ->get();
+
+        $labels = [];
+        $data = [];
+        $data2 = [];
+
+        foreach ($penerimaan as $item) {
+        $labels[] = $item->nama_bulan;
+        $data[]   = $item->total_realisasi; // Pastikan ini angka, bukan string
+        $data2[]  = $item->jumlah_realisasi_kumulatif;
+        }
+
+
+        //
+
+        return view('admin.dashboard.semua', compact('jtarget', 'penerimaan', 'labels', 'data', 'data2'));
     }
 
 

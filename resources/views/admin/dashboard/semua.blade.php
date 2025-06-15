@@ -141,13 +141,23 @@
                             <div class="col-xl-12 col-lg-12 col-sm-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h4 class="card-title">Basic Bar Chart</h4>
+                                        <h4 class="card-title">Jumlah Penerimaan Retribusi Perbulan</h4>
                                     </div>
                                     <div class="card-body">
-                                        <canvas id="barChart_1"></canvas>
+                                        <canvas id="Chart1"></canvas>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-12 col-lg-12 col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Jumlah Realisasi Penerimaan Retribusi Perbulan</h4>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="Chart2"></canvas>
                         </div>
                     </div>
                 </div>
@@ -160,10 +170,75 @@
 @endsection
 
 @push('myscript')
-    <!-- Chart ChartJS plugin files -->
-    <script src="{{ asset ('assets/vendor/chart.js/Chart.bundle.min.js') }}"></script>
-    <script src="{{ asset ('assets/js/plugins-init/chartjs-init.js') }}"></script>
-    <script src="{{ asset ('assets/js/custom.min.js') }}"></script>
-	<script src="{{ asset ('assets/js/dlabnav-init.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('Chart1').getContext('2d');
+    const labels = JSON.parse('{!! json_encode($labels) !!}');
+    const data = JSON.parse('{!! json_encode($data) !!}');
+
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [{
+                label: 'Jumlah Penerimaan / Bulan (Rp)',
+                data,
+                backgroundColor: 'rgb(127, 198, 245)',
+                borderColor: 'rgb(15, 206, 240)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'Rp ' + parseInt(value).toLocaleString('id-ID');
+                        }
+                    }
+                }
+            }
+        }
+    });
+    // Chart Line
+const ctx2 = document.getElementById('Chart2').getContext('2d');
+const data2 = JSON.parse('{!! json_encode($data2) !!}');
+const myChart2 = new Chart(ctx2, {
+    type: 'line',
+    data: {
+        labels,
+        datasets: [{
+            label: 'Jumlah Realisasi Penerimaan Perbulan (Rp)',
+            data: data2,
+            backgroundColor: 'rgba(153, 211, 250, 0.5)', // Biru muda
+            borderColor: 'rgb(15, 206, 240)', // Biru
+            borderWidth: 1,
+            pointBackgroundColor: 'rgb(56, 137, 223)', // Biru tua
+            pointBorderColor: 'rgb(11, 113, 221)', // Biru tua
+            pointRadius: 5,
+            fill: true
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                        return 'Rp ' + parseInt(value).toLocaleString('id-ID');
+                    }
+                }
+            }
+        }
+    }
+});
+
+</script>
+
+
+
+
 
 @endpush

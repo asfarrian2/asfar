@@ -96,11 +96,10 @@ Route::get('/admin/realisasi/{id_target}/{id_bulan}', [RealisasiController::clas
 
 //Crud Menu Triwulan
 Route::get('/admin/evaluasi', [EvaluasiController::class, 'adm_view']);
-
+Route::get('/admin/evaluasi/{id_evaluasi}/batal', [EvaluasiController::class, 'batal']);
+Route::get('/admin/evaluasi/{id_evaluasi}', [EvaluasiController::class, 'adm_rview']);
 
 });
-
-
 
 //Crud Login Operator
 Route::get('/', [LoginController::class, 'operator']);

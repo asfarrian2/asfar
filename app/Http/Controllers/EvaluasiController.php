@@ -165,6 +165,7 @@ class EvaluasiController extends Controller
 
         $evaluasi= DB::table('tb_evaluasi')
         ->where('id_triwulan', $select_triwulan)
+        ->where('status_evaluasi', '1')
         ->get();
 
         $realisasi = array();
@@ -195,9 +196,224 @@ class EvaluasiController extends Controller
             $target = [];
             $evaluasi = [];
             $realisasi = [];
+            $totalrealisasi = [];
+            $totaltarget = [];
         }
 
         return view('admin.evaluasi.view', compact('triwulan', 'pilih_triwulan', 'target', 'evaluasi', 'realisasi', 'totalrealisasi', 'totaltarget'));
+    }
+
+    public function Batal ($id_evaluasi){
+
+         $id_evaluasi = Crypt::decrypt($id_evaluasi);
+
+         $data = [
+            'status_evaluasi' => '0'
+        ];
+
+        //validasi pagu rincian
+        $update = DB::table('tb_evaluasi')->where('id_evaluasi', $id_evaluasi)->update($data);
+        if ($update) {
+            return Redirect::back()->with(['success' => 'Data Evaluasi Berhasil Dibatalkan']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Data Evaluasi Gagal Dibatalkan']);
+        }
+    }
+
+    public function adm_rview($id_evaluasi){
+
+        $id_evaluasi = Crypt::decrypt($id_evaluasi);
+        $tahun_sekarang   = Auth::guard('admin')->user()->id_tahun;
+
+        $evaluasi    = DB::table('tb_evaluasi')
+                       ->leftJoin('tb_triwulan', 'tb_evaluasi.id_triwulan', '=', 'tb_triwulan.id_triwulan')
+                       ->leftJoin('tb_agency', 'tb_evaluasi.id_agency', '=', 'tb_agency.id_agency')
+                       ->select('tb_evaluasi.*', 'tb_triwulan.nilai_triwulan', 'tb_agency.nama_agency')
+                       ->where('id_evaluasi', $id_evaluasi)
+                       ->first();
+
+        $target      = DB::table('tb_target')
+                        ->where('id_tahun', $tahun_sekarang)
+                        ->where('id_agency', $evaluasi->id_agency)
+                        ->first();
+
+        $nilai_triwulan = $evaluasi->nilai_triwulan;
+        $id_target = $target->id_target;
+
+        if ($nilai_triwulan <= 3){
+            // Menampilkan Data Rincian Realisasi Anggaran Murni
+            $rincian = DB::table('tb_rtarget')
+            ->leftJoin('tb_ojkretribusi', 'tb_rtarget.id_ojk', '=', 'tb_ojkretribusi.id_ojk')
+            ->leftJoin('tb_subretribusi', 'tb_ojkretribusi.id_sr', '=', 'tb_subretribusi.id_sr')
+            ->leftJoin('tb_jenretribusi', 'tb_subretribusi.id_jr', '=', 'tb_jenretribusi.id_jr')
+            ->leftJoin('tb_realisasi', 'tb_rtarget.id_rtarget', '=', 'tb_realisasi.id_rtarget')
+            ->leftJoin('tb_bulan', 'tb_realisasi.id_bulan', '=', 'tb_bulan.id_bulan')
+           ->select('tb_rtarget.*',
+                'tb_realisasi.pagu_realisasi',
+                'tb_realisasi.id_realisasi',
+                'tb_realisasi.id_bulan',
+                'tb_realisasi.status_realisasi',
+                'tb_ojkretribusi.nama_ojk',
+                'tb_ojkretribusi.kode_ojk',
+                'tb_subretribusi.nama_sr',
+                'tb_subretribusi.kode_sr',
+                'tb_jenretribusi.nama_jr',
+                'tb_jenretribusi.kode_jr',
+                'tb_bulan.nilaiy_bulan',
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi
+                          INNER JOIN tb_bulan ON tb_realisasi.id_bulan = tb_bulan.id_bulan
+                          WHERE tb_realisasi.id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan = 1) as pagu_realisasi_tw1'),
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi
+                          INNER JOIN tb_bulan ON tb_realisasi.id_bulan = tb_bulan.id_bulan
+                          WHERE tb_realisasi.id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan = 2) as pagu_realisasi_tw2'),
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi
+                          INNER JOIN tb_bulan ON tb_realisasi.id_bulan = tb_bulan.id_bulan
+                          WHERE tb_realisasi.id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan = 3) as pagu_realisasi_tw3'),
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi
+                          INNER JOIN tb_bulan ON tb_realisasi.id_bulan = tb_bulan.id_bulan
+                          WHERE tb_realisasi.id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan = 4) as pagu_realisasi_tw4'),
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi
+                          INNER JOIN tb_bulan ON tb_realisasi.id_bulan = tb_bulan.id_bulan
+                          WHERE tb_realisasi.id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan <='.$nilai_triwulan.') as pagu_totaltw'),
+                DB::raw('( ROUND(( (SELECT SUM(pagu_realisasi) FROM tb_realisasi WHERE id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan <= ' . $nilai_triwulan . ') / pagu_rtarget ) * 100) ) as persen_realisasi'),
+
+
+                )
+
+            ->where('id_target', $id_target)
+            ->where('status_rtarget', '0')
+            ->orderBy('kode_ojk', 'ASC')
+            ->groupBy('id_rtarget')
+            ->get()
+            ->groupBy('kode_jr')
+            ->map(function ($item, $key) {
+                return $item->groupBy('kode_sr')
+                    ->map(function ($item, $key) {
+                        return $item->groupBy('kode_ojk');
+                    });
+            });
+
+            $jumlah = DB::table('tb_rtarget')
+            ->where('id_target',$id_target)
+            ->sum('pagu_rtarget');
+
+            }else{
+            // Menampilkan Data Rincian Realisasi Anggaran Perubahan
+            $rincian = DB::table('tb_rtarget')
+            ->leftJoin('tb_ojkretribusi', 'tb_rtarget.id_ojk', '=', 'tb_ojkretribusi.id_ojk')
+            ->leftJoin('tb_subretribusi', 'tb_ojkretribusi.id_sr', '=', 'tb_subretribusi.id_sr')
+            ->leftJoin('tb_jenretribusi', 'tb_subretribusi.id_jr', '=', 'tb_jenretribusi.id_jr')
+            ->rightJoin('tb_realisasi', 'tb_rtarget.id_rtarget', '=', 'tb_realisasi.id_rtarget')
+            ->rightJoin('tb_bulan', 'tb_realisasi.id_bulan', '=', 'tb_bulan.id_bulan')
+            ->select('tb_rtarget.*',
+                'tb_realisasi.pagu_realisasi',
+                'tb_realisasi.id_realisasi',
+                'tb_realisasi.id_bulan',
+                'tb_realisasi.status_realisasi',
+                'tb_ojkretribusi.nama_ojk',
+                'tb_ojkretribusi.kode_ojk',
+                'tb_subretribusi.nama_sr',
+                'tb_subretribusi.kode_sr',
+                'tb_jenretribusi.nama_jr',
+                'tb_jenretribusi.kode_jr',
+                'tb_bulan.nilaiy_bulan',
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi
+                          INNER JOIN tb_bulan ON tb_realisasi.id_bulan = tb_bulan.id_bulan
+                          WHERE tb_realisasi.id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan = 1) as pagu_realisasi_tw1'),
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi
+                          INNER JOIN tb_bulan ON tb_realisasi.id_bulan = tb_bulan.id_bulan
+                          WHERE tb_realisasi.id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan = 2) as pagu_realisasi_tw2'),
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi
+                          INNER JOIN tb_bulan ON tb_realisasi.id_bulan = tb_bulan.id_bulan
+                          WHERE tb_realisasi.id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan = 3) as pagu_realisasi_tw3'),
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi
+                          INNER JOIN tb_bulan ON tb_realisasi.id_bulan = tb_bulan.id_bulan
+                          WHERE tb_realisasi.id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan = 4) as pagu_realisasi_tw4'),
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi
+                          INNER JOIN tb_bulan ON tb_realisasi.id_bulan = tb_bulan.id_bulan
+                          WHERE tb_realisasi.id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan <='.$nilai_triwulan.') as pagu_totaltw'),
+                DB::raw('( ROUND(( (SELECT SUM(pagu_realisasi) FROM tb_realisasi WHERE id_rtarget = tb_rtarget.id_rtarget AND tb_bulan.nilaiy_bulan <= ' . $nilai_triwulan . ') / pagu_prtarget ) * 100, 2) ) as persen_realisasi'),
+
+
+                )
+            ->where('id_target', $id_target)
+            ->orderBy('kode_ojk', 'ASC')
+            ->groupBy('id_rtarget')
+            ->get()
+            ->groupBy('kode_jr')
+            ->map(function($item, $key) {
+                return $item->groupBy('kode_sr')
+                    ->map(function($item, $key) {
+                        return $item->groupBy('kode_ojk');
+                    });
+            });
+
+            $jumlah = DB::table('tb_rtarget')
+            ->where('id_target',$id_target)
+            ->sum('pagu_prtarget');
+            } //endif
+
+
+        $count = DB::table('tb_realisasi')
+        ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+        ->leftJoin('tb_target', 'tb_rtarget.id_target', '=', 'tb_target.id_target')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_rtarget', 'tb_target.id_target')
+        // ->where('id_bulan', $id_bulan)
+        ->where('tb_target.id_target',$id_target)
+        ->where('status_realisasi', '1')
+        ->count();
+
+        //
+
+        $total = DB::table('tb_realisasi')
+        ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_target')
+        ->where('id_target',$id_target)
+        // ->where('id_bulan', $id_bulan)
+        ->sum('pagu_realisasi');
+
+        $total_tw1 = DB::table('tb_realisasi')
+        ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+        ->leftJoin('tb_bulan', 'tb_realisasi.id_bulan', '=', 'tb_bulan.id_bulan')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_target', 'tb_bulan.nilaiy_bulan')
+        ->where('id_target',$id_target)
+        ->where('tb_bulan.nilaiy_bulan', '1')
+        ->sum('pagu_realisasi');
+
+        $total_tw2 = DB::table('tb_realisasi')
+        ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+        ->leftJoin('tb_bulan', 'tb_realisasi.id_bulan', '=', 'tb_bulan.id_bulan')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_target', 'tb_bulan.nilaiy_bulan')
+        ->where('id_target',$id_target)
+        ->where('tb_bulan.nilaiy_bulan', '2')
+        ->sum('pagu_realisasi');
+
+        $total_tw3 = DB::table('tb_realisasi')
+        ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+        ->leftJoin('tb_bulan', 'tb_realisasi.id_bulan', '=', 'tb_bulan.id_bulan')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_target', 'tb_bulan.nilaiy_bulan')
+        ->where('id_target',$id_target)
+        ->where('tb_bulan.nilaiy_bulan', '3')
+        ->sum('pagu_realisasi');
+
+        $total_tw4 = DB::table('tb_realisasi')
+        ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+        ->leftJoin('tb_bulan', 'tb_realisasi.id_bulan', '=', 'tb_bulan.id_bulan')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_target', 'tb_bulan.nilaiy_bulan')
+        ->where('id_target',$id_target)
+        ->where('tb_bulan.nilaiy_bulan', '4')
+        ->sum('pagu_realisasi');
+
+        $total_sekarang = DB::table('tb_realisasi')
+        ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+        ->leftJoin('tb_bulan', 'tb_realisasi.id_bulan', '=', 'tb_bulan.id_bulan')
+        ->select('tb_realisasi.*', 'tb_rtarget.id_target', 'tb_bulan.nilaiy_bulan')
+        ->where('id_target',$id_target)
+        ->where('tb_bulan.nilaiy_bulan', '<=' , $nilai_triwulan)
+        ->sum('pagu_realisasi');
+
+        return view('admin.evaluasi.rview', compact('rincian', 'evaluasi', 'nilai_triwulan', 'target', 'jumlah', 'total', 'count', 'total_tw1', 'total_tw2', 'total_tw3', 'total_tw4', 'total_sekarang'));
+
     }
 
 }
