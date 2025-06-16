@@ -24,7 +24,27 @@ class DashboardController extends Controller
         ->sum('pagu_target');
 
         //Bar-Chart Target
-        $penerimaan = DB::table('tb_realisasi')
+        $penerimaan = DB::table('tb_bulan')
+        ->leftJoin('tb_realisasi', 'tb_bulan.id_bulan', '=', 'tb_realisasi.id_bulan')
+        ->select(
+        'tb_bulan.id_bulan',
+        'tb_bulan.nama_bulan',
+        DB::raw('COALESCE(SUM(tb_realisasi.pagu_realisasi), 0) as total_realisasi'),
+        )
+        ->where('tb_bulan.id_tahun', $id_tahun)
+        ->groupBy('tb_bulan.id_bulan', 'tb_bulan.nama_bulan')
+        ->orderBy('tb_bulan.id_bulan')
+        ->get();
+
+        $labels = [];
+        $data = [];
+
+        foreach ($penerimaan as $item) {
+        $labels[] = $item->nama_bulan;
+        $data[]   = $item->total_realisasi; // Pastikan ini angka, bukan string
+        }
+
+        $realisasi = DB::table('tb_realisasi')
         ->leftJoin('tb_bulan', 'tb_realisasi.id_bulan', '=', 'tb_bulan.id_bulan')
          ->select(
         'tb_realisasi.id_bulan',
@@ -38,20 +58,55 @@ class DashboardController extends Controller
         ->orderBy('tb_realisasi.id_bulan')
         ->get();
 
-        $labels = [];
-        $data = [];
+        $labels2 = [];
         $data2 = [];
 
-        foreach ($penerimaan as $item) {
-        $labels[] = $item->nama_bulan;
-        $data[]   = $item->total_realisasi; // Pastikan ini angka, bukan string
+        foreach ($realisasi as $item) {
+        $labels3[] = $item->nama_bulan;
         $data2[]  = $item->jumlah_realisasi_kumulatif;
         }
 
 
+         $triwulan = DB::table('tb_triwulan')
+         ->leftJoin('tb_bulan', 'tb_triwulan.nilai_triwulan', '=', 'tb_bulan.nilaiy_bulan')
+         ->leftJoin('tb_realisasi', 'tb_bulan.id_bulan', '=', 'tb_realisasi.id_bulan')
+         ->select(
+             'tb_triwulan.nama_triwulan',
+             DB::raw('COALESCE(SUM(tb_realisasi.pagu_realisasi), 0) as realisasi_pertriwulan')
+         )
+         ->where('tb_triwulan.id_tahun', $id_tahun)
+         ->groupBy('tb_triwulan.nama_triwulan')
+         ->get();
+
+        $labels3 = [];
+        $data3 = [];
+
+        foreach ($triwulan as $item) {
+        $labels3[] = $item->nama_triwulan;
+        $data3[]   = $item->realisasi_pertriwulan;
+        }
+
+        $rtriwulan = DB::table('tb_realisasi')
+        ->leftJoin('tb_bulan', 'tb_realisasi.id_bulan', '=', 'tb_bulan.id_bulan')
+        ->leftJoin('tb_triwulan', 'tb_bulan.nilaiy_bulan', '=', 'tb_triwulan.nilai_triwulan')
+        ->select(
+            'tb_triwulan.nama_triwulan',
+        DB::raw('(SELECT SUM(t2.pagu_realisasi) FROM tb_realisasi t2 LEFT JOIN tb_bulan b2 ON t2.id_bulan = b2.id_bulan WHERE b2.nilaiy_bulan <= tb_bulan.nilaiy_bulan) as jumlah_trealisasi_kumulatif')    )
+        ->where('tb_bulan.id_tahun', $id_tahun)
+        ->groupBy('tb_triwulan.nama_triwulan')
+        ->get();
+
+        $labels4 = [];
+        $data4 = [];
+
+        foreach ($rtriwulan as $item) {
+        $labels4[] = $item->nama_triwulan;
+        $data4[]   = $item->jumlah_trealisasi_kumulatif;
+        }
+
         //
 
-        return view('admin.dashboard.semua', compact('jtarget', 'penerimaan', 'labels', 'data', 'data2'));
+        return view('admin.dashboard.semua', compact('jtarget', 'penerimaan', 'labels', 'data', 'data2', 'triwulan', 'labels2', 'data3', 'realisasi', 'labels3', 'rtriwulan', 'labels4', 'data4'));
     }
 
 

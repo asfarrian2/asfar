@@ -65,7 +65,7 @@
         <div class="nav-header">
             <a href="/opt/dashboard" class="brand-logo">
                 <img src="{{asset ('./images/logo-utama.png') }}">
-                <img src="{{asset ('./images/logo-text-2.png') }}" class="brand-title" width="124px" height="33px">
+                <img src="{{asset ('./images/logo-text-3.png') }}" class="brand-title" width="124px" height="33px">
             </a>
             <div class="nav-control">
                 <div class="hamburger">

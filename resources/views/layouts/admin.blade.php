@@ -40,16 +40,14 @@
     ********************-->
     <div id="preloader">
         <div class="waviy">
-		   <span style="--i:1">L</span>
-		   <span style="--i:2">o</span>
-		   <span style="--i:3">a</span>
-		   <span style="--i:4">d</span>
-		   <span style="--i:5">i</span>
-		   <span style="--i:6">n</span>
-		   <span style="--i:7">g</span>
-		   <span style="--i:8">.</span>
-		   <span style="--i:9">.</span>
-		   <span style="--i:10">.</span>
+		   <span style="--i:1">S</span>
+		   <span style="--i:2">I</span>
+		   <span style="--i:3">-</span>
+		   <span style="--i:4">R</span>
+		   <span style="--i:5">E</span>
+		   <span style="--i:6">T</span>
+		   <span style="--i:7">D</span>
+           <span style="--i:8">A</span>
 		</div>
     </div>
     <!--*******************
@@ -67,7 +65,7 @@
         <div class="nav-header">
             <a href="/admin/dashboardAll" class="brand-logo">
                 <img src="{{asset ('./images/logo-utama.png') }}">
-                <img src="{{asset ('./images/logo-text-2.png') }}" class="brand-title" width="124px" height="33px">
+                <img src="{{asset ('./images/logo-text-3.png') }}" class="brand-title" width="124px" height="33px">
             </a>
             <div class="nav-control">
                 <div class="hamburger">
