@@ -442,4 +442,43 @@ class LaporanController extends Controller
     return view ('operator.laporan.realisasi.cetak', compact('bulan'));
     }
 
+
+
+    public function adm_laporan_realisasi(){
+
+        $id_tahun = Auth::guard('admin')->user()->id_tahun;
+
+        $bulan = DB::table('tb_bulan')
+        ->Where('id_tahun', $id_tahun)
+        ->get();
+
+        return view ('admin.laporan.realisasi.menu', compact('bulan'));
+    }
+
+    public function adm_laporan_target(){
+
+        $id_tahun = Auth::guard('admin')->user()->id_tahun;
+
+        $bulan = DB::table('tb_bulan')
+        ->Where('id_tahun', $id_tahun)
+        ->get();
+
+        return view ('admin.laporan.target.menu', compact('bulan'));
+    }
+
+    public function adm_cetak_target(Request $request){
+
+        //Menampilkan Data Utama Target
+        $tahun_sekarang   = Auth::guard('admin')->user()->id_tahun;
+
+        $view = DB::table('tb_agency')
+        ->get();
+
+        $target = DB::table('tb_target')
+        ->where('id_tahun', $tahun_sekarang)
+        ->get();
+
+        return view ('admin.laporan.target.csemua', compact('tahun_sekarang', 'view', 'target'));
+    }
+
 }

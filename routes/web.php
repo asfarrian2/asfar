@@ -99,6 +99,13 @@ Route::get('/admin/evaluasi', [EvaluasiController::class, 'adm_view']);
 Route::get('/admin/evaluasi/{id_evaluasi}/batal', [EvaluasiController::class, 'batal']);
 Route::get('/admin/evaluasi/{id_evaluasi}', [EvaluasiController::class, 'adm_rview']);
 
+// Laporan Target Admin
+Route::get('/admin/laporan/target', [LaporanController::class, 'adm_laporan_target']);
+Route::post('/admin/cetak_laporan/semua', [LaporanController::class, 'adm_cetak_target']);
+
+// Laporan Realisasi Admin
+Route::get('/admin/laporan/realisasi', [LaporanController::class, 'adm_laporan_realisasi']);
+
 });
 
 //Crud Login Operator
