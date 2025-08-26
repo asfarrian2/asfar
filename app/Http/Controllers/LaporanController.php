@@ -468,7 +468,7 @@ class LaporanController extends Controller
 
     public function adm_cetak_target(Request $request){
 
-        //Menampilkan Data Utama Target
+        $jenis = $request->jenis;
         $tahun_sekarang   = Auth::guard('admin')->user()->id_tahun;
 
         $view = DB::table('tb_agency')
@@ -477,8 +477,55 @@ class LaporanController extends Controller
         $target = DB::table('tb_target')
         ->where('id_tahun', $tahun_sekarang)
         ->get();
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->setPaper('A4', 'potraid', 'auto');
 
-        return view ('admin.laporan.target.csemua', compact('tahun_sekarang', 'view', 'target'));
+        //Cetak Semua Jenis Target
+        if ($jenis == 0) {
+            if (isset($_POST['exportexcel'])) {
+            $time = date("d-M-Y H:i:s");
+            // Fungsi header dengan mengirimkan raw data excel
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "hasil-export.xls"
+            header("Content-Disposition: attachment; filename=Laporan Target Peneriman Retribusi.xls");
+            return view('admin.laporan.target.csemua', compact('tahun_sekarang', 'view', 'target'));
+            }
+
+            $pdf->loadView('admin.laporan.target.csemua', compact('tahun_sekarang', 'view', 'target'));
+            return $pdf->download('Laporan Target Peneriman Retribusi '.$tahun_sekarang.'.pdf');
+         }
+
+        if ($jenis == 1) {
+            if (isset($_POST['exportexcel'])) {
+            $time = date("d-M-Y H:i:s");
+            // Fungsi header dengan mengirimkan raw data excel
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "hasil-export.xls"
+            header("Content-Disposition: attachment; filename=Laporan Target APBD Peneriman Retribusi.xls");
+            return view('admin.laporan.target.capbd', compact('tahun_sekarang', 'view', 'target'));
+            }
+
+            $pdf->loadView('admin.laporan.target.capbd', compact('tahun_sekarang', 'view', 'target'));
+            return $pdf->download('Laporan Target Peneriman Retribusi APBD '.$tahun_sekarang.'.pdf');
+        }
+        if ($jenis == 2) {
+
+            if (isset($_POST['exportexcel'])) {
+            $time = date("d-M-Y H:i:s");
+            // Fungsi header dengan mengirimkan raw data excel
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "hasil-export.xls"
+            header("Content-Disposition: attachment; filename=Laporan Target APBDP Peneriman Retribusi.xls");
+            return view('admin.laporan.target.capbdp', compact('tahun_sekarang', 'view', 'target'));
+            }
+
+             $pdf->loadView('admin.laporan.target.capbdp', compact('tahun_sekarang', 'view', 'target'));
+            return $pdf->download('Laporan Target Peneriman Retribusi APBD Perubahan '.$tahun_sekarang.'.pdf');
+        }else{
+            return view ('admin.laporan.target.csemua', compact('tahun_sekarang', 'view', 'target'));
+        }
+
+
     }
 
 }

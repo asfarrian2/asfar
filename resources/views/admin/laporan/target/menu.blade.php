@@ -64,11 +64,11 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="basic-form">
-                                    <form action="/admin/cetak_laporan/semua" target="_blank" method="POST" data-parsley-validate>
+                                    <form action="/admin/cetak_laporan" target="_blank" method="POST" data-parsley-validate>
                                     @csrf
                                     <div class="mb-3 row">
                                         <label class="form-label">Jenis Laporan :</label>
-                                        <select class="input-default  form-control" name="jenis" required>
+                                        <select class="input-default form-control" name="jenis" required>
                                         <option value="">Pilih Target Laporan</option>
                                             <option value="0">Semua</option>
                                             <option value="1">APBD</option>

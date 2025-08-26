@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>SI-RETDA KALSEL {{ Auth::guard('admin')->user()->id_tahun }}</title>
+    <link rel="shortcut icon" type="image/png" href="{{ asset('images/profile/Default Picture Profile.png') }}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" >
     <style>
             body {
@@ -10,7 +11,7 @@
 
         #title {
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 18px;
+            font-size: 12px;
             font-weight: bold;
         }
 
@@ -72,14 +73,14 @@
     @endphp
     <table class="tabelkolom">
     <tr>
-        <th style="color: black; text-align: center; width: 50px" rowspan="2">NO</th>
-        <th style="color: black; text-align: center;" rowspan="2">NAMA SKPD / UPTD</th>
+        <th style="color: black; text-align: center; width: 25px" rowspan="2">NO</th>
+        <th style="color: black; text-align: center; width: 320px" rowspan="2">NAMA SKPD / UPTD</th>
         <th style="color: black; text-align: center;" rowspan="1" colspan="2">TARGET PENERIMAAN</th>
-        <th style="color: black; text-align: center; width: 70px" rowspan="2" colspan="6">KETERANGAN</th>
+        <th style="color: black; text-align: center; width: 100px" rowspan="2">KETERANGAN</th>
     </tr>
     <tr>
-        <th style="color: black; text-align: center; width: 200px" rowspan="1">APBD</th>
-        <th style="color: black; text-align: center; width: 200px" rowspan="1">APBD PERUBAHAN</th>
+        <th style="color: black; text-align: center; width: 90px" rowspan="1">APBD</th>
+        <th style="color: black; text-align: center; width: 90px" rowspan="1">APBD PERUBAHAN</th>
     </tr>
    @foreach ($view as $d)
     <tr>
@@ -139,26 +140,26 @@
 
 	        return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
             } ?>
-            <td style="text-align: center" colspan="3">Pelaihari, <?php echo tgl_indo(date('Y-m-d')); ?></td>
+            <td style="text-align: center" colspan="4">Banjarbaru, <?php echo tgl_indo(date('Y-m-d')); ?></td>
             </tr>
             <tr>
                 <td style="text-align: center" colspan="4"></td>
 
-                <td style="text-align: center" colspan="3">Mengetahui,</td>
+                <td style="text-align: center" colspan="4">Mengetahui,</td>
             </tr>
             <tr>
                 <td style="text-align: center" colspan="4"></td>
 
-                <td style="text-align: center;" colspan="3"><b>
-                KEPALA BADAN PENDAPATAN DAERAH
+                <td style="text-align: center;" colspan="4"><b>
+                KEPALA BADAN PENDAPATAN DAERAH PROVINSI KALIMANTAN SELATAN
             </b></td>
 
             </tr>
             <tr>
                 <td style="text-align: center; vertical-align:bottom" height="100px" colspan="4"></td>
-                <td style="text-align: center; vertical-align:bottom" colspan="3">
-                <b><u>NAMA.....</b></u><br>
-                <span><span>
+                <td style="text-align: center; vertical-align:bottom" colspan="4">
+                <b><u>H. SUBHAN NOR YAUMIL, SE, M.Si</b></u><br>
+                <span>NIP. 19710421 199803 1 009<span>
                 </td>
             </tr>
         </table>

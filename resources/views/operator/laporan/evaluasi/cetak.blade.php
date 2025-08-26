@@ -3,6 +3,7 @@
 <head>
     <title>SI-RETDA KALSEL {{ Auth::guard('operator')->user()->id_tahun }}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" >
+    <link rel="shortcut icon" type="image/png" href="{{ asset('images/profile/Default Picture Profile.png') }}" />
     <style>
             body {
         height: auto;
