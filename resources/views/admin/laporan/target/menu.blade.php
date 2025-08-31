@@ -64,7 +64,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="basic-form">
-                                    <form action="/admin/cetak_laporan" target="_blank" method="POST" data-parsley-validate>
+                                    <form action="/admin/cetak_target" target="_blank" method="POST" data-parsley-validate>
                                     @csrf
                                     <div class="mb-3 row">
                                         <label class="form-label">Jenis Laporan :</label>

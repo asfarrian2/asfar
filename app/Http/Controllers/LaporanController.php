@@ -443,18 +443,6 @@ class LaporanController extends Controller
     }
 
 
-
-    public function adm_laporan_realisasi(){
-
-        $id_tahun = Auth::guard('admin')->user()->id_tahun;
-
-        $bulan = DB::table('tb_bulan')
-        ->Where('id_tahun', $id_tahun)
-        ->get();
-
-        return view ('admin.laporan.realisasi.menu', compact('bulan'));
-    }
-
     public function adm_laporan_target(){
 
         $id_tahun = Auth::guard('admin')->user()->id_tahun;
@@ -527,5 +515,81 @@ class LaporanController extends Controller
 
 
     }
+
+    public function adm_laporan_realisasi(){
+
+        $id_tahun = Auth::guard('admin')->user()->id_tahun;
+
+        $bulan = DB::table('tb_bulan')
+        ->Where('id_tahun', $id_tahun)
+        ->get();
+
+        return view ('admin.laporan.realisasi.menu', compact('bulan'));
+    }
+
+    public function adm_cetak_realisasi(Request $request){
+
+        //Menampilkan Data Utama Target
+        $tahun_sekarang   = Auth::guard('admin')->user()->id_tahun;
+
+        $select_bulan      = $request->bulan;
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->setPaper('A4', 'potraid', 'auto');
+
+        if ($select_bulan) {
+        $select_bulan = Crypt::decrypt($select_bulan);
+
+        $pilih_bulan  = DB::table('tb_bulan')
+        ->where('id_bulan', $select_bulan)
+        ->first();
+
+
+        $target = DB::table('tb_target')
+        ->leftJoin('tb_agency', 'tb_target.id_agency', '=', 'tb_agency.id_agency')
+        ->where('id_tahun', $tahun_sekarang)
+        ->get();
+
+        $realisasi_bulan = array();
+        foreach ($target as $t) {
+            $realisasi_bulan[$t->id_target] = DB::table('tb_realisasi')
+            ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+            ->where('tb_rtarget.id_target', $t->id_target)
+            ->where('id_bulan', $select_bulan)
+            ->where('status_realisasi', '1')
+            ->sum('pagu_realisasi');
+        }
+
+        $realisasi_sebelumnya = array();
+        foreach ($target as $t) {
+            $realisasi_sebelumnya[$t->id_target] = DB::table('tb_realisasi')
+            ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+            ->where('tb_rtarget.id_target', $t->id_target)
+            ->where('id_bulan', '<', $select_bulan)
+            ->where('status_realisasi', '1')
+            ->sum('pagu_realisasi');
+        }
+
+        $realisasi_sekarang = array();
+        foreach ($target as $t) {
+            $realisasi_sekarang[$t->id_target] = DB::table('tb_realisasi')
+            ->leftJoin('tb_rtarget', 'tb_realisasi.id_rtarget', '=', 'tb_rtarget.id_rtarget')
+            ->where('tb_rtarget.id_target', $t->id_target)
+            ->where('id_bulan', '<=', $select_bulan)
+            ->where('status_realisasi', '1')
+            ->sum('pagu_realisasi');
+        }
+
+        } else {
+            $pilih_bulan = [];
+            $target = [];
+            $realisasi_bulan = [];
+            $realisasi_sebelumnya = [];
+            $realisasi_sekarang = [];
+        }
+
+         $pdf->loadView('admin.laporan.realisasi.cetak', compact('pilih_bulan', 'target', 'realisasi_bulan', 'realisasi_sebelumnya', 'realisasi_sekarang'));
+        return $pdf->download('Laporan Realisasi Peneriman Retribusi APBD Perubahan '.$tahun_sekarang.' '.$pilih_bulan->nama_bulan.'.pdf');
+    }
+
 
 }

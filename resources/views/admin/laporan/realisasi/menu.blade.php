@@ -11,7 +11,7 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
 							<div class="dashboard_bar">
-                                Realisasi Penerimaan Retribusi Daerah
+                                Laporan Realisasi Penerimaan Retribusi Daerah
                             </div>
                         </div>
                     </div>
@@ -64,7 +64,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="basic-form">
-                                    <form action="/admin/cetak/laporan/skpd" target="_blank" method="POST" data-parsley-validate>
+                                    <form action="/admin/cetak_realisasi" target="_blank" method="POST" data-parsley-validate>
                                     @csrf
                                     <div class="mb-3 row">
                                         <label class="form-label">Bulan :</label>

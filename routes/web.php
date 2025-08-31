@@ -101,10 +101,11 @@ Route::get('/admin/evaluasi/{id_evaluasi}', [EvaluasiController::class, 'adm_rvi
 
 // Laporan Target Admin
 Route::get('/admin/laporan/target', [LaporanController::class, 'adm_laporan_target']);
-Route::post('/admin/cetak_laporan', [LaporanController::class, 'adm_cetak_target']);
+Route::post('/admin/cetak_target', [LaporanController::class, 'adm_cetak_target']);
 
 // Laporan Realisasi Admin
 Route::get('/admin/laporan/realisasi', [LaporanController::class, 'adm_laporan_realisasi']);
+Route::post('/admin/cetak_realisasi', [LaporanController::class, 'adm_cetak_realisasi']);
 
 });
 
