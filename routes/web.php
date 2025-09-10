@@ -107,6 +107,10 @@ Route::post('/admin/cetak_target', [LaporanController::class, 'adm_cetak_target'
 Route::get('/admin/laporan/realisasi', [LaporanController::class, 'adm_laporan_realisasi']);
 Route::post('/admin/cetak_realisasi', [LaporanController::class, 'adm_cetak_realisasi']);
 
+// Laporan Realisasi SKPD Admin
+Route::get('/admin/laporan/skpduptd', [LaporanController::class, 'adm_laporan_skpd']);
+Route::post('/admin/cetak_skpd', [LaporanController::class, 'adm_cetak_skpd']);
+
 });
 
 //Crud Login Operator

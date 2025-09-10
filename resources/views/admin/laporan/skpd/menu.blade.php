@@ -11,7 +11,7 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
 							<div class="dashboard_bar">
-                                Realisasi Penerimaan Retribusi Daerah
+                                Laporan Realisasi SKPD/UPTD
                             </div>
                         </div>
                     </div>
@@ -55,7 +55,7 @@
 				<div class="row page-titles">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item active"><a href="/admin/dashboard">SI-RETDA</a></li>
-						<li class="breadcrumb-item"><a href="#">Laporan Realisasi</a></li>
+						<li class="breadcrumb-item"><a href="#">Laporan SKPD/UPTD</a></li>
 					</ol>
                 </div>
                 <!-- row -->
@@ -67,8 +67,17 @@
                                     <form action="/admin/cetak/laporan/skpd" target="_blank" method="POST" data-parsley-validate>
                                     @csrf
                                     <div class="mb-3 row">
-                                        <label class="form-label">Bulan :</label>
+                                        <label class="form-label">SKPD/UPTD :</label>
                                         <select class="input-default  form-control" name="bulan" id="bulan" required>
+                                        <option value="">Pilih SKPD/UPTD</option>
+                                        @foreach ($agency as $d)
+                                            <option value="{{ Crypt::encrypt($d->id_agency) }}">{{$d->nama_agency }}</option>
+                                        @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label class="form-label">Bulan :</label>
+                                        <select class="input-default  form-control" name="agency" id="bulan" required>
                                         <option value="">Pilih Bulan</option>
                                         @foreach ($bulan as $d)
                                             <option value="{{ Crypt::encrypt($d->id_bulan) }}">{{$d->nama_bulan }}</option>

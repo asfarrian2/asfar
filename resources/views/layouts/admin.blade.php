@@ -166,7 +166,7 @@
                         <ul aria-expanded="false">
                             <li><a href="/admin/laporan/target">Target</a></li>
                             <li><a href="/admin/laporan/realisasi">Realisasi</a></li>
-                            <li><a href="/admin/laporanskpduptd">SKPD/UPTD</a></li>
+                            <li><a href="/admin/laporan/skpduptd">SKPD/UPTD</a></li>
                             <li><a href="/admin/laporanobjekretribusi">Objek Retribusi</a></li>
                         </ul>
                     </li>

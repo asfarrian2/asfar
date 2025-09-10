@@ -591,5 +591,29 @@ class LaporanController extends Controller
         return $pdf->download('Laporan Realisasi Peneriman Retribusi APBD Perubahan '.$tahun_sekarang.' '.$pilih_bulan->nama_bulan.'.pdf');
     }
 
+        public function adm_laporan_skpd(){
+
+        $id_tahun = Auth::guard('admin')->user()->id_tahun;
+
+        $bulan = DB::table('tb_bulan')
+        ->Where('id_tahun', $id_tahun)
+        ->get();
+
+        $agency = DB::table('tb_agency')
+        ->get();
+
+        return view ('admin.laporan.skpd.menu', compact('bulan', 'agency'));
+    }
+
+    public function adm_cetak_skpd(Request $request){
+
+        $bulan = $request->bulan;
+        $agency= $request->agency;
+
+
+    }
+
+
+
 
 }
