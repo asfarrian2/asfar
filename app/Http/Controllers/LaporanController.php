@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\App;
 use Barryvdh\DomPDF\Facade\Pdf;
 
+use function Laravel\Prompts\select;
+
 class LaporanController extends Controller
 {
     public function laporan_realisasi(){
@@ -599,7 +601,10 @@ class LaporanController extends Controller
         ->Where('id_tahun', $id_tahun)
         ->get();
 
-        $agency = DB::table('tb_agency')
+        $agency = DB::table('tb_target')
+        ->leftJoin('tb_agency', 'tb_target.id_agency', '=', 'tb_agency.id_agency')
+        ->select('tb_target.*', 'tb_agency.id_agency', 'tb_agency.nama_agency')
+        ->where('id_tahun', $id_tahun)
         ->get();
 
         return view ('admin.laporan.skpd.menu', compact('bulan', 'agency'));
@@ -607,8 +612,79 @@ class LaporanController extends Controller
 
     public function adm_cetak_skpd(Request $request){
 
-        $bulan = $request->bulan;
-        $agency= $request->agency;
+        //Menampilkan Data Utama Target
+        $tahun_sekarang   = Auth::guard('admin')->user()->id_tahun;
+
+        $select_bulan      = $request->bulan;
+        $select_target     = $request->target;
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->setPaper('A4', 'landscape', 'auto');
+
+        if ($select_bulan) {
+        $id_bulan = Crypt::decrypt($select_bulan);
+        $id_target = Crypt::decrypt($select_target);
+
+        $filter = DB::table('tb_bulan')
+        ->where('id_bulan', $id_bulan)
+        ->first();
+
+        $agency = DB::table('tb_target')
+        ->leftJoin('tb_agency', 'tb_target.id_agency', '=', 'tb_agency.id_agency')
+        ->select('tb_target.*', 'tb_agency.nama_agency')
+        ->where('id_target', $id_target)
+        ->first();
+
+
+        // Menampilkan Data Rincian Realisasi Anggaran Murni
+        $rincian = DB::table('tb_rtarget')
+            ->leftJoin('tb_ojkretribusi', 'tb_rtarget.id_ojk', '=', 'tb_ojkretribusi.id_ojk')
+            ->leftJoin('tb_subretribusi', 'tb_ojkretribusi.id_sr', '=', 'tb_subretribusi.id_sr')
+            ->leftJoin('tb_jenretribusi', 'tb_subretribusi.id_jr', '=', 'tb_jenretribusi.id_jr')
+            ->leftJoin('tb_realisasi', function ($join) use ($id_bulan) {
+                $join->on('tb_rtarget.id_rtarget', '=', 'tb_realisasi.id_rtarget')
+                    ->where('tb_realisasi.id_bulan', $id_bulan);
+            })
+            ->select('tb_rtarget.*',
+                'tb_realisasi.pagu_realisasi',
+                'tb_realisasi.id_realisasi',
+                'tb_realisasi.id_bulan',
+                'tb_realisasi.status_realisasi',
+                'tb_ojkretribusi.nama_ojk',
+                'tb_ojkretribusi.kode_ojk',
+                'tb_subretribusi.nama_sr',
+                'tb_subretribusi.kode_sr',
+                'tb_jenretribusi.nama_jr',
+                'tb_jenretribusi.kode_jr',
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi WHERE id_rtarget = tb_rtarget.id_rtarget AND id_bulan < ' . $id_bulan . ') as pagu_realisasi_sebelumnya'),
+                DB::raw('(SELECT SUM(pagu_realisasi) FROM tb_realisasi WHERE id_rtarget = tb_rtarget.id_rtarget AND id_bulan <= ' . $id_bulan . ') as pagu_realisasi_sekarang')
+            )
+            ->where('id_target', $id_target)
+            ->where('status_rtarget', '0')
+            ->orderBy('kode_ojk', 'ASC')
+            ->get()
+            ->groupBy('kode_jr')
+            ->map(function($item, $key) {
+                return $item->groupBy('kode_sr')
+                    ->map(function($item, $key) {
+                        return $item->groupBy('kode_ojk');
+                    });
+            });
+
+        } else {
+            $filter = [];
+        }
+
+        if (isset($_POST['exportexcel'])) {
+            $time = date("d-M-Y H:i:s");
+            // Fungsi header dengan mengirimkan raw data excel
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "hasil-export.xls"
+            header("Content-Disposition: attachment; filename=Laporan Realisasi Peneriman Retribusi $filter->nama_bulan.xls");
+            return view('admin.laporan.skpd.cetak', compact('rincian', 'filter', 'agency'));
+        }
+
+         $pdf->loadView('admin.laporan.skpd.cetak', compact('rincian', 'filter', 'agency'));
+        return $pdf->download('Laporan Realisasi Peneriman Retribusi APBD Perubahan '.$tahun_sekarang.' '.$filter->nama_bulan.'.pdf');
 
 
     }

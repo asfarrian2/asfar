@@ -89,6 +89,8 @@ Route::get('/admin/menuanggaran/{id_menu}/status', [MenuanggaranController::clas
 Route::get('/admin/menuanggaran/{id_menu}/hapus', [MenuanggaranController::class, 'delate']);
 Route::get('/admin/menuanggaran/{id_menu}', [MenuanggaranController::class, 'view_r']);
 Route::get('/admin/menuanggaran/{id_bulan}/bulan', [MenuanggaranController::class, 'bulan']);
+Route::get('/admin/menuanggaran/menuevaluasi/{id_menu}', [MenuanggaranController::class, 'view_e']);
+Route::get('/admin/menuanggaran/{id_triwulan}/triwulan', [MenuanggaranController::class, 'triwulan']);
 
 //Crud Menu Realisasi
 Route::get('/admin/realisasi', [RealisasiController::class, 'adm_view']);

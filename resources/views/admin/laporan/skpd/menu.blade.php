@@ -64,20 +64,20 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="basic-form">
-                                    <form action="/admin/cetak/laporan/skpd" target="_blank" method="POST" data-parsley-validate>
+                                    <form action="/admin/cetak_skpd" target="_blank" method="POST" data-parsley-validate>
                                     @csrf
                                     <div class="mb-3 row">
                                         <label class="form-label">SKPD/UPTD :</label>
-                                        <select class="input-default  form-control" name="bulan" id="bulan" required>
+                                        <select class="input-default  form-control" name="target" id="target" required>
                                         <option value="">Pilih SKPD/UPTD</option>
                                         @foreach ($agency as $d)
-                                            <option value="{{ Crypt::encrypt($d->id_agency) }}">{{$d->nama_agency }}</option>
+                                            <option value="{{ Crypt::encrypt($d->id_target) }}">{{$d->nama_agency }}</option>
                                         @endforeach
                                         </select>
                                     </div>
                                     <div class="mb-3 row">
                                         <label class="form-label">Bulan :</label>
-                                        <select class="input-default  form-control" name="agency" id="bulan" required>
+                                        <select class="input-default  form-control" name="bulan" id="bulan" required>
                                         <option value="">Pilih Bulan</option>
                                         @foreach ($bulan as $d)
                                             <option value="{{ Crypt::encrypt($d->id_bulan) }}">{{$d->nama_bulan }}</option>

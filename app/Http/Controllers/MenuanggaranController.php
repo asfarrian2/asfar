@@ -248,7 +248,17 @@ class MenuanggaranController extends Controller
         return view('admin.menu.bulan.view', compact('id', 'menu'));
     }
 
-        //Status Data
+    public function view_e($id_tahun){
+        $id = Crypt::decrypt($id_tahun);
+
+        $menu = DB::table('tb_triwulan')
+        ->where('id_tahun', $id)
+        ->get();
+
+        return view('admin.menu.triwulan.view', compact('id', 'menu'));
+    }
+
+    //Status Data
     public function bulan($id_bulan)
     {
         $id_bulan   = Crypt::decrypt($id_bulan);
@@ -283,6 +293,45 @@ class MenuanggaranController extends Controller
                 return Redirect::back()->with(['warning' => 'Data Gagal Dinonaktifkan.']);
             }
             }
+
+    }
+
+
+    public function triwulan($id_triwulan)
+    {
+
+        $id_triwulan   = Crypt::decrypt($id_triwulan);
+
+        $data = DB::table('tb_triwulan')
+        ->where('id_triwulan', $id_triwulan)
+        ->first();
+
+        $status_triwulan = $data->status_triwulan;
+
+        $aktif = [
+            'status_triwulan' => '1',
+        ];
+
+        $nonaktif = [
+            'status_triwulan' => '0',
+        ];
+
+        if($status_triwulan == '0'){
+            $update = DB::table('tb_triwulan')->where('id_triwulan', $id_triwulan)->update($aktif);
+            if ($update) {
+                return Redirect::back()->with(['success' => 'Data Berhasil Diaktifkan.']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Data Gagal Diaktifkan.']);
+            }
+
+        }else{
+            $update = DB::table('tb_triwulan')->where('id_triwulan', $id_triwulan)->update($nonaktif);
+            if ($update) {
+                return Redirect::back()->with(['success' => 'Data Berhasil Dinonaktifkan.']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Data Gagal Dinonaktifkan.']);
+            }
+        }
 
     }
 

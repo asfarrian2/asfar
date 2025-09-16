@@ -11,7 +11,7 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
 							<div class="dashboard_bar">
-                                Menu
+                                Menu Triwulan T.A. {{$id}}
                             </div>
                         </div>
                     </div>
@@ -55,7 +55,8 @@
 				<div class="row page-titles">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item active"><a href="/admin/dashboardAll">SI-RETDA</a></li>
-						<li class="breadcrumb-item"><a href="#">Menu Anggaran</a></li>
+                        <li class="breadcrumb-item active"><a href="/admin/menuanggaran">Menu Anggaran</a></li>
+						<li class="breadcrumb-item"><a href="#">Triwulan</a></li>
 					</ol>
                 </div>
                 <!-- row -->
@@ -64,46 +65,14 @@
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title">Tabel Data</h4>
-                                <!-- Button trigger modal -->
-                                <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#tambahdata">+Tambah</button>
                             </div>
-                            <!-- Start Modal -->
-                            <div class="modal fade" id="tambahdata">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h3 class="modal-title">Tambah Data</h3>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="basic-form">
-                                            <form action="/admin/menuanggaran/store" method="POST">
-                                            @csrf
-                                                <div class="mb-3">
-                                                    <label class="form-label">Tahun Anggaran :</label>
-                                                    <input type="number" maxlength="4" name="tahun" placeholder="Masukkan Tahun Anggaran" class="form-control input-default" required>
-                                                </div>
-                                           </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-primary">Simpan</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End Modal -->
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table id="example" class="display" style="min-width: 845px">
                                         <thead>
                                             <tr>
                                                 <th style="text-align:center;">NO.</th>
-                                                <th style="text-align:center;">TAHUN ANGGARAN</th>
-                                                <th style="text-align:center;">TARGET APBD</th>
-                                                <th style="text-align:center;">TARGET APBD P</th>
+                                                <th style="text-align:center;">TRIWULAN</th>
                                                 <th style="text-align:center;">STATUS</th>
                                                 <th style="text-align:center;">AKSI</th>
                                             </tr>
@@ -112,18 +81,8 @@
                                         @foreach ($menu as $d)
                                             <tr>
                                                 <td style="color: black; text-align:center;">{{ $loop->iteration }}</td>
-                                                <td style="color: black;">{{$d->id_tahun}}</td>
-                                                @if ($d->apbd_tahun == '0')
-                                                <td style="color: black;">Nonaktif</td>
-                                                @else
-                                                <td style="color: black;">Aktif</td>
-                                                @endif
-                                                @if ($d->apbdp_tahun == '0')
-                                                <td style="color: black;">Nonaktif</td>
-                                                @else
-                                                <td style="color: black;">Aktif</td>
-                                                @endif
-                                                @if ($d->status_tahun == '0')
+                                                <td style="color: black;">{{$d->nama_triwulan}}</td>
+                                                @if ($d->status_triwulan == '0')
                                                 <td><span class="badge light badge-warning">Nonaktif</span></td>
                                                 @else
                                                 <td><span class="badge light badge-success">Aktif</span></td>
@@ -135,17 +94,10 @@
 														</button>
                                                         @csrf
 														<div class="dropdown-menu">
-                                                             <a class="dropdown-item" href="/admin/menuanggaran/{{Crypt::encrypt($d->id_tahun)}}">
-                                                                        <i class="fa fa-calendar color-muted"></i> Bulan
-                                                            </a>
-                                                            <a class="dropdown-item" href="/admin/menuanggaran/menuevaluasi/{{Crypt::encrypt($d->id_tahun)}}">
-                                                                        <i class="fa fa-reply-all color-muted"></i> Evaluasi
-                                                            </a>
-                                                            @if ($d->status_tahun == '0')
-                                                            <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_tahun)}}"> <i class="fa fa-check color-muted"></i> Aktifkan</a>
+                                                            @if ($d->status_triwulan == '0')
+                                                            <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_triwulan)}}"> <i class="fa fa-check color-muted"></i> Aktifkan</a>
                                                             @else
-                                                            <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_tahun)}}"> <i class="fa fa-ban color-muted"></i> Nonaktifkan</a>
-                                                            <a class="dropdown-item hapus" href="#" data-id="{{Crypt::encrypt($d->id_tahun)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
+                                                            <a class="dropdown-item status" href="#" data-id="{{Crypt::encrypt($d->id_triwulan)}}"> <i class="fa fa-ban color-muted"></i> Nonaktifkan</a>
                                                             @endif
 														</div>
 													</div>
@@ -156,9 +108,7 @@
                                         <tfoot>
                                             <tr>
                                                 <th style="text-align:center;">NO.</th>
-                                                <th style="text-align:center;">TAHUN ANGGARAN</th>
-                                                <th style="text-align:center;">TARGET APBD</th>
-                                                <th style="text-align:center;">TARGET APBD P</th>
+                                                <th style="text-align:center;">TRIWULAN</th>
                                                 <th style="text-align:center;">STATUS</th>
                                                 <th style="text-align:center;">AKSI</th>
                                             </tr>
@@ -227,7 +177,7 @@
     <!-- Start Button Hapus -->
     <script>
     $('.hapus').click(function(){
-        var id_tahun = $(this).attr('data-id');
+        var id_triwulan = $(this).attr('data-id');
     Swal.fire({
       title: "Apakah Anda Yakin Data Ini Ingin Di Hapus ?",
       text: "Jika Ya Maka Data Seluruh Menu Dengan Tahun Ini Akan Terhapus Permanen",
@@ -238,7 +188,7 @@
       confirmButtonText: "Ya, Hapus Saja!"
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location = "/admin/menuanggaran/"+id_tahun+"/hapus"
+        window.location = "/admin/menuanggaran/"+id_triwulan+"/hapus"
         Swal.fire({
           title: "Data Berhasil Dihapus !",
           icon: "success"
@@ -252,7 +202,7 @@
     <!-- Start Button Status -->
     <script>
     $('.status').click(function(){
-        var id_sr = $(this).attr('data-id');
+        var id_triwulan = $(this).attr('data-id');
     Swal.fire({
       title: "Apakah Anda Yakin Mengubah Status Data Ini ?",
       text: "Jika Ya Maka Status Data Akan Berubah",
@@ -263,7 +213,7 @@
       confirmButtonText: "Ya, Ubah Status!"
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location = "/admin/menuanggaran/"+id_sr+"/status"
+        window.location = "/admin/menuanggaran/"+id_triwulan+"/triwulan"
       }
     });
     });
